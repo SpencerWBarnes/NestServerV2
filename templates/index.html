@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% endblock %}
+
+{% block video %}
+    <img src="{{ url_for('video_feed1') }}">
+    <!-- <img src="{{ url_for('video_feed2') }}"> -->
+{% endblock %}
+
+{% block footer %}
+    <p><a href="{{ url_for('page2') }}">Page 2</a></p>
+{% endblock %}
