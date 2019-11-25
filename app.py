@@ -1,7 +1,9 @@
 from importlib import import_module
 import os
 from flask import Flask
-from pyfladesk import init_gui
+from pyfladesklocal import init_gui
+from dotenv import load_dotenv
+load_dotenv('.flaskenv')
 
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
@@ -13,4 +15,5 @@ app = Flask(__name__)
 from routes import *
 
 if __name__ == '__main__':
-    init_gui(app)
+    init_gui(app, port=8000, width=800, height=800, window_title="Nest Server", icon="appicon.png", argv=None)
+    
