@@ -2,18 +2,20 @@ import sys
 from PyQt5 import QtCore, QtWidgets, QtGui, QtWebEngineWidgets
 import socket
 
+cur_host = "192.168.0.7"
 
 class ApplicationThread(QtCore.QThread):
     def __init__(self, application, port=5000):
         super(ApplicationThread, self).__init__()
         self.application = application
         self.port = port
+        self.host = cur_host
 
     def __del__(self):
         self.wait()
 
     def run(self):
-        self.application.run(port=self.port, threaded=True)
+        self.application.run(port=self.port, host=self.host, threaded=True)
 
 
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
@@ -61,7 +63,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk
     window.setCentralWidget(webView)
 
     # WebPage Level
-    page = WebPage('http://localhost:{}'.format(port))
+    page = WebPage('http://' + cur_host + ':{}'.format(port))
     page.home()
     webView.setPage(page)
 
