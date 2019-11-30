@@ -2,7 +2,8 @@ import sys
 from PyQt5 import QtCore, QtWidgets, QtGui, QtWebEngineWidgets
 import socket
 
-cur_host = "192.168.0.7"
+# cur_host = "192.168.0.7"
+cur_host = "192.168.1.239"
 
 class ApplicationThread(QtCore.QThread):
     def __init__(self, application, port=5000):
