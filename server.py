@@ -10,7 +10,7 @@ import threading
 import json
 
 # default values for IP and port are my home values and 8888
-UDP_IP_ADDRESS = "192.168.1.239"
+UDP_IP_ADDRESS = "192.168.1.1"
 UDP_PORT_NUM = 8888
 UDP_CLIENT_PORT_NUM = 8000
 
@@ -51,6 +51,12 @@ class Server():
         self.videoSock = None
         self.messagetext = None
         self.isConnected = False
+
+        # Getting the IP address of the machine
+        try: 
+            self.UDP_IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+        except:
+            self.UDP_IP_ADDRESS = "192.168.1.1"
 
         # Threads
         self.connectThread = threading.Thread(target=self.connection)
@@ -274,7 +280,7 @@ class Server():
 
     def connection(self):
         try:
-            self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
+            self.commandSock.bind((self.UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
             self.isConnected = True
             data, self.addr = self.commandSock.recvfrom(1024)
             data = data.decode()
