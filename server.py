@@ -93,11 +93,24 @@ class Server():
             "isRoofOpen" : self.isRoofOpen,
             "isPadExtended" : self.isPadExtended,
             "isPadRaised" : self.isPadRaised,
-            "isStopped" : self.isStopped
+            "isStopped" : self.isStopped,
+            "previousCommand" : self.messagetext
         }
         message = json.dumps(systemStatusDict)
         print(message)
         self.commandSock.sendto(message.encode(), addr)
+
+    def getSystemStatusDict(self):
+        systemStatusDict = {
+            "isOn" : self.isOn,
+            "isDoorOpen" : self.isDoorOpen,
+            "isRoofOpen" : self.isRoofOpen,
+            "isPadExtended" : self.isPadExtended,
+            "isPadRaised" : self.isPadRaised,
+            "isStopped" : self.isStopped,
+            "previousCommand" : self.messagetext
+        }
+        return systemStatusDict
 
     def systemPower(self, addr):
         # this is where the mechanism for powering on and off the system will go

@@ -1,6 +1,8 @@
 import sys
 from PyQt5 import QtCore, QtWidgets, QtGui, QtWebEngineWidgets
 import socket
+import server
+import threading
 
 # cur_host = "192.168.0.7"
 cur_host = "192.168.1.239"
@@ -46,6 +48,14 @@ def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk
         sock.bind(('localhost', 0))
         port = sock.getsockname()[1]
         sock.close()
+
+    # Setting up command socket
+    s = server.Server()
+    print(" * Listening to commands on: " + s.UDP_IP_ADDRESS)
+    print(s.getSystemStatusDict())
+    serverThread = threading.Thread(target=s.connection)
+    serverThread.daemon = True
+    serverThread.start()
 
     # Application Level
     qtapp = QtWidgets.QApplication(argv)
