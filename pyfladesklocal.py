@@ -1,5 +1,8 @@
 import sys
 from PyQt5 import QtCore, QtWidgets, QtGui, QtWebEngineWidgets
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import socket
 import server
 import threading
