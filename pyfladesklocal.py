@@ -66,14 +66,32 @@ def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk
     qtapp.aboutToQuit.connect(webapp.terminate)
 
     # Main Window Level
-    window = QtWidgets.QMainWindow()
+    window = QWidget()
     window.resize(width, height)
     window.setWindowTitle(window_title)
     window.setWindowIcon(QtGui.QIcon(icon))
 
     # WebView Level
+    layout = QVBoxLayout()
+    gridLayout = QGridLayout()
+    vidLayout = QHBoxLayout()
+    
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    window.setCentralWidget(webView)
+    vidLayout.addWidget(webView)
+
+    
+    gridLayout.addWidget(QLabel("System on: " + str(s.isOn)), 0, 0)
+    gridLayout.addWidget(QLabel("Door open: " + str(s.isDoorOpen)), 1, 0)
+    gridLayout.addWidget(QLabel("Roof open: " + str(s.isRoofOpen)), 2, 0)
+    gridLayout.addWidget(QLabel("Pad extended: " + str(s.isPadExtended)), 3, 0)
+    gridLayout.addWidget(QLabel("Pad raised: " + str(s.isPadRaised)), 4, 0)
+    gridLayout.addWidget(QLabel("Stopped: " + str(s.isStopped)), 5, 0)
+    
+    layout.addLayout(vidLayout)
+    layout.addLayout(gridLayout)
+    # window.setFixedHeight(1100)
+    # window.setFixedWidth(1100)
+    window.setLayout(layout)
 
     # WebPage Level
     page = WebPage('http://' + cur_host + ':{}'.format(port))
