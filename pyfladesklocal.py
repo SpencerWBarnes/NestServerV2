@@ -46,7 +46,7 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
 
-def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk", icon="appicon.png", argv=None):
+def init_gui(application, port=0, width=800,    height=600, window_title="PyFladesk",      icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
@@ -77,6 +77,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk
     vidLayout = QHBoxLayout()
     
     webView = QtWebEngineWidgets.QWebEngineView(window)
+    webView.setMinimumHeight(520)
     vidLayout.addWidget(webView)
 
     
@@ -89,8 +90,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="PyFladesk
     
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)
-    # window.setFixedHeight(1100)
-    # window.setFixedWidth(1100)
+    
     window.setLayout(layout)
 
     # WebPage Level
