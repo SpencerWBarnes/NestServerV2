@@ -45,6 +45,14 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
+def updateUI(ipLabel,isOnLabel,isDoorOpenLabel,isRoofOpenLabel,isPadExtendedLabel,isPadRaisedLabel,isStoppedLabel):
+    ipLabel.setText("IP: " + str(s.UDP_IP_ADDRESS))
+    isOnLabel.setText("System on: " + str(s.isOn))
+    isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
+    isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
+    isPadExtendedLabel.setText("Pad extended: " + str(s.isPadExtended))
+    isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
+    isStoppedLabel.setText("System stopped: " + str(s.isStopped))
 
 def init_gui(application, port=0, width=800,    height=600, window_title="PyFladesk",      icon="appicon.png", argv=None):
     if argv is None:
@@ -80,14 +88,25 @@ def init_gui(application, port=0, width=800,    height=600, window_title="PyFlad
     webView.setMinimumHeight(520)
     vidLayout.addWidget(webView)
 
-    
-    gridLayout.addWidget(QLabel("System on: " + str(s.isOn)), 0, 0)
-    gridLayout.addWidget(QLabel("Door open: " + str(s.isDoorOpen)), 1, 0)
-    gridLayout.addWidget(QLabel("Roof open: " + str(s.isRoofOpen)), 2, 0)
-    gridLayout.addWidget(QLabel("Pad extended: " + str(s.isPadExtended)), 3, 0)
-    gridLayout.addWidget(QLabel("Pad raised: " + str(s.isPadRaised)), 4, 0)
-    gridLayout.addWidget(QLabel("Stopped: " + str(s.isStopped)), 5, 0)
-    
+    ipLabel = QLabel()
+    isOnLabel = QLabel()
+    isDoorOpenLabel = QLabel()
+    isRoofOpenLabel = QLabel()
+    isPadExtendedLabel = QLabel()
+    isPadRaisedLabel = QLabel()
+    isStoppedLabel = QLabel()
+
+    gridLayout.addWidget(ipLabel, 0, 0)
+    gridLayout.addWidget(isOnLabel, 1, 0)
+    gridLayout.addWidget(isDoorOpenLabel, 2, 0)
+    gridLayout.addWidget(isRoofOpenLabel, 3, 0)
+    gridLayout.addWidget(isPadExtendedLabel, 4, 0)
+    gridLayout.addWidget(isPadRaisedLabel, 5, 0)
+    gridLayout.addWidget(isStoppedLabel, 6, 0)
+
+    s.serverCalback = lambda: updateUI(ipLabel,isOnLabel,isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+    updateUI(ipLabel,isOnLabel,isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)
     

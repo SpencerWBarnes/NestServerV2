@@ -68,6 +68,9 @@ class Server():
         # sockets
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)        #Port: 8000
 
+    def serverCalback(self):
+        print("testing")
+
     def closeSocket(self, mSocket):
         try:
             mSocket.shutdown(socket.SHUT_RDWR)
@@ -233,7 +236,7 @@ class Server():
 
     def handledata(self, data, addr):
         print(data)
-
+        
         if data == "systemPower":
             self.systemPower(addr)
         elif data == "emergencyStop":
@@ -272,6 +275,8 @@ class Server():
             self.sendTestMessage(addr)
         else:
             self.unknownMessage(addr)
+
+        self.serverCalback()
 
 
     def receivedata(self):
