@@ -1,4 +1,6 @@
 {
     "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": 
+        ["-rn --extension-pkg-whitelist=PyQt5 --disable=blacklisted-name,invalid-name,missing-docstring"]
 }
