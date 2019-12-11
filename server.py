@@ -54,10 +54,14 @@ class Server():
 
         # Getting the IP address of the machine
         try: 
-            self.UDP_IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+            self.UDP_IP_ADDRESS = socket.gethostbyname_ex(socket.gethostname())[2][2]
         except:
             self.UDP_IP_ADDRESS = "192.168.1.1"
 
+        print(socket.gethostbyname_ex(socket.gethostname())[2]) 
+
+        print(socket.gethostname())
+        print(socket.gethostbyname(socket.gethostname()))
         # Threads
         self.connectThread = threading.Thread(target=self.connection)
         
