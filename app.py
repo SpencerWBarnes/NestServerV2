@@ -16,5 +16,5 @@ app = Flask(__name__)
 from routes import *
 
 if __name__ == '__main__':
-    init_gui(app, port=8000, width=800, height=800, window_title="Nest Server", icon="appicon.png", argv=None)
+    init_gui(app, port=8008, width=800, height=800, window_title="Nest Server", icon="appicon.png", argv=None)
     
