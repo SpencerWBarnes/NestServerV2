@@ -54,15 +54,18 @@ class Server():
 
         # Getting the IP address of the machine
         try: 
-            self.UDP_IP_ADDRESS = socket.gethostbyname_ex(socket.gethostname())[2][2]
+            self.UDP_IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+            if not self.UDP_IP_ADDRESS.startswith("192"):
+                self.UDP_IP_ADDRESS = socket.gethostbyname_ex(socket.gethostname())[2][1]
         except:
-            self.UDP_IP_ADDRESS = "192.168.1.1"
+            print("EXCEPTION: LINE 62")
+            self.UDP_IP_ADDRESS = "192.168.0.10"
 
-        print(socket.gethostbyname_ex(socket.gethostname())[2]) 
+        # print(socket.gethostbyname_ex(socket.gethostname())[2]) 
 
-        print(socket.gethostname())
-        print(socket.gethostbyname(socket.gethostname()))
-        # Threads
+        # print(socket.gethostname())
+        # print(socket.gethostbyname(socket.gethostname()))
+        # # Threads
         self.connectThread = threading.Thread(target=self.connection)
         
         # setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
