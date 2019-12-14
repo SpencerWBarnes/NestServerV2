@@ -53,13 +53,8 @@ class Server():
         self.isConnected = False
 
         # Getting the IP address of the machine
-        try: 
-            self.UDP_IP_ADDRESS = socket.gethostbyname(socket.gethostname())
-            if not self.UDP_IP_ADDRESS.startswith("192"):
-                self.UDP_IP_ADDRESS = socket.gethostbyname_ex(socket.gethostname())[2][1]
-        except:
-            print("EXCEPTION: LINE 62")
-            self.UDP_IP_ADDRESS = "192.168.0.10"
+        
+        self.UDP_IP_ADDRESS = "10.0.0.214"
 
         # print(socket.gethostbyname_ex(socket.gethostname())[2]) 
 
