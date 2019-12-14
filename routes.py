@@ -1,38 +1,44 @@
-from flask import render_template, Response
-from app import app
+#!/usr/bin/env python
 from importlib import import_module
 import os
+from flask import Flask, render_template, Response
 
+# import camera driver
+'''
 if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
 else:
     from camera import Camera
+'''
+#
+from camera import *
+
+
+app = Flask(__name__)
+
 
 @app.route('/')
 def index():
+    """Video streaming home page."""
     return render_template('index.html')
 
-@app.route('/page2')
-def page2():
-    return render_template('page2.html')
 
-
-"""video streaming generator function."""
-def cam_gen(camera):
+def gen(camera):
+    """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
-"""video streaming routes"""
 @app.route('/video_feed1')
 def video_feed1():
-    
-    return Response(cam_gen(Camera(0)),
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera1()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 @app.route('/video_feed2')
 def video_feed2():
-    return Response(cam_gen(Camera(1)),
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera2()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')

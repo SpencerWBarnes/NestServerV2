@@ -1,5 +1,6 @@
-import time
+import numpy as np
 import threading
+import time
 import cv2
 try:
     from greenlet import getcurrent as get_ident
@@ -11,14 +12,15 @@ except ImportError:
 
 
 class CameraEvent(object):
-    """event-like class that signals all active clients when a new frame is
-    available"""
-    
+    """An Event-like class that signals all active clients when a new frame is
+    available.
+    """
+
     def __init__(self):
         self.events = {}
 
     def wait(self):
-        """invoked from each client's thread to wait for the next frame"""
+        """Invoked from each client's thread to wait for the next frame."""
         ident = get_ident()
         if ident not in self.events:
             # this is a new client
@@ -28,7 +30,7 @@ class CameraEvent(object):
         return self.events[ident][0].wait()
 
     def set(self):
-        """invoked by the camera thread when new frame is available"""
+        """Invoked by the camera thread when a new frame is available."""
         now = time.time()
         remove = None
         for ident, event in self.events.items():
@@ -48,53 +50,77 @@ class CameraEvent(object):
             del self.events[remove]
 
     def clear(self):
-        """invoked from each client's thread after a frame was processed"""
+        """Invoked from each client's thread after a frame was processed."""
         self.events[get_ident()][0].clear()
 
 
 
-class Camera():
-    # background thread that reads frames from camera
-    thread = None
-    # current frame is stored here by background thread
-    frame = None
-    # time of last client access to the camera  
-    last_access = 0  
+class BaseCamera(object):
+    thread = None  # background thread that reads frames from camera
+    frame = None  # current frame is stored here by background thread
+    last_access = 0  # time of last client access to the camera
     event = CameraEvent()
 
-    def __init__(self, vsrc):
-        # set video source
-        self.video_source = vsrc
-
-        # start background frame thread if not running
-        if self.thread is None:
-            self.last_access = time.time()
+    def __init__(self):
+        """Start the background camera thread if it isn't running yet."""
+        if BaseCamera.thread is None:
+            BaseCamera.last_access = time.time()
 
             # start background frame thread
-            self.thread = threading.Thread(target=self._thread)
-            self.thread.start()
+            BaseCamera.thread = threading.Thread(target=self._thread)
+            BaseCamera.thread.start()
 
             # wait until frames are available
             while self.get_frame() is None:
                 time.sleep(0)
-    
-    def set_video_source(self, source):
-        self.video_source = source
 
     def get_frame(self):
-        """return current camera frame"""
-        self.last_access = time.time()
+        """Return the current camera frame."""
+        BaseCamera.last_access = time.time()
 
         # wait for a signal from the camera thread
-        self.event.wait()
-        self.event.clear()
+        BaseCamera.event.wait()
+        BaseCamera.event.clear()
 
-        return self.frame
+        return BaseCamera.frame
 
-    def frames(self):
-        camera = cv2.VideoCapture(self.video_source)
+    @staticmethod
+    def frames():
+        """"Generator that returns frames from the camera."""
+        raise RuntimeError('Must be implemented by subclasses.')
+
+    @classmethod
+    def _thread(cls):
+        """Camera background thread."""
+        print('Starting camera thread.')
+        frames_iterator = cls.frames()
+        for frame in frames_iterator:
+            BaseCamera.frame = frame
+            BaseCamera.event.set()  # send signal to clients
+            time.sleep(0)
+
+            # if there hasn't been any clients asking for frames in
+            # the last 10 seconds then stop the thread
+            if time.time() - BaseCamera.last_access > 10:
+                frames_iterator.close()
+                print('Stopping camera thread due to inactivity.')
+                break
+        BaseCamera.thread = None
+
+
+
+class Camera1(BaseCamera):
+    video_source = 0
+
+    @staticmethod
+    def set_video_source(source):
+        Camera1.video_source = source
+
+    @staticmethod
+    def frames():
+        camera = cv2.VideoCapture(Camera1.video_source)
         if not camera.isOpened():
-            raise RuntimeError('Could not start camera')
+            raise RuntimeError('Could not start camera.')
 
         while True:
             # read current frame
@@ -103,19 +129,53 @@ class Camera():
             # encode as a jpeg image and return it
             yield cv2.imencode('.jpg', img)[1].tobytes()
 
-    def _thread( self):
-        """camera background thread"""
-        print('Starting camera thread')
-        frames_iterator = self.frames()
-        for frame in frames_iterator:
-            self.frame = frame
-            self.event.set()  # send signal to clients
-            time.sleep(0)
 
-            # if there hasn't been any clients asking for frames in
-            # the last 10 seconds then stop the thread
-            if time.time() - self.last_access > 10:
-                frames_iterator.close()
-                print('Stopping camera thread due to inactivity')
-                break
-        self.thread = None
+
+class Camera2(BaseCamera):
+    video_source = 1
+
+    @staticmethod
+    def set_video_source(source):
+        Camera2.video_source = source
+
+    @staticmethod
+    def frames():
+        camera = cv2.VideoCapture(Camera2.video_source)
+        if not camera.isOpened():
+            raise RuntimeError('Could not start camera.')
+
+        while True:
+            # read current frame
+            _, img = camera.read()
+
+            # encode as a jpeg image and return it
+            yield cv2.imencode('.jpg', img)[1].tobytes()
+
+
+
+class Camera(BaseCamera):
+    video_source1 = 0
+    video_source2 = 1
+
+    @staticmethod
+    def set_video_source(sources):
+        Camera.video_source1 = sources[0]
+        Camera.video_source2 = sources[0]
+
+    @staticmethod
+    def frames():
+        camera1 = cv2.VideoCapture(Camera.video_source1)
+        camera2 = cv2.VideoCapture(Camera.video_source2)
+        if not (camera1.isOpened() or camera2.isOpened()):
+            raise RuntimeError('Could not start camera.')
+
+        while True:
+            # read current frame
+            _, img1 = camera1.read()
+            _, img2 = camera2.read()
+            img1 = cv2.resize(img1, (704, 396))
+            img2 = cv2.resize(img2, (704, 396))
+            img = np.hstack((img1, img2))
+
+            # encode as a jpeg image and return it
+            yield cv2.imencode('.jpg', img)[1].tobytes()
