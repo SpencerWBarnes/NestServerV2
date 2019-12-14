@@ -1,9 +1,20 @@
-{% extends "base.html" %}
-
-{% block content %}
-{% endblock %}
+{% extends "base.html" %} 
+{% block content %} 
+{% endblock %} 
 
 {% block video %}
-    <img src="{{ url_for('video_feed1') }}">
-    <img src="{{ url_for('video_feed2') }}">
+<table class="table" style="table-layout: fixed">
+    <tbody>
+        <tr>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed1') }}" /></td>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed2') }}" /></td>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed3') }}" /></td>
+        </tr>
+        <tr>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed4') }}" /></td>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed5') }}" /></td>
+            <td><img style="transform: scale(0.5);" src="{{ url_for('video_feed6') }}" /></td>
+        </tr>
+    </tbody>
+</table>
 {% endblock %}

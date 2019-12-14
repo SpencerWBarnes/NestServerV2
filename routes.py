@@ -27,8 +27,7 @@ def gen(camera):
     """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
 @app.route('/video_feed1')
@@ -37,8 +36,37 @@ def video_feed1():
     return Response(gen(Camera1()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
 @app.route('/video_feed2')
 def video_feed2():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera2()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/video_feed3')
+def video_feed3():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera3()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/video_feed4')
+def video_feed4():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera4()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/video_feed5')
+def video_feed5():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera5()),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/video_feed6')
+def video_feed6():
+    """Video streaming route. Put this in the src attribute of an img tag."""
+    return Response(gen(Camera6()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
