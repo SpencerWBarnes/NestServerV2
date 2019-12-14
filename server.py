@@ -11,7 +11,7 @@ import json
 
 # default values for IP and port are my home values and 8888
 UDP_IP_ADDRESS = "192.168.1.1"
-UDP_PORT_NUM = 8888
+UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
 # error messages
