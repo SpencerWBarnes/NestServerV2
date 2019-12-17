@@ -55,7 +55,7 @@ def updateUI(commandsLabel,ipLabel,isOnLabel,isDoorOpenLabel,isRoofOpenLabel,isP
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
     isStoppedLabel.setText("System stopped: " + str(s.isStopped))
 
-def init_gui(application, port=0, width=800,    height=600, window_title="PyFladesk",      icon="appicon.png", argv=None):
+def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
