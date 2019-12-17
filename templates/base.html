@@ -18,29 +18,16 @@
             crossorigin="anonymous"
         ></script>
         <style>
-            .table {
-                display: table;
-                border-collapse: collapse;
-                transform: scale(0.5);
-                text-align: left;
-            }
-
-            .table .table-row {
-                display: table-row;
-                width: 100%;
-            }
-
-            .table .table-cell {
-                display: table-cell;
-                width: 100%;
-            }
+            
         </style>
 
         <!-- <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"> -->
     </head>
 
     <body>
-        {% block video %} {% endblock %}
+        <div class="container vid">
+            {% block video %} {% endblock %}
+        </div>
     </body>
 
     <link
