@@ -55,7 +55,7 @@ def updateUI(commandsLabel,ipLabel,isOnLabel,isDoorOpenLabel,isRoofOpenLabel,isP
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
     isStoppedLabel.setText("System stopped: " + str(s.isStopped))
 
-def init_gui(application, port=0, width=800,    height=600, window_title="PyFladesk",      icon="appicon.png", argv=None):
+def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
@@ -87,7 +87,8 @@ def init_gui(application, port=0, width=800,    height=600, window_title="PyFlad
     vidLayout = QHBoxLayout()
     
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    webView.setMinimumHeight(520)
+    webView.setMinimumHeight(600)
+    webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
     commandsLabel = QLabel()
@@ -124,6 +125,6 @@ def init_gui(application, port=0, width=800,    height=600, window_title="PyFlad
     page = WebPage('http://' + cur_host + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-
+#   window.showMaximized()
     window.show()
     return qtapp.exec_()

@@ -1,13 +1,14 @@
-{% extends "base.html" %}
-
-{% block content %}
-{% endblock %}
-
-{% block video %}
-    <img src="{{ url_for('video_feed1') }}">
-    <!-- <img src="{{ url_for('video_feed2') }}"> -->
-{% endblock %}
-
-{% block footer %}
-    <p><a href="{{ url_for('page2') }}">Page 2</a></p>
+{% extends "base.html" %} {% block content %} {% endblock %} {% block video %}
+<div class="table">
+    <div class="table-row">
+        <div class="table-cell"><img src="{{ url_for('video_feed1') }}" /></div>
+        <div class="table-cell"><img src="{{ url_for('video_feed2') }}" /></div>
+        <div class="table-cell"><img src="{{ url_for('video_feed3') }}" /></div>
+    </div>
+    <div class="table-row">
+        <div class="table-cell"><img src="{{ url_for('video_feed4') }}" /></div>
+        <div class="table-cell"><img src="{{ url_for('video_feed5') }}" /></div>
+        <div class="table-cell"><img src="{{ url_for('video_feed6') }}" /></div>
+    </div>
+</div>
 {% endblock %}
