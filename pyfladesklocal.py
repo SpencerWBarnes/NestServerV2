@@ -45,7 +45,8 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
-def updateUI(commandsLabel,ipLabel,isOnLabel,isDoorOpenLabel,isRoofOpenLabel,isPadExtendedLabel,isPadRaisedLabel,isStoppedLabel):
+
+def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
     ipLabel.setText("IP: " + str(s.UDP_IP_ADDRESS))
     isOnLabel.setText("System on: " + str(s.isOn))
@@ -54,6 +55,7 @@ def updateUI(commandsLabel,ipLabel,isOnLabel,isDoorOpenLabel,isRoofOpenLabel,isP
     isPadExtendedLabel.setText("Pad extended: " + str(s.isPadExtended))
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
     isStoppedLabel.setText("System stopped: " + str(s.isStopped))
+
 
 def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
     if argv is None:
@@ -64,7 +66,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
         sock.bind(('localhost', 0))
         port = sock.getsockname()[1]
         sock.close()
-    
+
     print(" * Listening to commands on: " + s.UDP_IP_ADDRESS)
     print(s.getSystemStatusDict())
 
@@ -85,9 +87,9 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     gridLayout = QGridLayout()
     statusLayout = QGridLayout()
     vidLayout = QHBoxLayout()
-    
+
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    webView.setMinimumHeight(600)
+    webView.setMinimumHeight(400)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
@@ -113,12 +115,14 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     gridLayout.addLayout(statusLayout, 0, 0)
     gridLayout.addWidget(commandsLabel, 0, 1)
 
-    s.serverCalback = lambda: updateUI(commandsLabel, ipLabel,isOnLabel,isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
-    updateUI(commandsLabel, ipLabel,isOnLabel,isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+    s.serverCalback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
 
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)
-    
+
     window.setLayout(layout)
 
     # WebPage Level
