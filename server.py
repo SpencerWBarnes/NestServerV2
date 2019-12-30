@@ -10,7 +10,7 @@ import threading
 import json
 
 # default values for IP and port are my home values and 8888
-UDP_IP_ADDRESS = "172.17.200.17"
+UDP_IP_ADDRESS = "192.168.42.193"
 UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
@@ -54,7 +54,7 @@ class Server():
 
         # Getting the IP address of the machine
         
-        self.UDP_IP_ADDRESS = "172.17.200.17"
+        self.UDP_IP_ADDRESS = "192.168.42.193"
 
         # print(socket.gethostbyname_ex(socket.gethostname())[2]) 
 
