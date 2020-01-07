@@ -53,12 +53,9 @@ class Server():
         self.isConnected = False
 
         # Getting the IP address of the machine
-        
-        self.UDP_IP_ADDRESS = "192.168.42.193"
+        print((socket.gethostbyname_ex(socket.gethostname())[2][2]) )
+        self.UDP_IP_ADDRESS = (socket.gethostbyname_ex(socket.gethostname())[2][2]) 
 
-        # print(socket.gethostbyname_ex(socket.gethostname())[2]) 
-
-        # print(socket.gethostname())
         # print(socket.gethostbyname(socket.gethostname()))
         # # Threads
         self.connectThread = threading.Thread(target=self.connection)
