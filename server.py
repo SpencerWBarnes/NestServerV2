@@ -56,7 +56,7 @@ class Server():
         # print((socket.gethostbyname_ex(socket.gethostname())[2][2]) )
         # self.UDP_IP_ADDRESS = (socket.gethostbyname_ex(socket.gethostname())[2][2]) 
 
-        self.UDP_IP_ADDRESS = '192.168.0.10'
+        self.UDP_IP_ADDRESS = '192.168.1.148'
 
         # # Threads
         self.connectThread = threading.Thread(target=self.connection)
