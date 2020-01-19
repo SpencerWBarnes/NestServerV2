@@ -1,5 +1,6 @@
 from selenium import webdriver
 import time
+import threading
 
 # Location of chromedriver which can be downloaded from 
 # CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
@@ -8,8 +9,8 @@ PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
 # These come from the HTML
-EMERGENCYSTOPID = ""
-# OPENDOORID = "submit"
+EMERGENCYSTOPID = "EStop"
+
 OPENDOORID = "157910241216714"
 ClOSEDOORID = "157910667129821"
 OPENROOFID = "157910689748631"
@@ -34,7 +35,7 @@ class PlcClient:
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
-        # self.browser.get('http://localhost:3000/public/dummy.html')
+        self.browser.get('http://localhost:3000/')
 
     def login(self, password):
         self.browser.get(PLCURL)
@@ -48,16 +49,48 @@ class PlcClient:
         time.sleep(TIMEDELAY)
 
     def initButtons(self):
-        # self.emergencyStopButton = Button(EMERGENCYSTOPID, self.browser)
+        self.emergencyStopButton = Button(EMERGENCYSTOPID, self.browser)
 
         self.openDoorsButton = Button(OPENDOORID, self.browser)
-        # self.closeDoorsButton = Button(ClOSEDOORID, self.browser)
-        # self.openRoofButton = Button(OPENROOFID, self.browser)
-        # self.closeRoofButton = Button(CLOSEROOFID, self.browser)
-        # self.extendPadButton = Button(EXTENDPADID, self.browser)
-        # self.retractPadButton = Button(RETRACTPADID, self.browser)
-        # self.raisePadButton = Button(RAISEPADID, self.browser)
-        # self.lowerPadButton = Button(LOWERPADID, self.browser)
+        self.closeDoorsButton = Button(ClOSEDOORID, self.browser)
+        self.openRoofButton = Button(OPENROOFID, self.browser)
+        self.closeRoofButton = Button(CLOSEROOFID, self.browser)
+        self.extendPadButton = Button(EXTENDPADID, self.browser)
+        self.retractPadButton = Button(RETRACTPADID, self.browser)
+        self.raisePadButton = Button(RAISEPADID, self.browser)
+        self.lowerPadButton = Button(LOWERPADID, self.browser)
 
+    def handleClick(self, button):
+        thread = threading.Thread(target=button.toggleButton)
+        thread.daemon = True
+        thread.start()
+
+    def emergencyStop(self):
+        self.handleClick(self.emergencyStopButton)
+
+    def openDoors(self):
+        self.handleClick(self.openDoorsButton)
+
+    def closeDoors(self):
+        self.handleClick(self.closeDoorsButton)
+
+    def openRoof(self):
+        self.handleClick(self.openRoofButton)
+
+    def closeRoof(self):
+        self.handleClick(self.closeDoorsButton)
+
+    def extendPad(self):
+        self.handleClick(self.extendPadButton)
+
+    def retractPad(self):
+        self.handleClick(self.retractPadButton)
+
+    def raisePad(self):
+        self.handleClick(self.raisePadButton)
+
+    def lowerPad(self):
+        self.handleClick(self.lowerPadButton)
+        
     def close(self):
         self.browser.close()
