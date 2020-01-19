@@ -71,10 +71,12 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     print(s.getSystemStatusDict())
 
     # Application Level
+    global qtapp
     qtapp = QtWidgets.QApplication(argv)
     webapp = ApplicationThread(application, port)
     webapp.start()
     qtapp.aboutToQuit.connect(webapp.terminate)
+    qtapp.aboutToQuit.connect(s.closeEvent)
 
     # Main Window Level
     window = QWidget()

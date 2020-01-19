@@ -8,9 +8,10 @@ import sys
 import time
 import threading
 import json
+from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 # default values for IP and port are my home values and 8888
-UDP_IP_ADDRESS = "192.168.42.193"
+UDP_IP_ADDRESS = '192.168.0.8'
 UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
@@ -52,11 +53,11 @@ class Server():
         self.messagetext = None
         self.isConnected = False
 
-        # Getting the IP address of the machine
-        # print((socket.gethostbyname_ex(socket.gethostname())[2][2]) )
-        # self.UDP_IP_ADDRESS = (socket.gethostbyname_ex(socket.gethostname())[2][2]) 
-
-        self.UDP_IP_ADDRESS = '192.168.1.148'
+        self.plc = PlcClient()
+        # self.plc = PlcClientDev()
+        self.plc.initButtons()
+    
+        self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
 
         # # Threads
         self.connectThread = threading.Thread(target=self.connection)
@@ -76,13 +77,14 @@ class Server():
             mSocket.shutdown(socket.SHUT_RDWR)
             mSocket.close()
         except Exception as e:
-            print(e)
+            print("Server.closeSocket exception: " + str(e))
 
     def closeSockets(self):
         self.running = False
         self.closeSocket(self.commandSock)
         
-    def closeEvent(self, event):
+    def closeEvent(self):
+        self.plc.close()
         self.closeSockets()
 
     def unknownMessage(self, addr):
@@ -142,6 +144,7 @@ class Server():
         self.messagetext = "System Power: OFF"
         self.isOn = False
         self.isStopped = True
+        self.plc.emergencyStop()
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
 
@@ -149,6 +152,7 @@ class Server():
         if self.isOn and not self.isStopped:
             self.messagetext = "Doors: OPEN"
             self.isDoorOpen = True
+            self.plc.openDoors()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -159,6 +163,7 @@ class Server():
         if not self.isStopped and not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
             self.isDoorOpen = False
+            self.plc.closeDoors()
         else:
             self.messagetext = ERROR_PREFIX
             if self.isStopped:
@@ -172,6 +177,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Roof: OPEN"
             self.isRoofOpen = True
+            self.plc.openRoof()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -180,6 +186,7 @@ class Server():
         if not self.isStopped and not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
             self.isRoofOpen = False
+            self.plc.closeRoof()
         else:
             self.messagetext = ERROR_PREFIX
             if self.isStopped:
@@ -193,6 +200,7 @@ class Server():
         if self.isOn and self.isDoorOpen and not self.isStopped:
             self.messagetext = "Back Pad: EXTENDED"
             self.isPadExtended = True
+            self.plc.extendPad()
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -206,6 +214,7 @@ class Server():
         if not self.isStopped and self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
             self.isPadExtended = False
+            self.plc.retractPad()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isStopped']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -214,6 +223,7 @@ class Server():
         if self.isOn and self.isRoofOpen and not self.isStopped:
             self.messagetext = "Top Pad: RAISED"
             self.isPadRaised = True
+            self.plc.raisePad()
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -226,6 +236,7 @@ class Server():
         if not self.isStopped:
             self.messagetext = "Top Pad: LOWERED"
             self.isPadRaised = False
+            self.plc.lowerPad()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isStopped']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -257,18 +268,6 @@ class Server():
             self.raisePad(addr)
         elif data == "lowerPad":
             self.lowerPad(addr)
-        elif data == "startVideoOne":
-            pass
-        elif data == "startVideoTwo":
-            pass
-        elif data == "startVideoThree":
-            pass
-        elif data == "startVideoFour":
-            pass
-        elif data == "startVideoFive":
-            pass
-        elif data == "startVideoSix":
-            pass
         elif data == "systemStatus":
             self.systemStatus(addr)
         elif "Connection Test" in data:
@@ -286,7 +285,7 @@ class Server():
                 try: 
                     data, addr = self.commandSock.recvfrom(1024)
                 except Exception as e:
-                    print(e)
+                    print("Server.receiveData exception:" + str(e))
                     self.closeSockets()
                     return
                 
@@ -304,7 +303,7 @@ class Server():
             data = data.decode()
 
         except OSError as e:
-            print(e)
+            print("Server.connection OSError: " + str(e))
             
         self.commandthread = threading.Thread(target=self.receivedata)
         self.commandthread.start()
