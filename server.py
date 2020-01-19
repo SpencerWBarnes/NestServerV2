@@ -8,7 +8,7 @@ import sys
 import time
 import threading
 import json
-from PlcCLient import PlcClient
+from PlcCLient import PlcClient, PlcClientDev #TODO: remove dev
 
 # default values for IP and port are my home values and 8888
 UDP_IP_ADDRESS = '192.168.0.8'
@@ -53,12 +53,10 @@ class Server():
         self.messagetext = None
         self.isConnected = False
 
-        self.plc = PlcClient()
+        # self.plc = PlcClient()
+        self.plc = PlcClientDev()
         self.plc.initButtons()
-        # Getting the IP address of the machine
-        # print((socket.gethostbyname_ex(socket.gethostname())[2][2]) )
-        # self.UDP_IP_ADDRESS = (socket.gethostbyname_ex(socket.gethostname())[2][2]) 
-
+    
         self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
 
         # # Threads
@@ -270,18 +268,6 @@ class Server():
             self.raisePad(addr)
         elif data == "lowerPad":
             self.lowerPad(addr)
-        elif data == "startVideoOne":
-            pass
-        elif data == "startVideoTwo":
-            pass
-        elif data == "startVideoThree":
-            pass
-        elif data == "startVideoFour":
-            pass
-        elif data == "startVideoFive":
-            pass
-        elif data == "startVideoSix":
-            pass
         elif data == "systemStatus":
             self.systemStatus(addr)
         elif "Connection Test" in data:

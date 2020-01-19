@@ -94,3 +94,45 @@ class PlcClient:
         
     def close(self):
         self.browser.close()
+
+
+class PlcClientDev:
+    
+    def __init__(self):
+        pass
+
+    def login(self, password):
+        pass
+
+    def initButtons(self):
+        pass
+
+    def emergencyStop(self):
+        pass
+
+    def openDoors(self):
+        pass
+
+    def closeDoors(self):
+        pass
+
+    def openRoof(self):
+        pass
+
+    def closeRoof(self):
+        pass
+
+    def extendPad(self):
+        pass
+
+    def retractPad(self):
+        pass
+
+    def raisePad(self):
+        pass
+
+    def lowerPad(self):
+        pass
+        
+    def close(self):
+        pass
