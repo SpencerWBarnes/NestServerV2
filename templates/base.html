@@ -21,7 +21,11 @@
             type="text/javascript"
             src="{{ url_for('static', filename = '../static/js/index.js', version='2') }}"
         ></script>
-        <style></style>
+        <style>
+            body {
+                overflow: hidden; /* Hide scrollbars */
+            }
+        </style>
 
         <!-- <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet"> -->
     </head>
