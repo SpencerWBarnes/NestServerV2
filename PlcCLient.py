@@ -93,7 +93,10 @@ class PlcClient:
         self.handleClick(self.lowerPadButton)
         
     def close(self):
-        self.browser.close()
+        try:
+            self.browser.close()
+        except Exception as e:
+            print("PlcClient.close exception:" + str(e))
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
 class PlcClientDev:

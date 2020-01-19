@@ -53,8 +53,8 @@ class Server():
         self.messagetext = None
         self.isConnected = False
 
-        # self.plc = PlcClient()
-        self.plc = PlcClientDev()
+        self.plc = PlcClient()
+        # self.plc = PlcClientDev()
         self.plc.initButtons()
     
         self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
@@ -77,13 +77,13 @@ class Server():
             mSocket.shutdown(socket.SHUT_RDWR)
             mSocket.close()
         except Exception as e:
-            print(e)
+            print("Server.closeSocket exception: " + str(e))
 
     def closeSockets(self):
         self.running = False
         self.closeSocket(self.commandSock)
         
-    def closeEvent(self, event):
+    def closeEvent(self):
         self.plc.close()
         self.closeSockets()
 
@@ -285,7 +285,7 @@ class Server():
                 try: 
                     data, addr = self.commandSock.recvfrom(1024)
                 except Exception as e:
-                    print(e)
+                    print("Server.receiveData exception:" + str(e))
                     self.closeSockets()
                     return
                 
@@ -303,7 +303,7 @@ class Server():
             data = data.decode()
 
         except OSError as e:
-            print(e)
+            print("Server.connection OSError: " + str(e))
             
         self.commandthread = threading.Thread(target=self.receivedata)
         self.commandthread.start()
