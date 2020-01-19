@@ -8,7 +8,7 @@ import sys
 import time
 import threading
 import json
-from PlcCLient import PlcClient, PlcClientDev #TODO: remove dev
+from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 # default values for IP and port are my home values and 8888
 UDP_IP_ADDRESS = '192.168.0.8'

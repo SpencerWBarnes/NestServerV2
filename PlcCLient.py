@@ -95,7 +95,7 @@ class PlcClient:
     def close(self):
         self.browser.close()
 
-
+# This is a fake plc client so that we don't have to be connected to the plc to do normal developing
 class PlcClientDev:
     
     def __init__(self):
