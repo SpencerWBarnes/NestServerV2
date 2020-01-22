@@ -10,12 +10,13 @@ import threading
 import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
-# default values for IP and port are my home values and 8888
+# default values for IP and Port (IPV4 on Windows, en0 on OSX)
 UDP_IP_ADDRESS = '192.168.0.8'
-UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
-# error messages
+# Error messages: The error prefix is relevant because it is how the clients know when an error has occured.count
+#                 They parse the error prefix to get error messages. The error dictionary represents different states
+#                 that can occur within the nest. 
 ERROR_PREFIX = "Error: "
 errorDictionary = {
             "unknownMessage" : "Unknown Message",
@@ -35,54 +36,54 @@ errorDictionary = {
 
 ## TODO: check if isOn and isStopped are different>
 
-# subclassing QDialog, esc and close button exit the prog
+# This is a guiless server. It runs in the background in pyfladesklocal.py
 class Server():
     def __init__(self, parent=None):
-        self.running = True
         
-        # some logging booleans :)
+        # States
+        self.running = True
         self.isOn = False
         self.isDoorOpen = False
         self.isRoofOpen = False
         self.isPadExtended = False
         self.isPadRaised = False
         self.isStopped = False
-        self.messagetext = None
-        self.statusstring = None
-        self.videoSock = None
-        self.messagetext = None
         self.isConnected = False
 
-        self.plc = PlcClient()
-        # self.plc = PlcClientDev()
-        self.plc.initButtons()
-    
-        self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
+        # messagetext: holds the value of the message to be sent to the client
+        self.messagetext = None
 
-        # # Threads
+        # PlcClient
+        self.plc = PlcClient()          # This is for production mode
+        # self.plc = PlcClientDev()     # This is for development mode. It makes a client with empty functions
+        self.plc.initButtons()          # Gets button information from the PlcClient browser window
+
+        # connectThread: setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
         self.connectThread = threading.Thread(target=self.connection)
-        
-        # setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
-        # I added this so that I wouldn't have to force quit python
         self.connectThread.daemon = True
         
         # sockets
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)        #Port: 8000
 
-    def serverCalback(self):
-        print("testing")
+    # serverCallback is a function that should be overridden in pyfladesklocal.py in order to update the server's UI
+    def serverCallback(self):
+        print("serverCallback: you should override this")
 
+    # closeSocket is run when the server is taken down to ensure that the socket is closed. 
+    # This usually throws the exception, but I have this function called just in case.
     def closeSocket(self, mSocket):
         try:
             mSocket.shutdown(socket.SHUT_RDWR)
             mSocket.close()
-        except Exception as e:
+        except Exception as e: # This is usually thrown, but that's okay. 
             print("Server.closeSocket exception: " + str(e))
 
+    # This function closes all sockets in the program. We used to have more, but now all we have is commandSock
     def closeSockets(self):
         self.running = False
         self.closeSocket(self.commandSock)
-        
+
+    # When the gui is closed, close the plc browser and all the sockets     
     def closeEvent(self):
         self.plc.close()
         self.closeSockets()
@@ -275,7 +276,7 @@ class Server():
         else:
             self.unknownMessage(addr)
 
-        self.serverCalback()
+        self.serverCallback()
 
 
     def receivedata(self):
@@ -297,7 +298,7 @@ class Server():
 
     def connection(self):
         try:
-            self.commandSock.bind((self.UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
+            self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
             self.isConnected = True
             data, self.addr = self.commandSock.recvfrom(1024)
             data = data.decode()

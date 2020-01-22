@@ -11,7 +11,7 @@ s = server.Server()
 serverThread = threading.Thread(target=s.connection)
 serverThread.daemon = True
 serverThread.start()
-cur_host = s.UDP_IP_ADDRESS
+cur_host = server.UDP_IP_ADDRESS
 
 
 class ApplicationThread(QtCore.QThread):
@@ -117,7 +117,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     gridLayout.addLayout(statusLayout, 0, 0)
     gridLayout.addWidget(commandsLabel, 0, 1)
 
-    s.serverCalback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
                                        isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
     updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
              isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
