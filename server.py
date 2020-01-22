@@ -29,11 +29,9 @@ errorDictionary = {
             "padIsRetracted" : "Must extend pad",
             "padIsRaised" : "Must lower pad",
             "padIsLowered" : "Must raise pad",
-            "isStopped" : "Must restart system",
             "isStarted" : "Must stop system"
         }
 
-## TODO: check if isOn and isStopped are different>
 
 ######### Server Class #########
 # This is a guiless server. It runs in the background in pyfladesklocal.py
@@ -47,7 +45,6 @@ class Server():
         self.isRoofOpen = False
         self.isPadExtended = False
         self.isPadRaised = False
-        self.isStopped = False
         self.isConnected = False
 
         # messagetext: holds the value of the message to be sent to the client
@@ -107,7 +104,6 @@ class Server():
             "isRoofOpen" : self.isRoofOpen,
             "isPadExtended" : self.isPadExtended,
             "isPadRaised" : self.isPadRaised,
-            "isStopped" : self.isStopped,
             "previousCommand" : self.messagetext
         }
         message = json.dumps(systemStatusDict)
@@ -122,7 +118,6 @@ class Server():
             "isRoofOpen" : self.isRoofOpen,
             "isPadExtended" : self.isPadExtended,
             "isPadRaised" : self.isPadRaised,
-            "isStopped" : self.isStopped,
             "previousCommand" : self.messagetext
         }
         return systemStatusDict
@@ -142,21 +137,18 @@ class Server():
         else:
             self.messagetext = "System Power: ON"
             self.isOn = True
-            
-            ##TODO: This might need to not go here?????
-            self.isStopped = False
+
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def emergencyStop(self, addr):
         self.messagetext = "System Power: OFF"
         self.isOn = False
-        self.isStopped = True
         self.plc.emergencyStop()
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
 
     def openDoors(self,addr):
-        if self.isOn and not self.isStopped:
+        if self.isOn:
             self.messagetext = "Doors: OPEN"
             self.isDoorOpen = True
             self.plc.openDoors()
@@ -167,14 +159,14 @@ class Server():
 
 
     def closeDoors(self, addr):
-        if not self.isStopped and not self.isPadExtended and self.isOn:
+        if not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
             self.isDoorOpen = False
             self.plc.closeDoors()
         else:
             self.messagetext = ERROR_PREFIX
-            if self.isStopped:
-                self.messagetext = self.messagetext + errorDictionary['isStopped'] + '. '
+            if not self.isOn:
+                self.messagetext = self.messagetext + errorDictionary['isOff'] + '. '
             if self.isPadExtended:
                 self.messagetext = self.messagetext + errorDictionary['padIsExtended'] + '. '
 
@@ -190,21 +182,21 @@ class Server():
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def closeRoof(self, addr):
-        if not self.isStopped and not self.isPadRaised and self.isOn:
+        if not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
             self.isRoofOpen = False
             self.plc.closeRoof()
         else:
             self.messagetext = ERROR_PREFIX
-            if self.isStopped:
-                self.messagetext = self.messagetext + errorDictionary['isStopped'] + '. '
+            if not self.isOn:
+                self.messagetext = self.messagetext + errorDictionary['isOff'] + '. '
             if self.isPadRaised:
                 self.messagetext = self.messagetext + errorDictionary['padIsRaised'] + '. '
 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def extendPad(self, addr):
-        if self.isOn and self.isDoorOpen and not self.isStopped:
+        if self.isOn and self.isDoorOpen:
             self.messagetext = "Back Pad: EXTENDED"
             self.isPadExtended = True
             self.plc.extendPad()
@@ -218,16 +210,16 @@ class Server():
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def retractPad(self, addr):
-        if not self.isStopped and self.isOn:
+        if self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
             self.isPadExtended = False
             self.plc.retractPad()
         else:
-            self.messagetext = ERROR_PREFIX + errorDictionary['isStopped']
+            self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def raisePad(self, addr):
-        if self.isOn and self.isRoofOpen and not self.isStopped:
+        if self.isOn and self.isRoofOpen:
             self.messagetext = "Top Pad: RAISED"
             self.isPadRaised = True
             self.plc.raisePad()
@@ -240,12 +232,12 @@ class Server():
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def lowerPad(self, addr):
-        if not self.isStopped:
+        if self.isOn:
             self.messagetext = "Top Pad: LOWERED"
             self.isPadRaised = False
             self.plc.lowerPad()
         else:
-            self.messagetext = ERROR_PREFIX + errorDictionary['isStopped']
+            self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def sendTestMessage(self, addr):
