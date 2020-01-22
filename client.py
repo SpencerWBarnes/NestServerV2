@@ -264,7 +264,6 @@ class Form():
             self.commandSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
             try:
-                self.commandSock.bind((self.iplineedit.text(), 8001))
                 self.isConnected = True
 
                 self.sendData("Connection Valid ")
@@ -280,7 +279,8 @@ class Form():
                 page.home()
                 self.webView.setUrl(QUrl(text))
                 
-            except OSError:
+            except OSError as e:
+                print(e)
                 self.label.setText("Invalid IP")
                 self.submitConnect.setDisabled(False)
     
