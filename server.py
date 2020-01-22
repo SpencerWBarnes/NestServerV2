@@ -1,7 +1,5 @@
-'''Author: Lily S.
-    I made this simple UDP server then added a GUI to it.
-    Still a work in progress but it does speak to the client
-    and return a message'''
+'''Author: Lily S. and Claudia N. 
+    Simple UDP server built to run on a seperate thread'''
 
 import socket
 import sys
@@ -10,6 +8,7 @@ import threading
 import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
+######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
 UDP_IP_ADDRESS = '192.168.0.8'
 UDP_CLIENT_PORT_NUM = 8000
@@ -36,6 +35,7 @@ errorDictionary = {
 
 ## TODO: check if isOn and isStopped are different>
 
+######### Server Class #########
 # This is a guiless server. It runs in the background in pyfladesklocal.py
 class Server():
     def __init__(self, parent=None):
@@ -65,12 +65,15 @@ class Server():
         # sockets
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)        #Port: 8000
 
-    # serverCallback is a function that should be overridden in pyfladesklocal.py in order to update the server's UI
+
+    ######### Server Setup Functions #########
+
+    # serverCallback: A function that should be overridden in pyfladesklocal.py in order to update the server's UI
     def serverCallback(self):
         print("serverCallback: you should override this")
 
-    # closeSocket is run when the server is taken down to ensure that the socket is closed. 
-    # This usually throws the exception, but I have this function called just in case.
+    # closeSocket:  Run when the server is taken down to ensure that the socket is closed. 
+    #               This usually throws the exception, but I have this function called just in case.
     def closeSocket(self, mSocket):
         try:
             mSocket.shutdown(socket.SHUT_RDWR)
@@ -78,20 +81,25 @@ class Server():
         except Exception as e: # This is usually thrown, but that's okay. 
             print("Server.closeSocket exception: " + str(e))
 
-    # This function closes all sockets in the program. We used to have more, but now all we have is commandSock
+    # closeSockets: This function closes all sockets in the program. We used to have more, but now all we have is commandSock
     def closeSockets(self):
         self.running = False
         self.closeSocket(self.commandSock)
 
-    # When the gui is closed, close the plc browser and all the sockets     
+    # closeEvent:   When the gui is closed, close the plc browser and all the sockets     
     def closeEvent(self):
         self.plc.close()
         self.closeSockets()
 
+
+    ######### Server Message Handling #########
+
+    # unknownMessage: This method is called when the server receives a message it doesn't know what to do with it
     def unknownMessage(self, addr):
         self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # systemStatus: Sends a JSON string to the client to show the state of the NEST
     def systemStatus(self, addr):
         systemStatusDict = {
             "isOn" : self.isOn,
@@ -106,6 +114,7 @@ class Server():
         print(message)
         self.commandSock.sendto(message.encode(), addr)
 
+    # getSystemStatusDict: like systemStatus, but returns a dictionary of the state of the NEST - doesn't send messages to the client
     def getSystemStatusDict(self):
         systemStatusDict = {
             "isOn" : self.isOn,
@@ -118,11 +127,8 @@ class Server():
         }
         return systemStatusDict
 
+    # systemPower: Called when the client wants to start sending messages that affect the state of the NEST
     def systemPower(self, addr):
-        # this is where the mechanism for powering on and off the system will go
-        # for now it will be just a message to the client that the system has been powered on or off
-        # I want it to test if the system is on or off first then power it on or off then test again and send the result
-        # of the last test
         if self.isOn:
             if self.isDoorOpen or self.isRoofOpen:
                 self.messagetext = ERROR_PREFIX
