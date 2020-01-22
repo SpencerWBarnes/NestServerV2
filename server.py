@@ -54,8 +54,8 @@ class Server():
         self.messagetext = None
 
         # PlcClient
-        self.plc = PlcClient()          # This is for production mode
-        # self.plc = PlcClientDev()     # This is for development mode. It makes a client with empty functions
+        # self.plc = PlcClient()          # This is for production mode
+        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
 
         # connectThread: setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread

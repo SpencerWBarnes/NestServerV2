@@ -48,7 +48,7 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
 
 def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
-    ipLabel.setText("IP: " + str(s.UDP_IP_ADDRESS))
+    ipLabel.setText("IP: " + str(server.UDP_IP_ADDRESS))
     isOnLabel.setText("System on: " + str(s.isOn))
     isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
     isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
@@ -67,7 +67,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
         port = sock.getsockname()[1]
         sock.close()
 
-    print(" * Listening to commands on: " + s.UDP_IP_ADDRESS)
+    print(" * Listening to commands on: " + server.UDP_IP_ADDRESS)
     print(s.getSystemStatusDict())
 
     # Application Level
