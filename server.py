@@ -122,7 +122,8 @@ class Server():
         }
         return systemStatusDict
 
-    # systemPower: Called when the client wants to start sending messages that affect the state of the NEST
+    # systemPower:  Called when the client wants to start sending messages that affect the state of the NEST,
+    #               used for setting the isOn variable to true
     def systemPower(self, addr):
         if self.isOn:
             if self.isDoorOpen or self.isRoofOpen:
@@ -140,13 +141,16 @@ class Server():
 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # emergencyStop:    Called when the client wants to stop all mototrs on the nest,
+    #                   used for setting the isOn variable to false
     def emergencyStop(self, addr):
         self.messagetext = "System Power: OFF"
         self.isOn = False
         self.plc.emergencyStop()
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
-
+    # openDoors:    Called when the client wants to open the nest doors,
+    #               used for setting the isDoorOpen variable to true
     def openDoors(self,addr):
         if self.isOn:
             self.messagetext = "Doors: OPEN"
@@ -157,7 +161,8 @@ class Server():
         self.commandSock.sendto(self.messagetext.encode(), addr)
         print(self.messagetext + " " + str(self.addr[0]))
 
-
+    # closeDoors:   Called when the client wants to close the nest doors,
+    #               used for setting the isDoorOpen variable to false
     def closeDoors(self, addr):
         if not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
@@ -172,6 +177,8 @@ class Server():
 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # openRoof:     Called when the client wants to open the nest roof,
+    #               used for setting the isRoofOpen variable to true
     def openRoof(self, addr):
         if self.isOn:
             self.messagetext = "Roof: OPEN"
@@ -181,6 +188,8 @@ class Server():
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # openRoof:     Called when the client wants to close the nest roof,
+    #               used for setting the isRoofOpen variable to false
     def closeRoof(self, addr):
         if not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
@@ -195,6 +204,8 @@ class Server():
 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # extendPad:    Called when the client wants to extend the nest landing pad,
+    #               used for setting the isPadExtended variable to true
     def extendPad(self, addr):
         if self.isOn and self.isDoorOpen:
             self.messagetext = "Back Pad: EXTENDED"
@@ -209,6 +220,8 @@ class Server():
 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # retractPad:   Called when the client wants to retract the nest landing pad,
+    #               used for setting the isPadExtended variable to false
     def retractPad(self, addr):
         if self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
@@ -218,6 +231,8 @@ class Server():
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # raisePad:     Called when the client wants to raise the nest landing pad,
+    #               used for setting the isPadRaised variable to true
     def raisePad(self, addr):
         if self.isOn and self.isRoofOpen:
             self.messagetext = "Top Pad: RAISED"
@@ -231,6 +246,8 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['roofIsClosed'] + '. '
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # lowerPad:     Called when the client wants to lower the nest landing pad,
+    #               used for setting the isPadRaised variable to false
     def lowerPad(self, addr):
         if self.isOn:
             self.messagetext = "Top Pad: LOWERED"
@@ -240,10 +257,12 @@ class Server():
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, addr):
         self.messagetext = "Connection is good. Message recieved" 
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    # handledata:   This is used to decipher the messages sent by the client
     def handledata(self, data, addr):
         print(data)
         
@@ -276,7 +295,7 @@ class Server():
 
         self.serverCallback()
 
-
+    # Server function for receiving data. It passes the received data to handleData
     def receivedata(self):
         while self.running:
             data = None
@@ -293,7 +312,7 @@ class Server():
             self.handledata(data, addr)
         self.closeSockets()
 
-
+    # Server function for setting up the connection. It starts receiveData on a seperate thread
     def connection(self):
         try:
             self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
