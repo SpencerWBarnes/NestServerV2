@@ -4,13 +4,13 @@ import threading
 
 # Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
 # download this and copy and paste where that file is here vvvv
-# CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
-CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
+CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
+# CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
 PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
 # These come from the HTML
-EMERGENCYSTOPID = "EStop"
+EMERGENCYSTOPID = "157910667599022"
 
 OPENDOORID = "157910241216714"
 ClOSEDOORID = "157910667129821"
@@ -36,7 +36,7 @@ class PlcClient:
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
-        self.browser.get('http://localhost:3000/')
+        # self.browser.get('http://localhost:3000/')
 
     def login(self, password):
         self.browser.get(PLCURL)

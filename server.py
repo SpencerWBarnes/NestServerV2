@@ -11,7 +11,8 @@ import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 # default values for IP and port are my home values and 8888
-UDP_IP_ADDRESS = '192.168.0.8'
+UDP_IP_ADDRESS = '192.168.99.2'
+# UDP_IP_ADDRESS = '172.20.10.2'
 UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
@@ -55,6 +56,7 @@ class Server():
 
         self.plc = PlcClient()
         # self.plc = PlcClientDev()
+        self.plc.login("PLC")
         self.plc.initButtons()
     
         self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
