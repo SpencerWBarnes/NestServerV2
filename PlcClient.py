@@ -10,7 +10,7 @@ PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
 # These come from the HTML
-EMERGENCYSTOPID = "EStop"
+EMERGENCYSTOPID = "157910667599022"
 
 OPENDOORID = "157910241216714"
 ClOSEDOORID = "157910667129821"
@@ -25,6 +25,7 @@ class Button:
     def __init__(self, id, browser):
         self.button = browser.find_element_by_id(id)
 
+    # toggleButton: This clicks a button twice with a time delay in between
     def toggleButton(self):
         self.button.click()
         time.sleep(TIMEDELAY)
@@ -36,7 +37,7 @@ class PlcClient:
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
-        self.browser.get('http://localhost:3000/')
+        # self.browser.get('http://localhost:3000/')
 
     def login(self, password):
         self.browser.get(PLCURL)
