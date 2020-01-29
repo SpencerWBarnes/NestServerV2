@@ -11,7 +11,7 @@ s = server.Server()
 serverThread = threading.Thread(target=s.connection)
 serverThread.daemon = True
 serverThread.start()
-cur_host = s.UDP_IP_ADDRESS
+cur_host = server.UDP_IP_ADDRESS
 
 
 class ApplicationThread(QtCore.QThread):
@@ -46,15 +46,14 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
 
-def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel):
+def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
-    ipLabel.setText("IP: " + str(s.UDP_IP_ADDRESS))
+    ipLabel.setText("IP: " + str(server.UDP_IP_ADDRESS))
     isOnLabel.setText("System on: " + str(s.isOn))
     isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
     isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
     isPadExtendedLabel.setText("Pad extended: " + str(s.isPadExtended))
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
-    isStoppedLabel.setText("System stopped: " + str(s.isStopped))
 
 
 def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
@@ -67,7 +66,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
         port = sock.getsockname()[1]
         sock.close()
 
-    print(" * Listening to commands on: " + s.UDP_IP_ADDRESS)
+    print(" * Listening to commands on: " + server.UDP_IP_ADDRESS)
     print(s.getSystemStatusDict())
 
     # Application Level
@@ -104,7 +103,6 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     isRoofOpenLabel = QLabel()
     isPadExtendedLabel = QLabel()
     isPadRaisedLabel = QLabel()
-    isStoppedLabel = QLabel()
 
     statusLayout.addWidget(ipLabel, 0, 0)
     statusLayout.addWidget(isOnLabel, 1, 0)
@@ -112,15 +110,14 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     statusLayout.addWidget(isRoofOpenLabel, 3, 0)
     statusLayout.addWidget(isPadExtendedLabel, 4, 0)
     statusLayout.addWidget(isPadRaisedLabel, 5, 0)
-    statusLayout.addWidget(isStoppedLabel, 6, 0)
 
     gridLayout.addLayout(statusLayout, 0, 0)
     gridLayout.addWidget(commandsLabel, 0, 1)
 
-    s.serverCalback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
     updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
+             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
 
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)

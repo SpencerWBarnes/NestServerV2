@@ -4,8 +4,8 @@ import threading
 
 # Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
 # download this and copy and paste where that file is here vvvv
-CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
-# CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
+# CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
+CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
 PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
