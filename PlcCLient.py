@@ -25,6 +25,7 @@ class Button:
     def __init__(self, id, browser):
         self.button = browser.find_element_by_id(id)
 
+    # toggleButton: This clicks a button twice with a time delay in between
     def toggleButton(self):
         self.button.click()
         time.sleep(TIMEDELAY)
