@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.0.8'
+UDP_IP_ADDRESS = '172.20.10.5'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 UDP_CLIENT_PORT_NUM = 8000

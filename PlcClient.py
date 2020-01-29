@@ -32,13 +32,14 @@ class Button:
         self.button.click()
 
 class PlcClient:
-    
+    # init sets up the browser
     def __init__(self):
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
         # self.browser.get('http://localhost:3000/')
 
+    # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
         self.browser.get(PLCURL)
         time.sleep(TIMEDELAY)
@@ -50,6 +51,7 @@ class PlcClient:
         login.click()
         time.sleep(TIMEDELAY)
 
+    # initButtons: finds all the buttons in the HTML from the browser using the Button class
     def initButtons(self):
         self.emergencyStopButton = Button(EMERGENCYSTOPID, self.browser)
 
@@ -62,11 +64,13 @@ class PlcClient:
         self.raisePadButton = Button(RAISEPADID, self.browser)
         self.lowerPadButton = Button(LOWERPADID, self.browser)
 
+    # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
     def handleClick(self, button):
         thread = threading.Thread(target=button.toggleButton)
         thread.daemon = True
         thread.start()
 
+    # These functions handle each of the buttons on the screen
     def emergencyStop(self):
         self.handleClick(self.emergencyStopButton)
 
@@ -93,14 +97,17 @@ class PlcClient:
 
     def lowerPad(self):
         self.handleClick(self.lowerPadButton)
-        
+    
+    # close: needs to be called no matter what to close the browser
     def close(self):
         try:
             self.browser.close()
-        except Exception as e:
+        except Exception as e: # it might through an exception if the browser has already been closed
             print("PlcClient.close exception:" + str(e))
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
+# It has all of the same functions as PlcClient, but they are empty. This helps us not have to open a 
+# browser to the PLC's site everytime we want to test something on the server.
 class PlcClientDev:
     
     def __init__(self):
