@@ -1,17 +1,14 @@
-'''Author: Lily S.
-    I made this simple UDP server then added a GUI to it.
-    Still a work in progress but it does speak to the client
-    and return a message'''
+
 
 import socket
 import sys
 import time
 import threading
 import json
-from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
+from PlcClient import PlcClient, PlcClientDev 
 
 # default values for IP and port are my home values and 8888
-UDP_IP_ADDRESS = '192.168.0.8'
+UDP_IP_ADDRESS = '192.168.54.193'
 UDP_PORT_NUM = 8000
 UDP_CLIENT_PORT_NUM = 8000
 
@@ -53,8 +50,8 @@ class Server():
         self.messagetext = None
         self.isConnected = False
 
-        self.plc = PlcClient()
-        # self.plc = PlcClientDev()
+        # self.plc = PlcClient()
+        self.plc = PlcClientDev()
         self.plc.initButtons()
     
         self.UDP_IP_ADDRESS = UDP_IP_ADDRESS
