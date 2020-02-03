@@ -3,8 +3,6 @@
 TODO Documentation:
 
 - routes.py
-- pyfladesklocal.py
-- client.py
 - camera.py
 - app.py
 - static/

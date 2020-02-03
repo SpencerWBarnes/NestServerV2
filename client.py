@@ -438,6 +438,8 @@ class Form():
             if "Error" in data:
                 print("uh oh error!")
                 self.systemDiagnostic()
+
+            # print(data)
             
             return data
         except Exception as e: 
