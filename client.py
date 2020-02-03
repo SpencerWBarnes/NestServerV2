@@ -25,108 +25,112 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             QtGui.QDesktopServices.openUrl(url)
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
-
 class PasswordDialog(QDialog):
     def __init__(self, parent=None):
         super(PasswordDialog, self).__init__(parent)
         self.shouldSendPasswordOverride = False
-        self.commandmessage = ""
-        self.message = QLabel("Enter override password: ")
-        self.message2 = QLabel("")
-        self.passwordbox = QLineEdit()
-        self.submit = QPushButton("Submit")
-        self.openDoors = QPushButton("Open Doors")
-        self.closeDoors = QPushButton("Close Doors")
+        self.commandMessage = ""
+        
+        # Labels and Line edits
+        self.passwordOverrideLabel = QLabel("Enter override password: ")
+        self.messageToSendLabel = QLabel("")
+        self.passwordLineEdit = QLineEdit()
+        
+        # Buttons
+        self.submitButton = QPushButton("Submit")
+        self.openDoorsButton = QPushButton("Open Doors")
+        self.closeDoorsButton = QPushButton("Close Doors")
+        self.openRoofButton = QPushButton("Open Roof")
+        self.closeRoofButton = QPushButton("Close Roof")
+        self.extendPadButton = QPushButton("Extend Pad")
+        self.retractPadButton = QPushButton("Retract Pad")
+        self.raisePadButton = QPushButton("Raise Pad")
+        self.lowerPadButton = QPushButton("Lower Pad")
 
-        self.openRoof = QPushButton("Open Roof")
+        # Button on click listeners
+        self.openDoorsButton.clicked.connect(self.OpenDoors)
+        self.closeDoorsButton.clicked.connect(self.CloseDoors)
+        self.openRoofButton.clicked.connect(self.OpenRoof)
+        self.closeRoofButton.clicked.connect(self.CloseRoof)
+        self.extendPadButton.clicked.connect(self.ExtendPad)
+        self.retractPadButton.clicked.connect(self.RetractPad)
+        self.raisePadButton.clicked.connect(self.RaisePad)
+        self.lowerPadButton.clicked.connect(self.LowerPad)
+        self.submitButton.clicked.connect(self.Submit)
 
-        self.closeRoof = QPushButton("Close Roof")
-        self.extendPad = QPushButton("Extend Pad")
-        self.retractPad = QPushButton("Retract Pad")
-        self.raisePad = QPushButton("Raise Pad")
-        self.lowerPad = QPushButton("Lower Pad")
-
-        self.openDoors.clicked.connect(self.OpenDoors)
-        self.closeDoors.clicked.connect(self.CloseDoors)
-        self.openRoof.clicked.connect(self.OpenRoof)
-        self.closeRoof.clicked.connect(self.CloseRoof)
-        self.extendPad.clicked.connect(self.ExtendPad)
-        self.retractPad.clicked.connect(self.RetractPad)
-        self.raisePad.clicked.connect(self.RaisePad)
-        self.lowerPad.clicked.connect(self.LowerPad)
-        self.submit.clicked.connect(self.Submit)
-
+        # Button Layout
         buttonlayout = QGridLayout()
-        buttonlayout.addWidget(self.openDoors, 1, 1)
-        buttonlayout.addWidget(self.closeDoors, 1, 2)
-        buttonlayout.addWidget(self.openRoof, 2, 1)
-        buttonlayout.addWidget(self.closeRoof, 2, 2)
-        buttonlayout.addWidget(self.extendPad, 3, 1)
-        buttonlayout.addWidget(self.retractPad, 3, 2)
-        buttonlayout.addWidget(self.raisePad, 4, 1)
-        buttonlayout.addWidget(self.lowerPad, 4, 2)
+        buttonlayout.addWidget(self.openDoorsButton, 1, 1)
+        buttonlayout.addWidget(self.closeDoorsButton, 1, 2)
+        buttonlayout.addWidget(self.openRoofButton, 2, 1)
+        buttonlayout.addWidget(self.closeRoofButton, 2, 2)
+        buttonlayout.addWidget(self.extendPadButton, 3, 1)
+        buttonlayout.addWidget(self.retractPadButton, 3, 2)
+        buttonlayout.addWidget(self.raisePadButton, 4, 1)
+        buttonlayout.addWidget(self.lowerPadButton, 4, 2)
 
+        # Main Layout
         layout = QVBoxLayout()
-        layout.addWidget(self.message)
-        layout.addWidget(self.message2)
-        layout.addWidget(self.passwordbox)
-        layout.addWidget(self.submit)
+        layout.addWidget(self.passwordOverrideLabel)
+        layout.addWidget(self.messageToSendLabel)
+        layout.addWidget(self.passwordLineEdit)
+        layout.addWidget(self.submitButton)
         layout.addLayout(buttonlayout)
         self.setLayout(layout)
 
     def disableButtons(self):
-        self.openDoors.setDisabled(True)
-        self.closeDoors.setDisabled(True)
-        self.openRoof.setDisabled(True)
-        self.closeRoof.setDisabled(True)
-        self.extendPad.setDisabled(True)
-        self.retractPad.setDisabled(True)
-        self.raisePad.setDisabled(True)
-        self.lowerPad.setDisabled(True)
+        self.openDoorsButton.setDisabled(True)
+        self.closeDoorsButton.setDisabled(True)
+        self.openRoofButton.setDisabled(True)
+        self.closeRoofButton.setDisabled(True)
+        self.extendPadButton.setDisabled(True)
+        self.retractPadButton.setDisabled(True)
+        self.raisePadButton.setDisabled(True)
+        self.lowerPadButton.setDisabled(True)
 
     def OpenDoors(self):
-        self.commandmessage = "openDoors"
-        self.message2.setText("Message to be sent: openDoors")
+        self.commandMessage = "openDoors"
+        self.messageToSendLabel.setText("Message to be sent: openDoors")
         self.disableButtons()
 
     def CloseDoors(self):
-        self.commandmessage = "closeDoors"
-        self.message2.setText("Message to be sent: closeDoors")
+        self.commandMessage = "closeDoors"
+        self.messageToSendLabel.setText("Message to be sent: closeDoors")
         self.disableButtons()
 
     def OpenRoof(self):
-        self.commandmessage = "openRoof"
-        self.message2.setText("Message to be sent: openRoof")
+        self.commandMessage = "openRoof"
+        self.messageToSendLabel.setText("Message to be sent: openRoof")
         self.disableButtons()
 
     def CloseRoof(self):
-        self.commandmessage = "closeRoof"
-        self.message2.setText("Message to be sent: closeRoof")
+        self.commandMessage = "closeRoof"
+        self.messageToSendLabel.setText("Message to be sent: closeRoof")
         self.disableButtons()
 
     def ExtendPad(self):
-        self.commandmessage = "extendPad"
-        self.message2.setText("Message to be sent: extendPad")
+        self.commandMessage = "extendPad"
+        self.messageToSendLabel.setText("Message to be sent: extendPad")
         self.disableButtons()
 
     def RetractPad(self):
-        self.commandmessage = "retractPad"
-        self.message2.setText("Message to be sent: retractPad")
+        self.commandMessage = "retractPad"
+        self.messageToSendLabel.setText("Message to be sent: retractPad")
         self.disableButtons()
 
     def RaisePad(self):
-        self.commandmessage = "raisePad"
-        self.message2.setText("Message to be sent: raisePad")
+        self.commandMessage = "raisePad"
+        self.messageToSendLabel.setText("Message to be sent: raisePad")
         self.disableButtons()
 
     def LowerPad(self):
-        self.commandmessage = "lowerPad"
-        self.message2.setText("Message to be sent: lowerPad")
+        self.commandMessage = "lowerPad"
+        self.messageToSendLabel.setText("Message to be sent: lowerPad")
         self.disableButtons()
 
     def Submit(self):
-        self.passwordmessage = self.passwordbox.text()
-        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandmessage)
+        self.passwordmessage = self.passwordLineEdit.text()
+        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandMessage)
         self.shouldSendPasswordOverride = True
         self.done(1)
 
