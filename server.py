@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '172.18.127.84'
+UDP_IP_ADDRESS = '192.168.0.8'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 UDP_CLIENT_PORT_NUM = 8000
@@ -110,7 +110,7 @@ class Server():
             "previousCommand" : self.messagetext
         }
         message = json.dumps(systemStatusDict)
-        print(message)
+        # print(message)
         self.commandSock.sendto(message.encode(), addr)
 
     # getSystemStatusDict: like systemStatus, but returns a dictionary of the state of the NEST - doesn't send messages to the client

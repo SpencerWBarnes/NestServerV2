@@ -26,6 +26,110 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
+class PasswordDialog(QDialog):
+    def __init__(self, parent=None):
+        super(PasswordDialog, self).__init__(parent)
+        self.shouldSendPasswordOverride = False
+        self.commandmessage = ""
+        self.message = QLabel("Enter override password: ")
+        self.message2 = QLabel("")
+        self.passwordbox = QLineEdit()
+        self.submit = QPushButton("Submit")
+        self.openDoors = QPushButton("Open Doors")
+        self.closeDoors = QPushButton("Close Doors")
+
+        self.openRoof = QPushButton("Open Roof")
+
+        self.closeRoof = QPushButton("Close Roof")
+        self.extendPad = QPushButton("Extend Pad")
+        self.retractPad = QPushButton("Retract Pad")
+        self.raisePad = QPushButton("Raise Pad")
+        self.lowerPad = QPushButton("Lower Pad")
+
+        self.openDoors.clicked.connect(self.OpenDoors)
+        self.closeDoors.clicked.connect(self.CloseDoors)
+        self.openRoof.clicked.connect(self.OpenRoof)
+        self.closeRoof.clicked.connect(self.CloseRoof)
+        self.extendPad.clicked.connect(self.ExtendPad)
+        self.retractPad.clicked.connect(self.RetractPad)
+        self.raisePad.clicked.connect(self.RaisePad)
+        self.lowerPad.clicked.connect(self.LowerPad)
+        self.submit.clicked.connect(self.Submit)
+
+        buttonlayout = QGridLayout()
+        buttonlayout.addWidget(self.openDoors, 1, 1)
+        buttonlayout.addWidget(self.closeDoors, 1, 2)
+        buttonlayout.addWidget(self.openRoof, 2, 1)
+        buttonlayout.addWidget(self.closeRoof, 2, 2)
+        buttonlayout.addWidget(self.extendPad, 3, 1)
+        buttonlayout.addWidget(self.retractPad, 3, 2)
+        buttonlayout.addWidget(self.raisePad, 4, 1)
+        buttonlayout.addWidget(self.lowerPad, 4, 2)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.message)
+        layout.addWidget(self.message2)
+        layout.addWidget(self.passwordbox)
+        layout.addWidget(self.submit)
+        layout.addLayout(buttonlayout)
+        self.setLayout(layout)
+
+    def disableButtons(self):
+        self.openDoors.setDisabled(True)
+        self.closeDoors.setDisabled(True)
+        self.openRoof.setDisabled(True)
+        self.closeRoof.setDisabled(True)
+        self.extendPad.setDisabled(True)
+        self.retractPad.setDisabled(True)
+        self.raisePad.setDisabled(True)
+        self.lowerPad.setDisabled(True)
+
+    def OpenDoors(self):
+        self.commandmessage = "openDoors"
+        self.message2.setText("Message to be sent: openDoors")
+        self.disableButtons()
+
+    def CloseDoors(self):
+        self.commandmessage = "closeDoors"
+        self.message2.setText("Message to be sent: closeDoors")
+        self.disableButtons()
+
+    def OpenRoof(self):
+        self.commandmessage = "openRoof"
+        self.message2.setText("Message to be sent: openRoof")
+        self.disableButtons()
+
+    def CloseRoof(self):
+        self.commandmessage = "closeRoof"
+        self.message2.setText("Message to be sent: closeRoof")
+        self.disableButtons()
+
+    def ExtendPad(self):
+        self.commandmessage = "extendPad"
+        self.message2.setText("Message to be sent: extendPad")
+        self.disableButtons()
+
+    def RetractPad(self):
+        self.commandmessage = "retractPad"
+        self.message2.setText("Message to be sent: retractPad")
+        self.disableButtons()
+
+    def RaisePad(self):
+        self.commandmessage = "raisePad"
+        self.message2.setText("Message to be sent: raisePad")
+        self.disableButtons()
+
+    def LowerPad(self):
+        self.commandmessage = "lowerPad"
+        self.message2.setText("Message to be sent: lowerPad")
+        self.disableButtons()
+
+    def Submit(self):
+        self.passwordmessage = self.passwordbox.text()
+        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandmessage)
+        self.shouldSendPasswordOverride = True
+        self.done(1)
+
 class Form():
     def init_gui(self, application, width=800, height=800, window_title="Nest Client", argv=None):
         if argv is None:
@@ -42,6 +146,7 @@ class Form():
         self.messagetext = ""
 
         # Application Level
+        global qtapp
         qtapp = QApplication(argv)
 
         # Main Window Level
@@ -52,10 +157,8 @@ class Form():
         # WebView Level
         self.webView = QtWebEngineWidgets.QWebEngineView(window)
         self.webView.setMinimumHeight(520)
-        # qtapp.aboutToQuit.connect(self.webView.close)
 
         # Widgets Level
-        # self.message = QLineEdit("Type a message here!")
         self.serverLabel = QLabel('Server IP:')
         self.iplineedit = QLineEdit("192.168.0.13")
         self.submitConnect = QPushButton("Connect")
@@ -96,7 +199,7 @@ class Form():
         self.submitConnect.clicked.connect(self.connection)
         self.systemPower.clicked.connect(self.SystemPower)
         self.emergencyStop.clicked.connect(self.EmergencyStop)
-        # passwordoverride.clicked.connect(PasswordOverride)
+        self.passwordoverride.clicked.connect(self.PasswordOverride)
         self.openDoors.clicked.connect(self.OpenDoors)
         self.closeDoors.clicked.connect(self.CloseDoors)
         self.openRoof.clicked.connect(self.OpenRoof)
@@ -141,7 +244,6 @@ class Form():
         window.setLayout(layout)
 
         # WebPage Level
-        # page = WebPage('http://' + cur_host + ':{}'.format(port))
         page = WebPage('http://www.google.com')
         page.home()
         self.webView.setPage(page)
