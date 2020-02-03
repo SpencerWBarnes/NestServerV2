@@ -7,13 +7,19 @@ import socket
 import server
 import threading
 
+######### Initializing the server thread #########
 s = server.Server()
 serverThread = threading.Thread(target=s.connection)
 serverThread.daemon = True
+
+# Start server connection
 serverThread.start()
+
+# Get the IP address from the server
 cur_host = server.UDP_IP_ADDRESS
 
 
+######### ApplicationThread: the thread for the webpage application #########
 class ApplicationThread(QtCore.QThread):
     def __init__(self, application, port=5000):
         super(ApplicationThread, self).__init__()
@@ -27,7 +33,7 @@ class ApplicationThread(QtCore.QThread):
     def run(self):
         self.application.run(port=self.port, host=self.host, threaded=True)
 
-
+######### WebPage: the web engine that displays webpage content #########
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
     def __init__(self, root_url):
         super(WebPage, self).__init__()
@@ -45,7 +51,7 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
-
+######### updateUI: this is a callback that updates the user interface when there are changes on the server #########
 def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
     ipLabel.setText("IP: " + str(server.UDP_IP_ADDRESS))
@@ -55,8 +61,8 @@ def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel
     isPadExtendedLabel.setText("Pad extended: " + str(s.isPadExtended))
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
 
-
-def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
+######### init_gui: initializes the user interface for this application and sets up constants #########
+def init_gui(application, port=0, width=800, height=600, window_title="Nest", icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
@@ -83,17 +89,19 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     window.setWindowTitle(window_title)
     window.setWindowIcon(QtGui.QIcon(icon))
 
-    # WebView Level
+    # Layouts Level
     layout = QVBoxLayout()
     gridLayout = QGridLayout()
     statusLayout = QGridLayout()
     vidLayout = QHBoxLayout()
 
+    # WebView Level
     webView = QtWebEngineWidgets.QWebEngineView(window)
     webView.setMinimumHeight(400)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
+    # Widgets Level
     commandsLabel = QLabel()
     commandsLabel.setAlignment(QtCore.Qt.AlignTop)
 
@@ -104,6 +112,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     isPadExtendedLabel = QLabel()
     isPadRaisedLabel = QLabel()
 
+    # Layouts - Setting layouts
     statusLayout.addWidget(ipLabel, 0, 0)
     statusLayout.addWidget(isOnLabel, 1, 0)
     statusLayout.addWidget(isDoorOpenLabel, 2, 0)
@@ -114,11 +123,6 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     gridLayout.addLayout(statusLayout, 0, 0)
     gridLayout.addWidget(commandsLabel, 0, 1)
 
-    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
-    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
-
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)
 
@@ -128,6 +132,12 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     page = WebPage('http://' + cur_host + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-#   window.showMaximized()
     window.show()
+
+    # Callbacks to update the UI upon server changes
+    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+
     return qtapp.exec_()
