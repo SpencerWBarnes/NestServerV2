@@ -9,6 +9,7 @@ from flask import Flask
 import socket
 from threading import Thread
 
+######### WebPage: the web engine that displays webpage content #########
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
     def __init__(self, root_url):
         super(WebPage, self).__init__()
@@ -25,6 +26,8 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             QtGui.QDesktopServices.openUrl(url)
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
+
+######### Password Override Dialog Box #########
 class PasswordDialog(QDialog):
     def __init__(self, parent=None):
         super(PasswordDialog, self).__init__(parent)
@@ -128,12 +131,14 @@ class PasswordDialog(QDialog):
         self.messageToSendLabel.setText("Message to be sent: lowerPad")
         self.disableButtons()
 
+    # Notifies the main application that there should be a password override through shouldSendPasswordOverride
     def Submit(self):
         self.passwordmessage = self.passwordLineEdit.text()
         self.servermessage = str(self.passwordmessage) + ": " + str(self.commandMessage)
         self.shouldSendPasswordOverride = True
         self.done(1)
 
+######### Main UI #########
 class Form():
     def init_gui(self, application, width=800, height=800, window_title="Nest Client", argv=None):
         if argv is None:
@@ -256,29 +261,41 @@ class Form():
         self.pollingThread = Thread(target=self.poll)
         self.pollingThread.daemon = True
 
+        # Setting up the socket to send commands
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         window.show()
         return qtapp.exec_()
 
+
+    ######### Listening and reciving data #########
+
+    # poll: get an update about the state of the nest every second
     def poll(self):
         while (1):
             self.systemDiagnostic()
             time.sleep(1)
     
+    # systemDiagnostic: asks the server for a json response of the status of the nest and refreshes the UI
     def systemDiagnostic(self):
+
+        # Send Message
         message = "systemStatus"
         self.commandSock.sendto(message.encode(), (str(self.iplineedit.text()), 8000))
 
+        # Receive Message
         data = None
         while data is None:
             data, addr = self.commandSock.recvfrom(1024)
             data = data.decode()
             
+        # Parse Message
         try:
+            # Strip json and convert to dictionary
             dataform = data.strip("'<>() ").replace('\'', '\"')
             jsonData = json.loads(dataform)
 
+            # Get status
             self.isOn = jsonData['isOn']
             self.isDoorOpen = jsonData['isDoorOpen']
             self.isRoofOpen = jsonData['isRoofOpen']
@@ -373,9 +390,11 @@ class Form():
                 self.isConnected = True
 
                 self.sendData("Connection Valid ")
+                
                 # We have to receive the data otherwise we confuse our next commands
                 ugh = self.receiveData()
 
+                # Start checking for systemDiagnostic
                 self.pollingThread.start()
 
                 # WebPage Level
@@ -390,27 +409,33 @@ class Form():
                 self.label.setText("Invalid IP")
                 self.submitConnect.setDisabled(False)
     
-
+    # sendData: sends data to server
     def sendData(self, data):
         self.commandSock.sendto(data.encode(), (str(self.iplineedit.text()), 8000))
         return
 
+    # receiveData: recieves data from server and handles the data
     def receiveData(self):
+        # Variable to hold the data received from the server
         data = None
+        
+        # deadline is 5 seconds
         deadline = time.time() + 5.0
-        print("deadline: " + str(deadline))
+        # print("deadline: " + str(deadline))
         
         try: 
+            # In this while loop we add a timeout so that the client doesn't hang waiting on a message
             while (data is None and time.time() <= deadline):
                 self.commandSock.settimeout(deadline - time.time())
                 data, addr = self.commandSock.recvfrom(1024)
                 data = data.decode()
-                print (deadline - time.time())
+                # print (deadline - time.time())
             
+            # Handling data
             if (data is None):
                 data = "Error: Connection timeout"
 
-            if "Error" in self.messagetext:
+            if "Error" in data:
                 print("uh oh error!")
                 self.systemDiagnostic()
             
@@ -418,6 +443,8 @@ class Form():
         except Exception as e: 
             return e;
 
+
+    ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
             self.sendData("systemPower")
@@ -454,7 +481,6 @@ class Form():
             self.lowerPad.setDisabled(True)
         else:
             self.label.setText("Please Connect First")
-
 
     def PasswordOverride(self):
         if self.isConnected:
@@ -554,6 +580,7 @@ class Form():
         else:
             self.label.setText("Please Connect First")
 
+######### Running client #########
 if __name__ == '__main__':
     app = Flask(__name__)
     client =  Form()
