@@ -9,6 +9,7 @@ from flask import Flask
 import socket
 from threading import Thread
 
+######### WebPage: the web engine that displays webpage content #########
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
     def __init__(self, root_url):
         super(WebPage, self).__init__()
@@ -26,6 +27,118 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
+######### Password Override Dialog Box #########
+class PasswordDialog(QDialog):
+    def __init__(self, parent=None):
+        super(PasswordDialog, self).__init__(parent)
+        self.shouldSendPasswordOverride = False
+        self.commandMessage = ""
+        
+        # Labels and Line edits
+        self.passwordOverrideLabel = QLabel("Enter override password: ")
+        self.messageToSendLabel = QLabel("")
+        self.passwordLineEdit = QLineEdit()
+        
+        # Buttons
+        self.submitButton = QPushButton("Submit")
+        self.openDoorsButton = QPushButton("Open Doors")
+        self.closeDoorsButton = QPushButton("Close Doors")
+        self.openRoofButton = QPushButton("Open Roof")
+        self.closeRoofButton = QPushButton("Close Roof")
+        self.extendPadButton = QPushButton("Extend Pad")
+        self.retractPadButton = QPushButton("Retract Pad")
+        self.raisePadButton = QPushButton("Raise Pad")
+        self.lowerPadButton = QPushButton("Lower Pad")
+
+        # Button on click listeners
+        self.openDoorsButton.clicked.connect(self.OpenDoors)
+        self.closeDoorsButton.clicked.connect(self.CloseDoors)
+        self.openRoofButton.clicked.connect(self.OpenRoof)
+        self.closeRoofButton.clicked.connect(self.CloseRoof)
+        self.extendPadButton.clicked.connect(self.ExtendPad)
+        self.retractPadButton.clicked.connect(self.RetractPad)
+        self.raisePadButton.clicked.connect(self.RaisePad)
+        self.lowerPadButton.clicked.connect(self.LowerPad)
+        self.submitButton.clicked.connect(self.Submit)
+
+        # Button Layout
+        buttonlayout = QGridLayout()
+        buttonlayout.addWidget(self.openDoorsButton, 1, 1)
+        buttonlayout.addWidget(self.closeDoorsButton, 1, 2)
+        buttonlayout.addWidget(self.openRoofButton, 2, 1)
+        buttonlayout.addWidget(self.closeRoofButton, 2, 2)
+        buttonlayout.addWidget(self.extendPadButton, 3, 1)
+        buttonlayout.addWidget(self.retractPadButton, 3, 2)
+        buttonlayout.addWidget(self.raisePadButton, 4, 1)
+        buttonlayout.addWidget(self.lowerPadButton, 4, 2)
+
+        # Main Layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.passwordOverrideLabel)
+        layout.addWidget(self.messageToSendLabel)
+        layout.addWidget(self.passwordLineEdit)
+        layout.addWidget(self.submitButton)
+        layout.addLayout(buttonlayout)
+        self.setLayout(layout)
+
+    def disableButtons(self):
+        self.openDoorsButton.setDisabled(True)
+        self.closeDoorsButton.setDisabled(True)
+        self.openRoofButton.setDisabled(True)
+        self.closeRoofButton.setDisabled(True)
+        self.extendPadButton.setDisabled(True)
+        self.retractPadButton.setDisabled(True)
+        self.raisePadButton.setDisabled(True)
+        self.lowerPadButton.setDisabled(True)
+
+    def OpenDoors(self):
+        self.commandMessage = "openDoors"
+        self.messageToSendLabel.setText("Message to be sent: openDoors")
+        self.disableButtons()
+
+    def CloseDoors(self):
+        self.commandMessage = "closeDoors"
+        self.messageToSendLabel.setText("Message to be sent: closeDoors")
+        self.disableButtons()
+
+    def OpenRoof(self):
+        self.commandMessage = "openRoof"
+        self.messageToSendLabel.setText("Message to be sent: openRoof")
+        self.disableButtons()
+
+    def CloseRoof(self):
+        self.commandMessage = "closeRoof"
+        self.messageToSendLabel.setText("Message to be sent: closeRoof")
+        self.disableButtons()
+
+    def ExtendPad(self):
+        self.commandMessage = "extendPad"
+        self.messageToSendLabel.setText("Message to be sent: extendPad")
+        self.disableButtons()
+
+    def RetractPad(self):
+        self.commandMessage = "retractPad"
+        self.messageToSendLabel.setText("Message to be sent: retractPad")
+        self.disableButtons()
+
+    def RaisePad(self):
+        self.commandMessage = "raisePad"
+        self.messageToSendLabel.setText("Message to be sent: raisePad")
+        self.disableButtons()
+
+    def LowerPad(self):
+        self.commandMessage = "lowerPad"
+        self.messageToSendLabel.setText("Message to be sent: lowerPad")
+        self.disableButtons()
+
+    # Notifies the main application that there should be a password override through shouldSendPasswordOverride
+    def Submit(self):
+        self.passwordmessage = self.passwordLineEdit.text()
+        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandMessage)
+        self.shouldSendPasswordOverride = True
+        self.done(1)
+
+######### Main UI #########
 class Form():
     def init_gui(self, application, width=800, height=800, window_title="Nest Client", argv=None):
         if argv is None:
@@ -42,6 +155,7 @@ class Form():
         self.messagetext = ""
 
         # Application Level
+        global qtapp
         qtapp = QApplication(argv)
 
         # Main Window Level
@@ -52,10 +166,8 @@ class Form():
         # WebView Level
         self.webView = QtWebEngineWidgets.QWebEngineView(window)
         self.webView.setMinimumHeight(520)
-        # qtapp.aboutToQuit.connect(self.webView.close)
 
         # Widgets Level
-        # self.message = QLineEdit("Type a message here!")
         self.serverLabel = QLabel('Server IP:')
         self.iplineedit = QLineEdit("192.168.0.13")
         self.submitConnect = QPushButton("Connect")
@@ -96,7 +208,7 @@ class Form():
         self.submitConnect.clicked.connect(self.connection)
         self.systemPower.clicked.connect(self.SystemPower)
         self.emergencyStop.clicked.connect(self.EmergencyStop)
-        # passwordoverride.clicked.connect(PasswordOverride)
+        self.passwordoverride.clicked.connect(self.PasswordOverride)
         self.openDoors.clicked.connect(self.OpenDoors)
         self.closeDoors.clicked.connect(self.CloseDoors)
         self.openRoof.clicked.connect(self.OpenRoof)
@@ -141,7 +253,6 @@ class Form():
         window.setLayout(layout)
 
         # WebPage Level
-        # page = WebPage('http://' + cur_host + ':{}'.format(port))
         page = WebPage('http://www.google.com')
         page.home()
         self.webView.setPage(page)
@@ -150,29 +261,41 @@ class Form():
         self.pollingThread = Thread(target=self.poll)
         self.pollingThread.daemon = True
 
+        # Setting up the socket to send commands
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         window.show()
         return qtapp.exec_()
 
+
+    ######### Listening and reciving data #########
+
+    # poll: get an update about the state of the nest every second
     def poll(self):
         while (1):
             self.systemDiagnostic()
             time.sleep(1)
     
+    # systemDiagnostic: asks the server for a json response of the status of the nest and refreshes the UI
     def systemDiagnostic(self):
+
+        # Send Message
         message = "systemStatus"
         self.commandSock.sendto(message.encode(), (str(self.iplineedit.text()), 8000))
 
+        # Receive Message
         data = None
         while data is None:
             data, addr = self.commandSock.recvfrom(1024)
             data = data.decode()
             
+        # Parse Message
         try:
+            # Strip json and convert to dictionary
             dataform = data.strip("'<>() ").replace('\'', '\"')
             jsonData = json.loads(dataform)
 
+            # Get status
             self.isOn = jsonData['isOn']
             self.isDoorOpen = jsonData['isDoorOpen']
             self.isRoofOpen = jsonData['isRoofOpen']
@@ -267,9 +390,11 @@ class Form():
                 self.isConnected = True
 
                 self.sendData("Connection Valid ")
+                
                 # We have to receive the data otherwise we confuse our next commands
                 ugh = self.receiveData()
 
+                # Start checking for systemDiagnostic
                 self.pollingThread.start()
 
                 # WebPage Level
@@ -284,34 +409,44 @@ class Form():
                 self.label.setText("Invalid IP")
                 self.submitConnect.setDisabled(False)
     
-
+    # sendData: sends data to server
     def sendData(self, data):
         self.commandSock.sendto(data.encode(), (str(self.iplineedit.text()), 8000))
         return
 
+    # receiveData: recieves data from server and handles the data
     def receiveData(self):
+        # Variable to hold the data received from the server
         data = None
+        
+        # deadline is 5 seconds
         deadline = time.time() + 5.0
-        print("deadline: " + str(deadline))
+        # print("deadline: " + str(deadline))
         
         try: 
+            # In this while loop we add a timeout so that the client doesn't hang waiting on a message
             while (data is None and time.time() <= deadline):
                 self.commandSock.settimeout(deadline - time.time())
                 data, addr = self.commandSock.recvfrom(1024)
                 data = data.decode()
-                print (deadline - time.time())
+                # print (deadline - time.time())
             
+            # Handling data
             if (data is None):
                 data = "Error: Connection timeout"
 
-            if "Error" in self.messagetext:
+            if "Error" in data:
                 print("uh oh error!")
                 self.systemDiagnostic()
+
+            # print(data)
             
             return data
         except Exception as e: 
             return e;
 
+
+    ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
             self.sendData("systemPower")
@@ -348,7 +483,6 @@ class Form():
             self.lowerPad.setDisabled(True)
         else:
             self.label.setText("Please Connect First")
-
 
     def PasswordOverride(self):
         if self.isConnected:
@@ -448,6 +582,7 @@ class Form():
         else:
             self.label.setText("Please Connect First")
 
+######### Running client #########
 if __name__ == '__main__':
     app = Flask(__name__)
     client =  Form()
