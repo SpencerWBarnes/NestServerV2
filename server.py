@@ -13,7 +13,9 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 UDP_IP_ADDRESS = '192.168.0.8'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
-UDP_CLIENT_PORT_NUM = 8000
+UDP_CLIENT_PORT_NUM = 8888
+
+BUFFERSIZE = 1024
 
 # Error messages: The error prefix is relevant because it is how the clients know when an error has occured.count
 #                 They parse the error prefix to get error messages. The error dictionary represents different states
@@ -63,7 +65,7 @@ class Server():
         self.connectThread.daemon = True
         
         # sockets
-        self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)        #Port: 8000
+        self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        #Port: 8000
 
 
     ######### Server Setup Functions #########
@@ -300,31 +302,27 @@ class Server():
 
     # Server function for receiving data. It passes the received data to handleData
     def receivedata(self):
-        while self.running:
+        conn, addr = self.commandSock.accept()
+        print ('Connection address:', addr)
+        while 1:
+            data = conn.recv(BUFFERSIZE)
+            if data: 
+                print ("received data:", data.decode())
+                conn.send(data)  # echo
             data = None
-            while data is None:
-                try: 
-                    data, addr = self.commandSock.recvfrom(1024)
-                except Exception as e:
-                    print("Server.receiveData exception:" + str(e))
-                    self.closeSockets()
-                    return
-                
-            data = data.decode()
-            print((data,addr))
-            self.handledata(data, addr)
-        self.closeSockets()
+        conn.close()
 
     # Server function for setting up the connection. It starts receiveData on a seperate thread
     def connection(self):
         try:
             self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
+            self.commandSock.listen(1)
+            # conn, addr = self.commandSock.accept()
             self.isConnected = True
-            data, self.addr = self.commandSock.recvfrom(1024)
-            data = data.decode()
+            self.receivedata()
+            # self.commandthread = threading.Thread(target=self.receivedata)
+            # self.commandthread.start()
 
         except OSError as e:
             print("Server.connection OSError: " + str(e))
             
-        self.commandthread = threading.Thread(target=self.receivedata)
-        self.commandthread.start()
