@@ -174,7 +174,7 @@ class Form():
         # Widgets Level
         self.serverLabel = QLabel('Server IP:')
         self.ipLineEdit = QLineEdit(IP_ADDRESS)
-        self.portLineEdit = QLineEdit(TCP_PORT)
+        self.portLineEdit = QLineEdit(str(TCP_PORT))
         self.submitConnect = QPushButton('Connect')
 
         # Labels
