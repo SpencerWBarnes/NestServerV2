@@ -172,7 +172,8 @@ class Form():
 
         # Widgets Level
         self.serverLabel = QLabel('Server IP:')
-        self.iplineedit = QLineEdit("192.168.0.13")
+        self.ipLineEdit = QLineEdit("192.168.0.13")
+        self.portLineEdit = QLineEdit("8888")
         self.submitConnect = QPushButton("Connect")
 
         # Labels
@@ -224,7 +225,8 @@ class Form():
         # Layouts
         clientlayout = QVBoxLayout()
         clientlayout.addWidget(self.serverLabel)
-        clientlayout.addWidget(self.iplineedit)
+        clientlayout.addWidget(self.ipLineEdit)
+        clientlayout.addWidget(self.portLineEdit)
         clientlayout.addWidget(self.submitConnect)
 
         # Layouts - Buttons
@@ -283,15 +285,9 @@ class Form():
     def systemDiagnostic(self):
 
         # Send Message
-        message = "systemStatus"
-        self.commandSock.sendto(message.encode(), (str(self.iplineedit.text()), 8000))
+        message = self.sendData("systemStatus")
+        message.decode()
 
-        # Receive Message
-        data = None
-        while data is None:
-            data, addr = self.commandSock.recvfrom(1024)
-            data = data.decode()
-            
         # Parse Message
         try:
             # Strip json and convert to dictionary
@@ -384,11 +380,16 @@ class Form():
 
     
     def connection(self):
-        self.submitConnect.setDisabled(True)
-        
         if (self.isConnected == False):
-            self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.commandSock.connect((self.iplineedit.text(), TCP_PORT))
+            try: 
+                print ((self.ipLineEdit.text(), int(self.portLineEdit.text())))
+                self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.commandSock.connect((self.ipLineEdit.text(), int(self.portLineEdit.text())))
+                self.submitConnect.setDisabled(True)
+            except Exception as e:
+                self.label.setText(str(e))
+                print(e)
+                return
 
             try:
                 self.isConnected = True
@@ -399,7 +400,7 @@ class Form():
                 self.pollingThread.start()
 
                 # WebPage Level
-                text = 'http://' + self.iplineedit.text() + ':{}'.format(8000)
+                text = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
                 print("GETTING WEBPAGE FROM: " + text)
                 page = WebPage(text)
                 page.home()
@@ -412,7 +413,6 @@ class Form():
     
     # sendData: sends data to server
     def sendData(self, data):
-        # self.commandSock.sendto(data.encode(), (str(self.iplineedit.text()), 8000))
         self.commandSock.sendall(data.encode())
         data = self.commandSock.recv(BUFFER_SIZE)
         data = data.decode()
