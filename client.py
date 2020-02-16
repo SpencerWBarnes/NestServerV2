@@ -261,7 +261,7 @@ class Form():
         window.setLayout(layout)
 
         # WebPage Level
-        page = WebPage('http://www.google.com')
+        page = WebPage('')
         page.home()
         self.webView.setPage(page)
 
