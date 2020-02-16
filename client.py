@@ -9,6 +9,9 @@ from flask import Flask
 import socket
 from threading import Thread
 
+TCP_PORT = 8888
+BUFFER_SIZE = 1024
+
 ######### WebPage: the web engine that displays webpage content #########
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
     def __init__(self, root_url):
@@ -384,15 +387,13 @@ class Form():
         self.submitConnect.setDisabled(True)
         
         if (self.isConnected == False):
-            self.commandSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.commandSock.connect((self.iplineedit.text(), TCP_PORT))
 
             try:
                 self.isConnected = True
 
-                self.sendData("Connection Valid ")
-                
-                # We have to receive the data otherwise we confuse our next commands
-                ugh = self.receiveData()
+                self.sendData("Connection Test")
 
                 # Start checking for systemDiagnostic
                 self.pollingThread.start()
@@ -411,46 +412,21 @@ class Form():
     
     # sendData: sends data to server
     def sendData(self, data):
-        self.commandSock.sendto(data.encode(), (str(self.iplineedit.text()), 8000))
-        return
+        # self.commandSock.sendto(data.encode(), (str(self.iplineedit.text()), 8000))
+        self.commandSock.sendall(data.encode())
+        data = self.commandSock.recv(BUFFER_SIZE)
+        data = data.decode()
 
-    # receiveData: recieves data from server and handles the data
-    def receiveData(self):
-        # Variable to hold the data received from the server
-        data = None
-        
-        # deadline is 5 seconds
-        deadline = time.time() + 5.0
-        # print("deadline: " + str(deadline))
-        
-        try: 
-            # In this while loop we add a timeout so that the client doesn't hang waiting on a message
-            while (data is None and time.time() <= deadline):
-                self.commandSock.settimeout(deadline - time.time())
-                data, addr = self.commandSock.recvfrom(1024)
-                data = data.decode()
-                # print (deadline - time.time())
-            
-            # Handling data
-            if (data is None):
-                data = "Error: Connection timeout"
-
-            if "Error" in data:
+        if "Error" in data:
                 print("uh oh error!")
                 self.systemDiagnostic()
 
-            # print(data)
-            
-            return data
-        except Exception as e: 
-            return e;
-
+        return data
 
     ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
-            self.sendData("systemPower")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("systemPower")
             self.systemStatus.setText(self.messagetext)
             if self.messagetext == "System Power: ON":
                 self.emergencyStop.setDisabled(False)
@@ -469,8 +445,7 @@ class Form():
 
     def EmergencyStop(self):
         if self.isConnected:
-            self.sendData("emergencyStop")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("emergencyStop")
             self.systemStatus.setText(self.messagetext)
             self.emergencyStop.setDisabled(True)
             self.openDoors.setDisabled(True)
@@ -490,14 +465,12 @@ class Form():
             self.dialog.exec()
             if (self.dialog.shouldSendPasswordOverride == True):
                 self.passwordmessage = self.dialog.servermessage
-                self.sendData(self.passwordmessage)
-                response = self.receiveData()
+                response = self.sendData(self.passwordmessage)
                 self.systemDiagnostic()
 
     def OpenDoors(self):
         if self.isConnected:
-            self.sendData("openDoors")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("openDoors")
             self.doorStatus.setText(self.messagetext)
             self.openDoors.setDisabled(True)
             self.closeDoors.setDisabled(False)
@@ -507,8 +480,7 @@ class Form():
 
     def CloseDoors(self):
         if self.isConnected:
-            self.sendData("closeDoors")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("closeDoors")
             self.doorStatus.setText(self.messagetext)
             self.closeDoors.setDisabled(True)
             self.openDoors.setDisabled(False)
@@ -518,8 +490,7 @@ class Form():
 
     def OpenRoof(self):
         if self.isConnected:
-            self.sendData("openRoof")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("openRoof")
             self.roofStatus.setText(self.messagetext)
             self.openRoof.setDisabled(True)
             self.closeRoof.setDisabled(False)
@@ -529,8 +500,7 @@ class Form():
 
     def CloseRoof(self):
         if self.isConnected:
-            self.sendData("closeRoof")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("closeRoof")
             self.roofStatus.setText(self.messagetext)
             self.closeRoof.setDisabled(True)
             self.openRoof.setDisabled(False)
@@ -540,8 +510,7 @@ class Form():
 
     def ExtendPad(self):
         if self.isConnected:
-            self.sendData("extendPad")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("extendPad")
             self.backPadStatus.setText(self.messagetext)
             self.extendPad.setDisabled(True)
             self.retractPad.setDisabled(False)
@@ -551,8 +520,7 @@ class Form():
 
     def RetractPad(self):
         if self.isConnected:
-            self.sendData("retractPad")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("retractPad")
             self.backPadStatus.setText(self.messagetext)
             self.retractPad.setDisabled(True)
             self.extendPad.setDisabled(False)
@@ -562,8 +530,7 @@ class Form():
 
     def RaisePad(self):
         if self.isConnected:
-            self.sendData("raisePad")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("raisePad")
             self.roofPadStatus.setText(self.messagetext)
             self.raisePad.setDisabled(True)
             self.lowerPad.setDisabled(False)
@@ -573,8 +540,7 @@ class Form():
 
     def LowerPad(self):
         if self.isConnected:
-            self.sendData("lowerPad")
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData("lowerPad")
             self.roofPadStatus.setText(self.messagetext)
             self.lowerPad.setDisabled(True)
             self.raisePad.setDisabled(False)
