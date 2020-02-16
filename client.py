@@ -172,8 +172,9 @@ class Form():
         self.webView.setMinimumHeight(520)
 
         # Widgets Level
-        self.serverLabel = QLabel('Server IP:')
+        self.ipLabel = QLabel('Server IP:')
         self.ipLineEdit = QLineEdit(IP_ADDRESS)
+        self.portLabel = QLabel('Port:')
         self.portLineEdit = QLineEdit(str(TCP_PORT))
         self.submitConnect = QPushButton('Connect')
 
@@ -224,11 +225,12 @@ class Form():
         self.lowerPad.clicked.connect(self.LowerPad)
 
         # Layouts
-        clientlayout = QVBoxLayout()
-        clientlayout.addWidget(self.serverLabel)
-        clientlayout.addWidget(self.ipLineEdit)
-        clientlayout.addWidget(self.portLineEdit)
-        clientlayout.addWidget(self.submitConnect)
+        clientlayout = QGridLayout()
+        clientlayout.addWidget(self.ipLabel, 0, 0)
+        clientlayout.addWidget(self.ipLineEdit, 0, 1)
+        clientlayout.addWidget(self.portLabel, 0, 2)
+        clientlayout.addWidget(self.portLineEdit, 0, 3)
+        clientlayout.addWidget(self.submitConnect, 0, 4)
 
         # Layouts - Buttons
         buttonlayout = QGridLayout()
