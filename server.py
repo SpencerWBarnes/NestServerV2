@@ -92,8 +92,8 @@ class Server():
     ######### Server Message Handling #########
 
     # unknownMessage: This method is called when the server receives a message it doesn't know what to do with it
-    def unknownMessage(self, conn):
-        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage']
+    def unknownMessage(self, conn, message):
+        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message
         conn.send(self.messagetext.encode())
 
     # systemStatus: Sends a JSON string to the client to show the state of the NEST
@@ -290,7 +290,7 @@ class Server():
         elif "Connection Test" in data:
             self.sendTestMessage(conn)
         else:
-            self.unknownMessage(conn)
+            self.unknownMessage(conn, data)
 
         self.serverCallback()
 
