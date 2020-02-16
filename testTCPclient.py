@@ -8,7 +8,7 @@ TCP_PORT = 8888
 BUFFER_SIZE = 1024
 
 def sendMessage(s, message):
-    s.send(message.encode())
+    s.sendall(message.encode())
     data = s.recv(BUFFER_SIZE)
     print ("received data 1:", data.decode())
 

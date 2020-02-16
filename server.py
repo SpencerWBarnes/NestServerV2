@@ -49,7 +49,7 @@ class Server():
         self.isRoofOpen = False
         self.isPadExtended = False
         self.isPadRaised = False
-        self.isConnected = False
+        self.openConnections = []
 
         # messagetext: holds the value of the message to be sent to the client
         self.messagetext = None
@@ -59,10 +59,6 @@ class Server():
         self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
         # self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
-
-        # connectThread: setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
-        self.connectThread = threading.Thread(target=self.connection)
-        self.connectThread.daemon = True
         
         # sockets
         self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)        #Port: 8000
@@ -87,6 +83,10 @@ class Server():
     def closeSockets(self):
         self.running = False
         self.closeSocket(self.commandSock)
+
+    def closeConnections(self):
+        for conn in self.openConnections:
+            conn.close()
 
     # closeEvent:   When the gui is closed, close the plc browser and all the sockets     
     def closeEvent(self):
@@ -299,11 +299,15 @@ class Server():
 
         self.serverCallback()
 
+    def startClientThread(self, conn):
+        serverThread = threading.Thread(target=self.receivedata, args=[conn])
+        serverThread.daemon = True
+        serverThread.start()
+
     # Server function for receiving data. It passes the received data to handleData
-    def receivedata(self):
-        conn, addr = self.commandSock.accept()
-        print ('Connection address:', addr)
-        while 1:
+    def receivedata(self, conn):
+        print("test")
+        while True:
             data = conn.recv(BUFFERSIZE)
             if data: 
                 print ("received data:", data.decode())
@@ -315,10 +319,16 @@ class Server():
     def connection(self):
         try:
             self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
-            self.commandSock.listen(1)
-            self.isConnected = True
-            self.receivedata()
+            self.commandSock.listen(10)
 
         except OSError as e:
-            print("Server.connection OSError: " + str(e))
-            
+                print("Server.connection OSError: " + str(e))
+        
+        while True: 
+            conn, addr = self.commandSock.accept()
+            self.openConnections.append(conn)
+            # data = conn.recv(BUFFERSIZE)
+            # message = "Message revieved! " + data.decode()
+            # conn.send(message.encode())
+            self.startClientThread(conn)
+            print ('Connection address:', addr)
