@@ -288,7 +288,7 @@ class Form():
     def systemDiagnostic(self):
 
         # Send Message
-        data = self.sendData("powerStatusLabel")
+        data = self.sendData("systemStatus")
 
         # Parse Message
         try:
@@ -428,7 +428,7 @@ class Form():
     ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
-            self.messagetext = self.sendData("systemPowerButton")
+            self.messagetext = self.sendData("systemPower")
             self.powerStatusLabel.setText(self.messagetext)
             if self.messagetext == "System Power: ON":
                 self.emergencyStopButton.setDisabled(False)
@@ -447,7 +447,7 @@ class Form():
 
     def EmergencyStop(self):
         if self.isConnected:
-            self.messagetext = self.sendData("emergencyStopButton")
+            self.messagetext = self.sendData("emergencyStop")
             self.powerStatusLabel.setText(self.messagetext)
             self.emergencyStopButton.setDisabled(True)
             self.openDoorsButton.setDisabled(True)
@@ -472,7 +472,7 @@ class Form():
 
     def OpenDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openDoorsButton")
+            self.messagetext = self.sendData("openDoors")
             self.doorStatusLabel.setText(self.messagetext)
             self.openDoorsButton.setDisabled(True)
             self.closeDoorsButton.setDisabled(False)
@@ -482,7 +482,7 @@ class Form():
 
     def CloseDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeDoorsButton")
+            self.messagetext = self.sendData("closeDoors")
             self.doorStatusLabel.setText(self.messagetext)
             self.closeDoorsButton.setDisabled(True)
             self.openDoorsButton.setDisabled(False)
@@ -492,7 +492,7 @@ class Form():
 
     def OpenRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openRoofButton")
+            self.messagetext = self.sendData("openRoof")
             self.roofStatusLabel.setText(self.messagetext)
             self.openRoofButton.setDisabled(True)
             self.closeRoofButton.setDisabled(False)
@@ -502,7 +502,7 @@ class Form():
 
     def CloseRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeRoofButton")
+            self.messagetext = self.sendData("closeRoof")
             self.roofStatusLabel.setText(self.messagetext)
             self.closeRoofButton.setDisabled(True)
             self.openRoofButton.setDisabled(False)
@@ -512,7 +512,7 @@ class Form():
 
     def ExtendPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("extendPadButton")
+            self.messagetext = self.sendData("extendPad")
             self.backPadStatusLabel.setText(self.messagetext)
             self.extendPadButton.setDisabled(True)
             self.retractPadButton.setDisabled(False)
@@ -522,7 +522,7 @@ class Form():
 
     def RetractPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("retractPadButton")
+            self.messagetext = self.sendData("retractPad")
             self.backPadStatusLabel.setText(self.messagetext)
             self.retractPadButton.setDisabled(True)
             self.extendPadButton.setDisabled(False)
@@ -532,7 +532,7 @@ class Form():
 
     def RaisePad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("raisePadButton")
+            self.messagetext = self.sendData("raisePad")
             self.roofPadStatusLabel.setText(self.messagetext)
             self.raisePadButton.setDisabled(True)
             self.lowerPadButton.setDisabled(False)
@@ -542,7 +542,7 @@ class Form():
 
     def LowerPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("lowerPadButton")
+            self.messagetext = self.sendData("lowerPad")
             self.roofPadStatusLabel.setText(self.messagetext)
             self.lowerPadButton.setDisabled(True)
             self.raisePadButton.setDisabled(False)
