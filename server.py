@@ -95,6 +95,7 @@ class Server():
     def unknownMessage(self, conn, message):
         self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # systemStatus: Sends a JSON string to the client to show the state of the NEST
     def systemStatus(self, conn):
@@ -140,6 +141,7 @@ class Server():
             self.isOn = True
 
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # emergencyStop:    Called when the client wants to stop all mototrs on the nest,
     #                   used for setting the isOn variable to false
@@ -148,6 +150,7 @@ class Server():
         self.isOn = False
         self.plc.emergencyStop()
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # openDoors:    Called when the client wants to open the nest doors,
     #               used for setting the isDoorOpen variable to true
@@ -159,6 +162,7 @@ class Server():
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # closeDoors:   Called when the client wants to close the nest doors,
     #               used for setting the isDoorOpen variable to false
@@ -175,6 +179,7 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['padIsExtended'] + '. '
 
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # openRoof:     Called when the client wants to open the nest roof,
     #               used for setting the isRoofOpen variable to true
@@ -186,6 +191,7 @@ class Server():
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # openRoof:     Called when the client wants to close the nest roof,
     #               used for setting the isRoofOpen variable to false
@@ -202,6 +208,7 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['padIsRaised'] + '. '
 
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # extendPad:    Called when the client wants to extend the nest landing pad,
     #               used for setting the isPadExtended variable to true
@@ -218,6 +225,7 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['doorsAreClosed'] + '. '
 
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # retractPad:   Called when the client wants to retract the nest landing pad,
     #               used for setting the isPadExtended variable to false
@@ -229,6 +237,7 @@ class Server():
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # raisePad:     Called when the client wants to raise the nest landing pad,
     #               used for setting the isPadRaised variable to true
@@ -244,6 +253,7 @@ class Server():
             if not self.isRoofOpen:
                 self.messagetext = self.messagetext + errorDictionary['roofIsClosed'] + '. '
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # lowerPad:     Called when the client wants to lower the nest landing pad,
     #               used for setting the isPadRaised variable to false
@@ -255,14 +265,18 @@ class Server():
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, conn):
         self.messagetext = "Connection is good. Message recieved" 
         conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # handledata:   This is used to decipher the messages sent by the client
     def handledata(self, data, conn):
+        if (data.endswith('\n')):
+            data = data.replace('\n','')
         print(data)
         
         if data == "systemPower":
@@ -318,7 +332,7 @@ class Server():
             self.commandSock.listen(10)
 
         except OSError as e:
-                print("Server.connection OSError: " + str(e))
+            print("Server.connection OSError: " + str(e))
         
         while True: 
             conn, addr = self.commandSock.accept()
