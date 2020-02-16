@@ -54,7 +54,7 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
 ######### updateUI: this is a callback that updates the user interface when there are changes on the server #########
 def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
-    ipLabel.setText("IP: " + str(server.UDP_IP_ADDRESS))
+    ipLabel.setText("IP: " + str(server.IP_ADDRESS))
     isOnLabel.setText("System on: " + str(s.isOn))
     isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
     isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
@@ -72,7 +72,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
         port = sock.getsockname()[1]
         sock.close()
 
-    print(" * Listening to commands on: " + server.UDP_IP_ADDRESS)
+    print(" * Listening to commands on: " + server.IP_ADDRESS)
     print(s.getSystemStatusDict())
 
     # Application Level
