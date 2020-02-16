@@ -302,6 +302,7 @@ class Form():
             self.isRoofOpen = jsonData['isRoofOpen']
             self.isPadExtended = jsonData['isPadExtended']
             self.isPadRaised = jsonData['isPadRaised']
+            self.statusLabel.setText(jsonData['previousCommand'])
 
             # Labels
             if(self.isDoorOpen):
