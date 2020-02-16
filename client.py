@@ -96,43 +96,43 @@ class PasswordDialog(QDialog):
         self.lowerPadButton.setDisabled(True)
 
     def OpenDoors(self):
-        self.commandMessage = "openDoors"
-        self.messageToSendLabel.setText("Message to be sent: openDoors")
+        self.commandMessage = "openDoorsButton"
+        self.messageToSendLabel.setText("Message to be sent: openDoorsButton")
         self.disableButtons()
 
     def CloseDoors(self):
-        self.commandMessage = "closeDoors"
-        self.messageToSendLabel.setText("Message to be sent: closeDoors")
+        self.commandMessage = "closeDoorsButton"
+        self.messageToSendLabel.setText("Message to be sent: closeDoorsButton")
         self.disableButtons()
 
     def OpenRoof(self):
-        self.commandMessage = "openRoof"
-        self.messageToSendLabel.setText("Message to be sent: openRoof")
+        self.commandMessage = "openRoofButton"
+        self.messageToSendLabel.setText("Message to be sent: openRoofButton")
         self.disableButtons()
 
     def CloseRoof(self):
-        self.commandMessage = "closeRoof"
-        self.messageToSendLabel.setText("Message to be sent: closeRoof")
+        self.commandMessage = "closeRoofButton"
+        self.messageToSendLabel.setText("Message to be sent: closeRoofButton")
         self.disableButtons()
 
     def ExtendPad(self):
-        self.commandMessage = "extendPad"
-        self.messageToSendLabel.setText("Message to be sent: extendPad")
+        self.commandMessage = "extendPadButton"
+        self.messageToSendLabel.setText("Message to be sent: extendPadButton")
         self.disableButtons()
 
     def RetractPad(self):
-        self.commandMessage = "retractPad"
-        self.messageToSendLabel.setText("Message to be sent: retractPad")
+        self.commandMessage = "retractPadButton"
+        self.messageToSendLabel.setText("Message to be sent: retractPadButton")
         self.disableButtons()
 
     def RaisePad(self):
-        self.commandMessage = "raisePad"
-        self.messageToSendLabel.setText("Message to be sent: raisePad")
+        self.commandMessage = "raisePadButton"
+        self.messageToSendLabel.setText("Message to be sent: raisePadButton")
         self.disableButtons()
 
     def LowerPad(self):
-        self.commandMessage = "lowerPad"
-        self.messageToSendLabel.setText("Message to be sent: lowerPad")
+        self.commandMessage = "lowerPadButton"
+        self.messageToSendLabel.setText("Message to be sent: lowerPadButton")
         self.disableButtons()
 
     # Notifies the main application that there should be a password override through shouldSendPasswordOverride
@@ -179,50 +179,50 @@ class Form():
         self.submitConnect = QPushButton('Connect')
 
         # Labels
-        self.label = QLabel("Waiting for input...")
-        self.systemStatus = QLabel("System Power: OFF")
-        self.doorStatus = QLabel("Doors: CLOSED")
-        self.roofStatus = QLabel("Roof: CLOSED")
-        self.roofPadStatus = QLabel("Top Pad: LOWERED")
-        self.backPadStatus = QLabel("Back Pad: RETRACTED")
+        self.statusLabel = QLabel("Waiting for input...")
+        self.powerStatusLabel = QLabel("System Power: OFF")
+        self.doorStatusLabel = QLabel("Doors: CLOSED")
+        self.roofStatusLabel = QLabel("Roof: CLOSED")
+        self.roofPadStatusLabel = QLabel("Top Pad: LOWERED")
+        self.backPadStatusLabel = QLabel("Back Pad: RETRACTED")
 
         # Buttons
-        self.systemPower = QPushButton("System Power")
-        self.emergencyStop = QPushButton("Emergency Stop")
-        self.passwordoverride = QPushButton("Override")
-        self.openDoors = QPushButton("Open Doors")
-        self.closeDoors = QPushButton("Close Doors")
-        self.openRoof = QPushButton("Open Roof")
-        self.closeRoof = QPushButton("Close Roof")
-        self.extendPad = QPushButton("Extend Pad")
-        self.retractPad = QPushButton("Retract Pad")
-        self.raisePad = QPushButton("Raise Pad")
-        self.lowerPad = QPushButton("Lower Pad")
+        self.systemPowerButton = QPushButton("System Power")
+        self.emergencyStopButton = QPushButton("Emergency Stop")
+        self.passwordOverrideButton = QPushButton("Override")
+        self.openDoorsButton = QPushButton("Open Doors")
+        self.closeDoorsButton = QPushButton("Close Doors")
+        self.openRoofButton = QPushButton("Open Roof")
+        self.closeRoofButton = QPushButton("Close Roof")
+        self.extendPadButton = QPushButton("Extend Pad")
+        self.retractPadButton = QPushButton("Retract Pad")
+        self.raisePadButton = QPushButton("Raise Pad")
+        self.lowerPadButton = QPushButton("Lower Pad")
 
-        self.emergencyStop.setDisabled(True)
-        self.passwordoverride.setDisabled(True)
-        self.openDoors.setDisabled(True)
-        self.closeDoors.setDisabled(True)
-        self.openRoof.setDisabled(True)
-        self.closeRoof.setDisabled(True)
-        self.extendPad.setDisabled(True)
-        self.retractPad.setDisabled(True)
-        self.raisePad.setDisabled(True)
-        self.lowerPad.setDisabled(True)
+        self.emergencyStopButton.setDisabled(True)
+        self.passwordOverrideButton.setDisabled(True)
+        self.openDoorsButton.setDisabled(True)
+        self.closeDoorsButton.setDisabled(True)
+        self.openRoofButton.setDisabled(True)
+        self.closeRoofButton.setDisabled(True)
+        self.extendPadButton.setDisabled(True)
+        self.retractPadButton.setDisabled(True)
+        self.raisePadButton.setDisabled(True)
+        self.lowerPadButton.setDisabled(True)
 
         # Button on Click listeners
         self.submitConnect.clicked.connect(self.connection)
-        self.systemPower.clicked.connect(self.SystemPower)
-        self.emergencyStop.clicked.connect(self.EmergencyStop)
-        self.passwordoverride.clicked.connect(self.PasswordOverride)
-        self.openDoors.clicked.connect(self.OpenDoors)
-        self.closeDoors.clicked.connect(self.CloseDoors)
-        self.openRoof.clicked.connect(self.OpenRoof)
-        self.closeRoof.clicked.connect(self.CloseRoof)
-        self.extendPad.clicked.connect(self.ExtendPad)
-        self.retractPad.clicked.connect(self.RetractPad)
-        self.raisePad.clicked.connect(self.RaisePad)
-        self.lowerPad.clicked.connect(self.LowerPad)
+        self.systemPowerButton.clicked.connect(self.SystemPower)
+        self.emergencyStopButton.clicked.connect(self.EmergencyStop)
+        self.passwordOverrideButton.clicked.connect(self.PasswordOverride)
+        self.openDoorsButton.clicked.connect(self.OpenDoors)
+        self.closeDoorsButton.clicked.connect(self.CloseDoors)
+        self.openRoofButton.clicked.connect(self.OpenRoof)
+        self.closeRoofButton.clicked.connect(self.CloseRoof)
+        self.extendPadButton.clicked.connect(self.ExtendPad)
+        self.retractPadButton.clicked.connect(self.RetractPad)
+        self.raisePadButton.clicked.connect(self.RaisePad)
+        self.lowerPadButton.clicked.connect(self.LowerPad)
 
         # Layouts
         clientlayout = QGridLayout()
@@ -234,28 +234,28 @@ class Form():
 
         # Layouts - Buttons
         buttonlayout = QGridLayout()
-        buttonlayout.addWidget(self.systemStatus, 0, 0)
-        buttonlayout.addWidget(self.systemPower, 0, 1)
-        buttonlayout.addWidget(self.emergencyStop, 0, 2)
-        buttonlayout.addWidget(self.passwordoverride, 0, 3)
-        buttonlayout.addWidget(self.doorStatus, 1, 0)
-        buttonlayout.addWidget(self.openDoors, 1, 1)
-        buttonlayout.addWidget(self.closeDoors, 1, 2)
-        buttonlayout.addWidget(self.roofStatus, 2, 0)
-        buttonlayout.addWidget(self.openRoof, 2, 1)
-        buttonlayout.addWidget(self.closeRoof, 2, 2)
-        buttonlayout.addWidget(self.backPadStatus, 3, 0)
-        buttonlayout.addWidget(self.extendPad, 3, 1)
-        buttonlayout.addWidget(self.retractPad, 3, 2)
-        buttonlayout.addWidget(self.roofPadStatus, 4, 0)
-        buttonlayout.addWidget(self.raisePad, 4, 1)
-        buttonlayout.addWidget(self.lowerPad, 4, 2)
+        buttonlayout.addWidget(self.powerStatusLabel, 0, 0)
+        buttonlayout.addWidget(self.systemPowerButton, 0, 1)
+        buttonlayout.addWidget(self.emergencyStopButton, 0, 2)
+        buttonlayout.addWidget(self.passwordOverrideButton, 0, 3)
+        buttonlayout.addWidget(self.doorStatusLabel, 1, 0)
+        buttonlayout.addWidget(self.openDoorsButton, 1, 1)
+        buttonlayout.addWidget(self.closeDoorsButton, 1, 2)
+        buttonlayout.addWidget(self.roofStatusLabel, 2, 0)
+        buttonlayout.addWidget(self.openRoofButton, 2, 1)
+        buttonlayout.addWidget(self.closeRoofButton, 2, 2)
+        buttonlayout.addWidget(self.backPadStatusLabel, 3, 0)
+        buttonlayout.addWidget(self.extendPadButton, 3, 1)
+        buttonlayout.addWidget(self.retractPadButton, 3, 2)
+        buttonlayout.addWidget(self.roofPadStatusLabel, 4, 0)
+        buttonlayout.addWidget(self.raisePadButton, 4, 1)
+        buttonlayout.addWidget(self.lowerPadButton, 4, 2)
 
         # Layouts - Setting layouts
         layout = QGridLayout()
         layout.addLayout(clientlayout, 0, 0)
         layout.addLayout(buttonlayout, 1, 0)
-        layout.addWidget(self.label, 2, 0)
+        layout.addWidget(self.statusLabel, 2, 0)
         layout.addWidget(self.webView, 3, 0)
 
         window.setLayout(layout)
@@ -288,7 +288,7 @@ class Form():
     def systemDiagnostic(self):
 
         # Send Message
-        data = self.sendData("systemStatus")
+        data = self.sendData("powerStatusLabel")
 
         # Parse Message
         try:
@@ -305,78 +305,78 @@ class Form():
 
             # Labels
             if(self.isDoorOpen):
-                self.doorStatus.setText("Doors: OPEN")
+                self.doorStatusLabel.setText("Doors: OPEN")
             else:
-                self.doorStatus.setText("Doors: CLOSED")
+                self.doorStatusLabel.setText("Doors: CLOSED")
 
             if(self.isRoofOpen):
-                self.roofStatus.setText("Roof: OPEN")
+                self.roofStatusLabel.setText("Roof: OPEN")
             else:
-                self.roofStatus.setText("Roof: CLOSED")
+                self.roofStatusLabel.setText("Roof: CLOSED")
 
             if(self.isPadExtended):
-                self.backPadStatus.setText("Back Pad: EXTENDED")
+                self.backPadStatusLabel.setText("Back Pad: EXTENDED")
             else:
-                self.backPadStatus.setText("Back Pad: RETRACTED")
+                self.backPadStatusLabel.setText("Back Pad: RETRACTED")
 
             if(self.isPadRaised):
-                self.roofPadStatus.setText("Top Pad: RAISED")
+                self.roofPadStatusLabel.setText("Top Pad: RAISED")
             else:
-                self.roofPadStatus.setText("Top Pad: LOWERED")
+                self.roofPadStatusLabel.setText("Top Pad: LOWERED")
             
             # Top Buttons
             if(self.isOn):
-                self.systemStatus.setText("System Power: ON")
-                self.emergencyStop.setDisabled(False)
-                self.passwordoverride.setDisabled(False)
+                self.powerStatusLabel.setText("System Power: ON")
+                self.emergencyStopButton.setDisabled(False)
+                self.passwordOverrideButton.setDisabled(False)
             else:
-                self.systemStatus.setText("System Power: OFF")
-                self.emergencyStop.setDisabled(True)
-                self.passwordoverride.setDisabled(True)
+                self.powerStatusLabel.setText("System Power: OFF")
+                self.emergencyStopButton.setDisabled(True)
+                self.passwordOverrideButton.setDisabled(True)
 
             # Doors
             if(self.isOn and not self.isDoorOpen):
-                self.openDoors.setDisabled(False)
+                self.openDoorsButton.setDisabled(False)
             else: 
-                self.openDoors.setDisabled(True)
+                self.openDoorsButton.setDisabled(True)
 
             if(self.isOn and self.isDoorOpen and not self.isPadExtended):
-                self.closeDoors.setDisabled(False)
+                self.closeDoorsButton.setDisabled(False)
             else: 
-                self.closeDoors.setDisabled(True)
+                self.closeDoorsButton.setDisabled(True)
 
             # Roof
             if(self.isOn and not self.isRoofOpen):
-                self.openRoof.setDisabled(False)
+                self.openRoofButton.setDisabled(False)
             else: 
-                self.openRoof.setDisabled(True)
+                self.openRoofButton.setDisabled(True)
 
             if(self.isOn and self.isRoofOpen and not self.isPadRaised):
-                self.closeRoof.setDisabled(False)
+                self.closeRoofButton.setDisabled(False)
             else: 
-                self.closeRoof.setDisabled(True)
+                self.closeRoofButton.setDisabled(True)
 
             # Pad Extend
             if(self.isOn and self.isDoorOpen and not self.isPadExtended):
-                self.extendPad.setDisabled(False)
+                self.extendPadButton.setDisabled(False)
             else: 
-                self.extendPad.setDisabled(True)
+                self.extendPadButton.setDisabled(True)
 
             if(self.isOn and self.isPadExtended):
-                self.retractPad.setDisabled(False)
+                self.retractPadButton.setDisabled(False)
             else: 
-                self.retractPad.setDisabled(True)
+                self.retractPadButton.setDisabled(True)
 
             # Pad Raise
             if(self.isOn and self.isRoofOpen and not self.isPadRaised):
-                self.raisePad.setDisabled(False)
+                self.raisePadButton.setDisabled(False)
             else: 
-                self.raisePad.setDisabled(True)
+                self.raisePadButton.setDisabled(True)
 
             if(self.isOn and self.isPadRaised):
-                self.lowerPad.setDisabled(False)
+                self.lowerPadButton.setDisabled(False)
             else: 
-                self.lowerPad.setDisabled(True)
+                self.lowerPadButton.setDisabled(True)
         except:
             print("impropper data: " + data)
 
@@ -389,7 +389,7 @@ class Form():
                 self.commandSock.connect((self.ipLineEdit.text(), int(self.portLineEdit.text())))
                 self.submitConnect.setDisabled(True)
             except Exception as e:
-                self.label.setText(str(e))
+                self.statusLabel.setText(str(e))
                 print(e)
                 return
 
@@ -410,7 +410,7 @@ class Form():
                 
             except OSError as e:
                 print(e)
-                self.label.setText("Invalid IP")
+                self.statusLabel.setText("Invalid IP")
                 self.submitConnect.setDisabled(False)
     
     # sendData: sends data to server
@@ -427,38 +427,38 @@ class Form():
     ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
-            self.messagetext = self.sendData("systemPower")
-            self.systemStatus.setText(self.messagetext)
+            self.messagetext = self.sendData("systemPowerButton")
+            self.powerStatusLabel.setText(self.messagetext)
             if self.messagetext == "System Power: ON":
-                self.emergencyStop.setDisabled(False)
-                self.passwordoverride.setDisabled(False)
-                self.openDoors.setDisabled(False)
-                self.openRoof.setDisabled(False)
+                self.emergencyStopButton.setDisabled(False)
+                self.passwordOverrideButton.setDisabled(False)
+                self.openDoorsButton.setDisabled(False)
+                self.openRoofButton.setDisabled(False)
             else:
-                self.emergencyStop.setDisabled(True)
-                self.passwordoverride.setDisabled(True)
-                self.openDoors.setDisabled(True)
-                self.openRoof.setDisabled(True)
-                self.extendPad.setDisabled(True)
-                self.raisePad.setDisabled(True)
+                self.emergencyStopButton.setDisabled(True)
+                self.passwordOverrideButton.setDisabled(True)
+                self.openDoorsButton.setDisabled(True)
+                self.openRoofButton.setDisabled(True)
+                self.extendPadButton.setDisabled(True)
+                self.raisePadButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def EmergencyStop(self):
         if self.isConnected:
-            self.messagetext = self.sendData("emergencyStop")
-            self.systemStatus.setText(self.messagetext)
-            self.emergencyStop.setDisabled(True)
-            self.openDoors.setDisabled(True)
-            self.closeDoors.setDisabled(True)
-            self.openRoof.setDisabled(True)
-            self.closeRoof.setDisabled(True)
-            self.extendPad.setDisabled(True)
-            self.retractPad.setDisabled(True)
-            self.raisePad.setDisabled(True)
-            self.lowerPad.setDisabled(True)
+            self.messagetext = self.sendData("emergencyStopButton")
+            self.powerStatusLabel.setText(self.messagetext)
+            self.emergencyStopButton.setDisabled(True)
+            self.openDoorsButton.setDisabled(True)
+            self.closeDoorsButton.setDisabled(True)
+            self.openRoofButton.setDisabled(True)
+            self.closeRoofButton.setDisabled(True)
+            self.extendPadButton.setDisabled(True)
+            self.retractPadButton.setDisabled(True)
+            self.raisePadButton.setDisabled(True)
+            self.lowerPadButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def PasswordOverride(self):
         if self.isConnected:
@@ -471,83 +471,83 @@ class Form():
 
     def OpenDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openDoors")
-            self.doorStatus.setText(self.messagetext)
-            self.openDoors.setDisabled(True)
-            self.closeDoors.setDisabled(False)
-            self.extendPad.setDisabled(False)
+            self.messagetext = self.sendData("openDoorsButton")
+            self.doorStatusLabel.setText(self.messagetext)
+            self.openDoorsButton.setDisabled(True)
+            self.closeDoorsButton.setDisabled(False)
+            self.extendPadButton.setDisabled(False)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def CloseDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeDoors")
-            self.doorStatus.setText(self.messagetext)
-            self.closeDoors.setDisabled(True)
-            self.openDoors.setDisabled(False)
-            self.extendPad.setDisabled(True)
+            self.messagetext = self.sendData("closeDoorsButton")
+            self.doorStatusLabel.setText(self.messagetext)
+            self.closeDoorsButton.setDisabled(True)
+            self.openDoorsButton.setDisabled(False)
+            self.extendPadButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def OpenRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openRoof")
-            self.roofStatus.setText(self.messagetext)
-            self.openRoof.setDisabled(True)
-            self.closeRoof.setDisabled(False)
-            self.raisePad.setDisabled(False)
+            self.messagetext = self.sendData("openRoofButton")
+            self.roofStatusLabel.setText(self.messagetext)
+            self.openRoofButton.setDisabled(True)
+            self.closeRoofButton.setDisabled(False)
+            self.raisePadButton.setDisabled(False)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def CloseRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeRoof")
-            self.roofStatus.setText(self.messagetext)
-            self.closeRoof.setDisabled(True)
-            self.openRoof.setDisabled(False)
-            self.raisePad.setDisabled(True)
+            self.messagetext = self.sendData("closeRoofButton")
+            self.roofStatusLabel.setText(self.messagetext)
+            self.closeRoofButton.setDisabled(True)
+            self.openRoofButton.setDisabled(False)
+            self.raisePadButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def ExtendPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("extendPad")
-            self.backPadStatus.setText(self.messagetext)
-            self.extendPad.setDisabled(True)
-            self.retractPad.setDisabled(False)
-            self.closeDoors.setDisabled(True)
+            self.messagetext = self.sendData("extendPadButton")
+            self.backPadStatusLabel.setText(self.messagetext)
+            self.extendPadButton.setDisabled(True)
+            self.retractPadButton.setDisabled(False)
+            self.closeDoorsButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def RetractPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("retractPad")
-            self.backPadStatus.setText(self.messagetext)
-            self.retractPad.setDisabled(True)
-            self.extendPad.setDisabled(False)
-            self.closeDoors.setDisabled(False)
+            self.messagetext = self.sendData("retractPadButton")
+            self.backPadStatusLabel.setText(self.messagetext)
+            self.retractPadButton.setDisabled(True)
+            self.extendPadButton.setDisabled(False)
+            self.closeDoorsButton.setDisabled(False)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def RaisePad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("raisePad")
-            self.roofPadStatus.setText(self.messagetext)
-            self.raisePad.setDisabled(True)
-            self.lowerPad.setDisabled(False)
-            self.closeRoof.setDisabled(True)
+            self.messagetext = self.sendData("raisePadButton")
+            self.roofPadStatusLabel.setText(self.messagetext)
+            self.raisePadButton.setDisabled(True)
+            self.lowerPadButton.setDisabled(False)
+            self.closeRoofButton.setDisabled(True)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
     def LowerPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("lowerPad")
-            self.roofPadStatus.setText(self.messagetext)
-            self.lowerPad.setDisabled(True)
-            self.raisePad.setDisabled(False)
-            self.closeRoof.setDisabled(False)
+            self.messagetext = self.sendData("lowerPadButton")
+            self.roofPadStatusLabel.setText(self.messagetext)
+            self.lowerPadButton.setDisabled(True)
+            self.raisePadButton.setDisabled(False)
+            self.closeRoofButton.setDisabled(False)
         else:
-            self.label.setText("Please Connect First")
+            self.statusLabel.setText("Please Connect First")
 
 ######### Running client #########
 if __name__ == '__main__':
