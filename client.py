@@ -287,7 +287,6 @@ class Form():
 
         # Send Message
         message = self.sendData("systemStatus")
-        message.decode()
 
         # Parse Message
         try:
