@@ -16,7 +16,7 @@ serverThread.daemon = True
 serverThread.start()
 
 # Get the IP address from the server
-cur_host = server.UDP_IP_ADDRESS
+cur_host = server.IP_ADDRESS
 
 
 ######### ApplicationThread: the thread for the webpage application #########

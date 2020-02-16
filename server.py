@@ -1,5 +1,5 @@
-'''Author: Lily S. and Claudia N. 
-    Simple UDP server built to run on a seperate thread'''
+'''Author: Claudia N. 
+    TCP server built to run on a seperate thread'''
 
 import socket
 import sys
@@ -10,11 +10,10 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.0.8'
-# UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
+IP_ADDRESS = '192.168.0.8'
+# IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
-UDP_CLIENT_PORT_NUM = 8888
-
+PORT_NUM = 8888
 BUFFERSIZE = 1024
 
 # Error messages: The error prefix is relevant because it is how the clients know when an error has occured.count
@@ -57,7 +56,7 @@ class Server():
         # PlcClient
         # self.plc = PlcClient()          # This is for production mode
         self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        # self.plc.login("PLC")           # Login with password PLC
+        self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
         # sockets
@@ -72,18 +71,14 @@ class Server():
 
     # closeSocket:  Run when the server is taken down to ensure that the socket is closed. 
     #               This usually throws the exception, but I have this function called just in case.
-    def closeSocket(self, mSocket):
+    def closeSocket(self):
         try:
-            mSocket.shutdown(socket.SHUT_RDWR)
-            mSocket.close()
+            self.commandSock.shutdown(socket.SHUT_RDWR)
+            self.commandSock.close()
         except Exception as e: # This is usually thrown, but that's okay. 
             print("Server.closeSocket exception: " + str(e))
 
-    # closeSockets: This function closes all sockets in the program. We used to have more, but now all we have is commandSock
-    def closeSockets(self):
-        self.running = False
-        self.closeSocket(self.commandSock)
-
+    # closeConnections: This function closes all open connections to clients
     def closeConnections(self):
         for conn in self.openConnections:
             conn.close()
@@ -91,7 +86,7 @@ class Server():
     # closeEvent:   When the gui is closed, close the plc browser and all the sockets     
     def closeEvent(self):
         self.plc.close()
-        self.closeSockets()
+        self.closeSocket()
 
 
     ######### Server Message Handling #########
@@ -299,6 +294,7 @@ class Server():
 
         self.serverCallback()
 
+    # Setting up a thread for each client connected to receive data
     def startClientThread(self, conn):
         serverThread = threading.Thread(target=self.receivedata, args=[conn])
         serverThread.daemon = True
@@ -318,7 +314,7 @@ class Server():
     # Server function for setting up the connection. It starts receiveData on a seperate thread
     def connection(self):
         try:
-            self.commandSock.bind((UDP_IP_ADDRESS, UDP_CLIENT_PORT_NUM))
+            self.commandSock.bind((IP_ADDRESS, PORT_NUM))
             self.commandSock.listen(10)
 
         except OSError as e:
@@ -327,8 +323,5 @@ class Server():
         while True: 
             conn, addr = self.commandSock.accept()
             self.openConnections.append(conn)
-            # data = conn.recv(BUFFERSIZE)
-            # message = "Message revieved! " + data.decode()
-            # conn.send(message.encode())
             self.startClientThread(conn)
             print ('Connection address:', addr)
