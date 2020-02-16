@@ -9,6 +9,7 @@ from flask import Flask
 import socket
 from threading import Thread
 
+IP_ADDRESS = '192.168.0.8'
 TCP_PORT = 8888
 BUFFER_SIZE = 1024
 
@@ -172,9 +173,9 @@ class Form():
 
         # Widgets Level
         self.serverLabel = QLabel('Server IP:')
-        self.ipLineEdit = QLineEdit("192.168.0.13")
-        self.portLineEdit = QLineEdit("8888")
-        self.submitConnect = QPushButton("Connect")
+        self.ipLineEdit = QLineEdit(IP_ADDRESS)
+        self.portLineEdit = QLineEdit(TCP_PORT)
+        self.submitConnect = QPushButton('Connect')
 
         # Labels
         self.label = QLabel("Waiting for input...")
