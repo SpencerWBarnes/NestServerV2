@@ -286,7 +286,7 @@ class Form():
     def systemDiagnostic(self):
 
         # Send Message
-        message = self.sendData("systemStatus")
+        data = self.sendData("systemStatus")
 
         # Parse Message
         try:
@@ -418,8 +418,7 @@ class Form():
         data = data.decode()
 
         if "Error" in data:
-                print("uh oh error!")
-                self.systemDiagnostic()
+            print("uh oh error!")
 
         return data
 
