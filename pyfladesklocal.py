@@ -7,13 +7,19 @@ import socket
 import server
 import threading
 
+######### Initializing the server thread #########
 s = server.Server()
 serverThread = threading.Thread(target=s.connection)
 serverThread.daemon = True
+
+# Start server connection
 serverThread.start()
-cur_host = s.UDP_IP_ADDRESS
+
+# Get the IP address from the server
+cur_host = server.IP_ADDRESS
 
 
+######### ApplicationThread: the thread for the webpage application #########
 class ApplicationThread(QtCore.QThread):
     def __init__(self, application, port=5000):
         super(ApplicationThread, self).__init__()
@@ -27,7 +33,7 @@ class ApplicationThread(QtCore.QThread):
     def run(self):
         self.application.run(port=self.port, host=self.host, threaded=True)
 
-
+######### WebPage: the web engine that displays webpage content #########
 class WebPage(QtWebEngineWidgets.QWebEnginePage):
     def __init__(self, root_url):
         super(WebPage, self).__init__()
@@ -45,19 +51,18 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
             return False
         return super(WebPage, self).acceptNavigationRequest(url, kind, is_main_frame)
 
-
-def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel):
+######### updateUI: this is a callback that updates the user interface when there are changes on the server #########
+def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
-    ipLabel.setText("IP: " + str(s.UDP_IP_ADDRESS))
+    ipLabel.setText("IP: " + str(server.IP_ADDRESS))
     isOnLabel.setText("System on: " + str(s.isOn))
     isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
     isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
     isPadExtendedLabel.setText("Pad extended: " + str(s.isPadExtended))
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
-    isStoppedLabel.setText("System stopped: " + str(s.isStopped))
 
-
-def init_gui(application, port=0, width=800,    height=600, window_title="Nest",      icon="appicon.png", argv=None):
+######### init_gui: initializes the user interface for this application and sets up constants #########
+def init_gui(application, port=0, width=800, height=600, window_title="Nest", icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
@@ -67,7 +72,7 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
         port = sock.getsockname()[1]
         sock.close()
 
-    print(" * Listening to commands on: " + s.UDP_IP_ADDRESS)
+    print(" * Listening to commands on: " + server.IP_ADDRESS)
     print(s.getSystemStatusDict())
 
     # Application Level
@@ -84,17 +89,19 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     window.setWindowTitle(window_title)
     window.setWindowIcon(QtGui.QIcon(icon))
 
-    # WebView Level
+    # Layouts Level
     layout = QVBoxLayout()
     gridLayout = QGridLayout()
     statusLayout = QGridLayout()
     vidLayout = QHBoxLayout()
 
+    # WebView Level
     webView = QtWebEngineWidgets.QWebEngineView(window)
     webView.setMinimumHeight(400)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
+    # Widgets Level
     commandsLabel = QLabel()
     commandsLabel.setAlignment(QtCore.Qt.AlignTop)
 
@@ -104,23 +111,17 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     isRoofOpenLabel = QLabel()
     isPadExtendedLabel = QLabel()
     isPadRaisedLabel = QLabel()
-    isStoppedLabel = QLabel()
 
+    # Layouts - Setting layouts
     statusLayout.addWidget(ipLabel, 0, 0)
     statusLayout.addWidget(isOnLabel, 1, 0)
     statusLayout.addWidget(isDoorOpenLabel, 2, 0)
     statusLayout.addWidget(isRoofOpenLabel, 3, 0)
     statusLayout.addWidget(isPadExtendedLabel, 4, 0)
     statusLayout.addWidget(isPadRaisedLabel, 5, 0)
-    statusLayout.addWidget(isStoppedLabel, 6, 0)
 
     gridLayout.addLayout(statusLayout, 0, 0)
     gridLayout.addWidget(commandsLabel, 0, 1)
-
-    s.serverCalback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
-    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel, isStoppedLabel)
 
     layout.addLayout(vidLayout)
     layout.addLayout(gridLayout)
@@ -131,6 +132,12 @@ def init_gui(application, port=0, width=800,    height=600, window_title="Nest",
     page = WebPage('http://' + cur_host + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-#   window.showMaximized()
     window.show()
+
+    # Callbacks to update the UI upon server changes
+    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
+             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+
     return qtapp.exec_()
