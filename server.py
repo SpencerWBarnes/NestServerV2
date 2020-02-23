@@ -260,6 +260,14 @@ class Server():
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
+    def bottomDroneMission(self, addr):
+        # TODO: figure out constraints?
+        pass
+
+    def topDroneMission(self, addr):
+        # TODO: figure out constraints?
+        pass
+
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, addr):
         self.messagetext = "Connection is good. Message recieved" 
@@ -291,6 +299,10 @@ class Server():
             self.lowerPad(addr)
         elif data == "systemStatus":
             self.systemStatus(addr)
+        elif data == "bottomDroneMission":
+            self.bottomDroneMission(addr)
+        elif data == "topDroneMission":
+            self.topDroneMission(addr)
         elif "Connection Test" in data:
             self.sendTestMessage(addr)
         else:
