@@ -9,17 +9,22 @@ CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
 PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
-# These come from the HTML
-EMERGENCYSTOPID = "157910667599022"
+# These come from the ID's of elements in the HTML
+EMERGENCYSTOPBUTTON = "157910667599022"
 
-OPENDOORID = "157910241216714"
-ClOSEDOORID = "157910667129821"
-OPENROOFID = "157910689748631"
-CLOSEROOFID = "157910681743328"
-EXTENDPADID = "157910679857925"
-RETRACTPADID = "157910680336426"
-RAISEPADID = "157910682081829"
-LOWERPADID = "157910682381830"
+OPENDOORBUTTON = "157910241216714"
+CLOSEDOORBUTTON = "157910667129821"
+OPENROOFBUTTON = "157910689748631"
+CLOSEROOFBUTTON = "157910681743328"
+EXTENDPADBUTTON = "157910679857925"
+RETRACTPADBUTTON = "157910680336426"
+RAISEPADBUTTON = "157910682081829"
+LOWERPADBUTTON = "157910682381830"
+
+# DOORSOPENSENSOR
+# DOORSCLOSEDSENSOR
+# ROOFOPENSENSOR
+# ROOFCLOSEDSENSOR
 
 class Button:
     def __init__(self, id, browser):
@@ -53,16 +58,16 @@ class PlcClient:
 
     # initButtons: finds all the buttons in the HTML from the browser using the Button class
     def initButtons(self):
-        self.emergencyStopButton = Button(EMERGENCYSTOPID, self.browser)
+        self.emergencyStopButton = Button(EMERGENCYSTOPBUTTON, self.browser)
 
-        self.openDoorsButton = Button(OPENDOORID, self.browser)
-        self.closeDoorsButton = Button(ClOSEDOORID, self.browser)
-        self.openRoofButton = Button(OPENROOFID, self.browser)
-        self.closeRoofButton = Button(CLOSEROOFID, self.browser)
-        self.extendPadButton = Button(EXTENDPADID, self.browser)
-        self.retractPadButton = Button(RETRACTPADID, self.browser)
-        self.raisePadButton = Button(RAISEPADID, self.browser)
-        self.lowerPadButton = Button(LOWERPADID, self.browser)
+        self.openDoorsButton = Button(OPENDOORBUTTON, self.browser)
+        self.closeDoorsButton = Button(CLOSEDOORBUTTON, self.browser)
+        self.openRoofButton = Button(OPENROOFBUTTON, self.browser)
+        self.closeRoofButton = Button(CLOSEROOFBUTTON, self.browser)
+        self.extendPadButton = Button(EXTENDPADBUTTON, self.browser)
+        self.retractPadButton = Button(RETRACTPADBUTTON, self.browser)
+        self.raisePadButton = Button(RAISEPADBUTTON, self.browser)
+        self.lowerPadButton = Button(LOWERPADBUTTON, self.browser)
 
     # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
     def handleClick(self, button):
@@ -70,7 +75,7 @@ class PlcClient:
         thread.daemon = True
         thread.start()
 
-    # These functions handle each of the buttons on the screen
+    # Individual operations: These functions handle each of the buttons on the screen
     def emergencyStop(self):
         self.handleClick(self.emergencyStopButton)
 
@@ -97,6 +102,29 @@ class PlcClient:
 
     def lowerPad(self):
         self.handleClick(self.lowerPadButton)
+
+    # Missions
+    def bottomPadMission(self):
+        self.openDoors()
+        # Check sensors to see when doors are open
+        self.extendPad()
+        # Check sensors to see when pad is fully extended
+        # Send command for drone to take off and wait for drone to come back
+        self.retractPad()
+        # Check sensors to see when pad is fully retracted
+        self.closeDoors()
+        # Check sensors to see when doors are closed
+
+    def topPadMission(self):
+        self.openRoof()
+        # Check sensors to see when roof is open
+        self.raisePad()
+        # Check sensors to see when pad is fully raised
+        # Send command for drone to take off and wait for drone to come back
+        self.lowerPad()
+        # Check sensors to see when pad is fully lowerd
+        self.closeRoof()
+        # Check sensors to see when roof is closed
     
     # close: needs to be called no matter what to close the browser
     def close(self):
@@ -144,6 +172,12 @@ class PlcClientDev:
         pass
 
     def lowerPad(self):
+        pass
+
+    def bottomPadMission(self):
+        pass
+
+    def topPadMission(self):
         pass
         
     def close(self):
