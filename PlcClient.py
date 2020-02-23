@@ -106,27 +106,27 @@ class PlcClient:
     # Missions
     def bottomDroneMission(self):
         self.openDoors()
-        # Check sensors to see when doors are open
+        # TODO: Check sensors to see when doors are open
         self.extendPad()
-        # Check sensors to see when pad is fully extended
-        # Send command for drone to take off and wait for drone to come back
+        # TODO: Check sensors to see when pad is fully extended
+        # TODO: Send command for drone to take off and wait for drone to come back
         self.retractPad()
-        # Check sensors to see when pad is fully retracted
+        # TODO: Check sensors to see when pad is fully retracted
         self.closeDoors()
-        # Check sensors to see when doors are closed
+        # TODO: Check sensors to see when doors are closed
 
     def topDroneMission(self):
         self.openRoof()
-        # Check sensors to see when roof is open
+        # TODO: Check sensors to see when roof is open
         self.raisePad()
-        # Check sensors to see when pad is fully raised
-        # Send command for drone to take off and wait for drone to come back
+        # TODO: Check sensors to see when pad is fully raised
+        # TODO: Send command for drone to take off and wait for drone to come back
         self.lowerPad()
-        # Check sensors to see when pad is fully lowerd
+        # TODO: Check sensors to see when pad is fully lowerd
         self.closeRoof()
-        # Check sensors to see when roof is closed
+        # TODO: Check sensors to see when roof is closed
 
-    # Gets the status of all the sensors to relay information back to the server
+    # TODO: Gets the status of all the sensors to relay information back to the server
     def systemStatus(self):
         # systemStatusDict = {
         #     "isOn" : self.isOn,
