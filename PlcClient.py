@@ -104,7 +104,7 @@ class PlcClient:
         self.handleClick(self.lowerPadButton)
 
     # Missions
-    def bottomPadMission(self):
+    def bottomDroneMission(self):
         self.openDoors()
         # Check sensors to see when doors are open
         self.extendPad()
@@ -115,7 +115,7 @@ class PlcClient:
         self.closeDoors()
         # Check sensors to see when doors are closed
 
-    def topPadMission(self):
+    def topDroneMission(self):
         self.openRoof()
         # Check sensors to see when roof is open
         self.raisePad()
@@ -125,6 +125,19 @@ class PlcClient:
         # Check sensors to see when pad is fully lowerd
         self.closeRoof()
         # Check sensors to see when roof is closed
+
+    # Gets the status of all the sensors to relay information back to the server
+    def systemStatus(self):
+        # systemStatusDict = {
+        #     "isOn" : self.isOn,
+        #     "isDoorOpen" : self.isDoorOpen,
+        #     "isRoofOpen" : self.isRoofOpen,
+        #     "isPadExtended" : self.isPadExtended,
+        #     "isPadRaised" : self.isPadRaised,
+        #     "previousCommand" : self.messagetext
+        # }
+        # return json.dumps(systemStatusDict)
+        pass
     
     # close: needs to be called no matter what to close the browser
     def close(self):
@@ -174,10 +187,13 @@ class PlcClientDev:
     def lowerPad(self):
         pass
 
-    def bottomPadMission(self):
+    def bottomDroneMission(self):
         pass
 
-    def topPadMission(self):
+    def topDroneMission(self):
+        pass
+
+    def systemStatus(self):
         pass
         
     def close(self):
