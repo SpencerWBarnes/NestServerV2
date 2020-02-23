@@ -26,6 +26,12 @@ LOWERPADBUTTON = "157910682381830"
 # ROOFOPENSENSOR
 # ROOFCLOSEDSENSOR
 
+# TODO: Possible problem, the plc client and the server can actually exist in different states if the server is too quick to send data.
+#       When the plc receives a message that it can't handle or process right now because of constraints, it ignores that message. 
+#       This means that the plc will ignore messages like "extendPad" while it is in the process of opening the doors. 
+#       So what should we do? I'm thinking we send back response messages on whether or not a task can be completed. 
+#       Or we could share some sort of global status between the server and the plc client
+
 class Button:
     def __init__(self, id, browser):
         self.button = browser.find_element_by_id(id)
@@ -77,30 +83,39 @@ class PlcClient:
 
     # Individual operations: These functions handle each of the buttons on the screen
     def emergencyStop(self):
+        # TODO: Check sensors
         self.handleClick(self.emergencyStopButton)
 
     def openDoors(self):
+        # TODO: Check sensors
         self.handleClick(self.openDoorsButton)
 
     def closeDoors(self):
+        # TODO: Check sensors
         self.handleClick(self.closeDoorsButton)
 
     def openRoof(self):
+        # TODO: Check sensors
         self.handleClick(self.openRoofButton)
 
     def closeRoof(self):
+        # TODO: Check sensors
         self.handleClick(self.closeDoorsButton)
 
     def extendPad(self):
+        # TODO: Check sensors
         self.handleClick(self.extendPadButton)
 
     def retractPad(self):
+        # TODO: Check sensors
         self.handleClick(self.retractPadButton)
 
     def raisePad(self):
+        # TODO: Check sensors
         self.handleClick(self.raisePadButton)
 
     def lowerPad(self):
+        # TODO: Check sensors
         self.handleClick(self.lowerPadButton)
 
     # Missions
