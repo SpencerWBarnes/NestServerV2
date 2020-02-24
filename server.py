@@ -268,6 +268,28 @@ class Server():
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
+    def bottomDroneMission(self, addr):
+        if self.isOn:
+            self.messagetext = "Bottom drone mission"
+            self.isDoorOpen = True
+            self.isPadExtended = True
+            # self.plc.bottomDroneMission()
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
+
+    def topDroneMission(self, addr):
+        if self.isOn:
+            self.messagetext = "Top drone mission"
+            self.isRoofOpen = True
+            self.isPadRaised = True
+            # self.plc.topDroneMission()
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
+
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, conn):
         self.messagetext = "Connection is good. Message recieved" 
@@ -301,7 +323,11 @@ class Server():
         elif data == "lowerPad":
             self.lowerPad(conn)
         elif data == "systemStatus":
-            self.systemStatus(conn)
+            self.systemStatus(addr)
+        elif data == "bottomDroneMission":
+            self.bottomDroneMission(addr)
+        elif data == "topDroneMission":
+            self.topDroneMission(addr)
         elif "Connection Test" in data:
             self.sendTestMessage(conn)
         else:
