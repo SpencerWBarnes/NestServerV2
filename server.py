@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.8'
+IP_ADDRESS = '172.20.10.5'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -337,7 +337,7 @@ class Server():
         while True:
             data = conn.recv(BUFFERSIZE)
             if data: 
-                print ("received data:", data.decode())
+                print ("received data:", data.decode(), conn)
                 self.handledata(data.decode(), conn)
             data = None
         conn.close()
