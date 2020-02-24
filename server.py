@@ -261,12 +261,26 @@ class Server():
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     def bottomDroneMission(self, addr):
-        # TODO: figure out constraints?
-        pass
+        if self.isOn:
+            self.messagetext = "Bottom drone mission"
+            self.isDoorOpen = True
+            self.isPadExtended = True
+            # self.plc.bottomDroneMission()
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
 
     def topDroneMission(self, addr):
-        # TODO: figure out constraints?
-        pass
+        if self.isOn:
+            self.messagetext = "Top drone mission"
+            self.isRoofOpen = True
+            self.isPadRaised = True
+            # self.plc.topDroneMission()
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, addr):
