@@ -93,7 +93,7 @@ class Server():
 
     # unknownMessage: This method is called when the server receives a message it doesn't know what to do with it
     def unknownMessage(self, conn, message):
-        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message
+        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message +'\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -108,6 +108,7 @@ class Server():
             "previousCommand" : self.messagetext
         }
         message = json.dumps(systemStatusDict)
+        message = message + '\n'
         # print(message)
         conn.send(message.encode())
 
@@ -140,6 +141,7 @@ class Server():
             self.messagetext = "System Power: ON"
             self.isOn = True
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -149,6 +151,7 @@ class Server():
         self.messagetext = "System Power: OFF"
         self.isOn = False
         self.plc.emergencyStop()
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -161,6 +164,8 @@ class Server():
             self.plc.openDoors()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -178,6 +183,7 @@ class Server():
             if self.isPadExtended:
                 self.messagetext = self.messagetext + errorDictionary['padIsExtended'] + '. '
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -190,6 +196,8 @@ class Server():
             self.plc.openRoof()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -207,6 +215,7 @@ class Server():
             if self.isPadRaised:
                 self.messagetext = self.messagetext + errorDictionary['padIsRaised'] + '. '
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -224,6 +233,7 @@ class Server():
             if not self.isDoorOpen:
                 self.messagetext = self.messagetext + errorDictionary['doorsAreClosed'] + '. '
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -236,6 +246,8 @@ class Server():
             self.plc.retractPad()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -252,6 +264,8 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['isOff'] + '. '
             if not self.isRoofOpen:
                 self.messagetext = self.messagetext + errorDictionary['roofIsClosed'] + '. '
+        
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -264,12 +278,15 @@ class Server():
             self.plc.lowerPad()
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, conn):
         self.messagetext = "Connection is good. Message recieved" 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
