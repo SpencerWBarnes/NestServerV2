@@ -5,21 +5,32 @@ import threading
 # Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
 # download this and copy and paste where that file is here vvvv
 # CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
-CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/webscraper/chromedriver'
+CHROMEDRIVERLOCATION = '/Users/claudia/Desktop/Impress/Server research/webscraper/chromedriver'
 PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
 # These come from the ID's of elements in the HTML
 EMERGENCYSTOPBUTTON = "157910667599022"
 
-OPENDOORBUTTON = "157910241216714"
-CLOSEDOORBUTTON = "157910667129821"
-OPENROOFBUTTON = "157910689748631"
-CLOSEROOFBUTTON = "157910681743328"
-EXTENDPADBUTTON = "157910679857925"
-RETRACTPADBUTTON = "157910680336426"
-RAISEPADBUTTON = "157910682081829"
-LOWERPADBUTTON = "157910682381830"
+OPEN_DOORS_ID       = "157910241216714"
+CLOSE_DOORS_ID      = "157910667129821"
+EMERGENCY_STOP_ID   = "157910667599022"
+EXTEND_PAD_ID       = "157910679857925"
+RETRACT_PAD_ID      = "157910680336426"
+CLOSE_ROOF_ID       = "157910681743328"
+RAISE_PAD_ID        = "157910682081829"
+LOWER_PAD_ID        = "157910682381830"
+OPEN_ROOF_ID        = "157910689748631"
+DOOR_ONE_CLOSED_ID  = "158092495274536"
+DOOR_TWO_CLOSED_ID  = "158092496252337"
+RAIL_RETRACTED_ID   = "158092497361138"
+ROOF_CLOSED_ID      = "158092497820339"
+LIFT_LOWERED_ID     = "158092498570540"
+RAIL_EXTENDED_ID    = "158092500511041"
+ROOF_OPEN_ID        = "158092500512742"
+DOOR_TWO_OPEN_ID    = "158092500514543"
+DOOR_ONE_OPEN_ID    = "158092500516544"
+LIFT_RAISED_ID      = "158092500518645"
 
 # DOORSOPENSENSOR
 # DOORSCLOSEDSENSOR
@@ -48,7 +59,7 @@ class PlcClient:
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
-        # self.browser.get('http://localhost:3000/')
+        self.browser.get('http://localhost:3000/')
 
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
@@ -64,16 +75,25 @@ class PlcClient:
 
     # initButtons: finds all the buttons in the HTML from the browser using the Button class
     def initButtons(self):
-        self.emergencyStopButton = Button(EMERGENCYSTOPBUTTON, self.browser)
-
-        self.openDoorsButton = Button(OPENDOORBUTTON, self.browser)
-        self.closeDoorsButton = Button(CLOSEDOORBUTTON, self.browser)
-        self.openRoofButton = Button(OPENROOFBUTTON, self.browser)
-        self.closeRoofButton = Button(CLOSEROOFBUTTON, self.browser)
-        self.extendPadButton = Button(EXTENDPADBUTTON, self.browser)
-        self.retractPadButton = Button(RETRACTPADBUTTON, self.browser)
-        self.raisePadButton = Button(RAISEPADBUTTON, self.browser)
-        self.lowerPadButton = Button(LOWERPADBUTTON, self.browser)
+        self.openDoorsButton = Button(OPEN_DOORS_ID, self.browser)
+        self.closeDoorsButton = Button(CLOSE_DOORS_ID, self.browser)
+        self.emergencyStopButton = Button(EMERGENCY_STOP_ID, self.browser)
+        self.extendPadButton = Button(EXTEND_PAD_ID, self.browser)
+        self.retractPadButton = Button(RETRACT_PAD_ID, self.browser)
+        self.closeRoofButton = Button(CLOSE_ROOF_ID, self.browser)
+        self.raisePadButton = Button(RAISE_PAD_ID, self.browser)
+        self.lowerPadButton = Button(LOWER_PAD_ID, self.browser)
+        self.openRoofButton = Button(OPEN_ROOF_ID, self.browser)
+        self.doorOneClosedText = Button(DOOR_ONE_CLOSED_ID, self.browser)
+        self.doorTwoClosedText = Button(DOOR_TWO_CLOSED_ID, self.browser)
+        self.railRetractedText = Button(RAIL_RETRACTED_ID, self.browser)
+        self.roofClosedText = Button(ROOF_CLOSED_ID, self.browser)
+        self.liftLoweredText = Button(LIFT_LOWERED_ID, self.browser)
+        self.railExtendedText = Button(RAIL_EXTENDED_ID, self.browser)
+        self.roofOpenText = Button(ROOF_OPEN_ID, self.browser)
+        self.doorTwoOpenText = Button(DOOR_TWO_OPEN_ID, self.browser)
+        self.doorOneOpenText = Button(DOOR_ONE_OPEN_ID, self.browser)
+        self.liftRaisedText = Button(LIFT_RAISED_ID, self.browser)
 
     # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
     def handleClick(self, button):
