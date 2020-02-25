@@ -261,7 +261,6 @@ class PlcClient:
 # It has all of the same functions as PlcClient, but they are empty. This helps us not have to open a 
 # browser to the PLC's site everytime we want to test something on the server.
 class PlcClientDev:
-    
     def __init__(self):
         pass
 
@@ -271,38 +270,8 @@ class PlcClientDev:
     def initButtons(self):
         pass
 
-    def __emergencyStop(self):
+    def executeCommand(self, command):
         pass
 
-    def __openDoors(self):
-        pass
-
-    def __closeDoors(self):
-        pass
-
-    def __openRoof(self):
-        pass
-
-    def __closeRoof(self):
-        pass
-
-    def __extendPad(self):
-        pass
-
-    def __retractPad(self):
-        pass
-
-    def __raisePad(self):
-        pass
-
-    def __lowerPad(self):
-        pass
-
-    def __bottomDroneMission(self):
-        pass
-
-    def __topDroneMission(self):
-        pass
-        
     def close(self):
         pass
