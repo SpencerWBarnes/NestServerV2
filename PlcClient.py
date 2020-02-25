@@ -122,6 +122,7 @@ class PlcClient:
     def openDoors(self):
         # TODO: Check sensors
         self.handleClick(self.openDoorsButton)
+        return True
 
     def closeDoors(self):
         if(self.railRetractedText.getModeValue()):
@@ -133,6 +134,7 @@ class PlcClient:
     def openRoof(self):
         # TODO: Check sensors
         self.handleClick(self.openRoofButton)
+        return True
 
     def closeRoof(self):
         if(self.liftLoweredText.getModeValue()):
@@ -151,6 +153,7 @@ class PlcClient:
     def retractPad(self):
         # TODO: Check sensors
         self.handleClick(self.retractPadButton)
+        return True
 
     def raisePad(self):
         if(self.roofOpenText.getModeValue()):
@@ -162,6 +165,7 @@ class PlcClient:
     def lowerPad(self):
         # TODO: Check sensors
         self.handleClick(self.lowerPadButton)
+        return True
 
     # Missions
     def bottomDroneMission(self):
