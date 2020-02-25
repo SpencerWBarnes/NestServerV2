@@ -42,7 +42,10 @@ class Sensor:
 
     # toggleButton: This clicks a button twice with a time delay in between
     def getModeValue(self):
-        return (self.button.get_attribute("mode"))
+        if (self.button.get_attribute("mode") == "true"):
+            return True
+        else:
+            return False
 
 class Button:
     def __init__(self, id, browser, waitSensors):
@@ -57,7 +60,7 @@ class Button:
         while(not sensorsTriggered):
             sensorsTriggered = True
             for sensor in self.waitSensors:
-                if (sensor.getModeValue() == "false"):
+                if (not sensor.getModeValue()):
                     sensorsTriggered = False
                     
         self.button.click()
@@ -121,28 +124,40 @@ class PlcClient:
         self.handleClick(self.openDoorsButton)
 
     def closeDoors(self):
-        # TODO: Check sensors
-        self.handleClick(self.closeDoorsButton)
+        if(self.railRetractedText.getModeValue()):
+            self.handleClick(self.closeDoorsButton)
+            return True
+        else: 
+            return False
 
     def openRoof(self):
         # TODO: Check sensors
         self.handleClick(self.openRoofButton)
 
     def closeRoof(self):
-        # TODO: Check sensors
-        self.handleClick(self.closeRoofButton)
+        if(self.liftLoweredText.getModeValue()):
+            self.handleClick(self.closeRoofButton)
+            return True
+        else: 
+            return False
 
     def extendPad(self):
-        # TODO: Check sensors
-        self.handleClick(self.extendPadButton)
+        if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
+            self.handleClick(self.extendPadButton)
+            return True
+        else: 
+            return False
 
     def retractPad(self):
         # TODO: Check sensors
         self.handleClick(self.retractPadButton)
 
     def raisePad(self):
-        # TODO: Check sensors
-        self.handleClick(self.raisePadButton)
+        if(self.roofOpenText.getModeValue()):
+            self.handleClick(self.raisePadButton)
+            return True
+        else: 
+            return Falses
 
     def lowerPad(self):
         # TODO: Check sensors
@@ -151,7 +166,6 @@ class PlcClient:
     # Missions
     def bottomDroneMission(self):
         self.openDoors()
-        # TODO: Check sensors to see when doors are open
         self.extendPad()
         # TODO: Check sensors to see when pad is fully extended
         # TODO: Send command for drone to take off and wait for drone to come back
@@ -170,19 +184,6 @@ class PlcClient:
         # TODO: Check sensors to see when pad is fully lowerd
         self.closeRoof()
         # TODO: Check sensors to see when roof is closed
-
-    # TODO: Gets the status of all the sensors to relay information back to the server
-    def systemStatus(self):
-        # systemStatusDict = {
-        #     "isOn" : self.isOn,
-        #     "isDoorOpen" : self.isDoorOpen,
-        #     "isRoofOpen" : self.isRoofOpen,
-        #     "isPadExtended" : self.isPadExtended,
-        #     "isPadRaised" : self.isPadRaised,
-        #     "previousCommand" : self.messagetext
-        # }
-        # return json.dumps(systemStatusDict)
-        pass
     
     # close: needs to be called no matter what to close the browser
     def close(self):
@@ -236,9 +237,6 @@ class PlcClientDev:
         pass
 
     def topDroneMission(self):
-        pass
-
-    def systemStatus(self):
         pass
         
     def close(self):
