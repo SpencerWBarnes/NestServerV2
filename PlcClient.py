@@ -115,65 +115,74 @@ class PlcClient:
         self.openRoofButton = Button(OPEN_ROOF_ID, self.browser, [self.roofOpenText])
 
     # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
-    def startThread(self, threadTarget):
+    def __startThread(self, threadTarget):
         thread = threading.Thread(target=threadTarget)
         thread.daemon = True
         thread.start()
 
+    # executeCommand: takes in a string command, the same one the server sees, and executes it
     def executeCommand(self, command):
         canExecute = True
 
         if command == "emergencyStop":
-            self.startThread(self.__emergencyStop)
+            self.__startThread(self.__emergencyStop)
 
         elif command == "openDoors":
-            self.startThread(self.__openDoors)
+            self.__startThread(self.__openDoors)
 
         elif command == "closeDoors":
             if(self.railRetractedText.getModeValue()):
-                self.startThread(self.__closeDoors)
+                self.__startThread(self.__closeDoors)
             else: 
                 canExecute = False
 
         elif command == "openRoof":
-            self.startThread(self.__openRoof)
+            self.__startThread(self.__openRoof)
 
         elif command == "closeRoof":
             if(self.liftLoweredText.getModeValue()):
-                self.startThread(self.__closeRoof)
+                self.__startThread(self.__closeRoof)
             else: 
                 canExecute = False
 
         elif command == "extendPad":
             if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
-                self.startThread(self.__extendPad)
+                self.__startThread(self.__extendPad)
             else: 
                 canExecute = False
 
         elif command == "retractPad":
-            self.startThread(self.__retractPad)
+            self.__startThread(self.__retractPad)
 
         elif command == "raisePad":
             if(self.roofOpenText.getModeValue()):
-                self.startThread(self.__raisePad)
+                self.__startThread(self.__raisePad)
             else: 
                 canExecute = False
 
         elif command == "lowerPad":
-            self.startThread(self.__lowerPad)
+            self.__startThread(self.__lowerPad)
 
         elif command == "systemStatus":
-            self.startThread(self.__systemStatus)
+            self.__startThread(self.__systemStatus)
 
         elif command == "bottomDroneMission":
-            self.startThread(self.__bottomDroneMission)
+            self.__startThread(self.__bottomDroneMission)
 
         elif command == "topDroneMission":
-            self.startThread(self.__topDroneMission)
+            self.__startThread(self.__topDroneMission)
 
         return (canExecute)
 
-    # Individual operations: These functions handle each of the buttons on the screen
+    # close: needs to be called no matter what to close the browser
+    def close(self):
+        try:
+            self.browser.close()
+        except Exception as e: # it might through an exception if the browser has already been closed
+            print("PlcClient.close exception:" + str(e))
+
+    # Individual operations: These functions handle each of the buttons actions on the screen, 
+    #   these are private methods to prevent outside objects from using them improperly
     def __emergencyStop(self):
         # TODO: see if this already happens in the PLC
         self.openDoorsButton.shouldBeOn = False
@@ -247,13 +256,6 @@ class PlcClient:
         # TODO: Check sensors to see when pad is fully lowerd
         self.__closeRoof()
         # TODO: Check sensors to see when roof is closed
-    
-    # close: needs to be called no matter what to close the browser
-    def close(self):
-        try:
-            self.browser.close()
-        except Exception as e: # it might through an exception if the browser has already been closed
-            print("PlcClient.close exception:" + str(e))
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
 # It has all of the same functions as PlcClient, but they are empty. This helps us not have to open a 
