@@ -258,7 +258,7 @@ class PlcClient:
         # TODO: Check sensors to see when roof is closed
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
-# It has all of the same functions as PlcClient, but they are empty. This helps us not have to open a 
+# It has all of the same public functions as PlcClient, but they are empty. This helps us not have to open a 
 # browser to the PLC's site everytime we want to test something on the server.
 class PlcClientDev:
     def __init__(self):
