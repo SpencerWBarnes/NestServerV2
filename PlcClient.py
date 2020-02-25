@@ -36,14 +36,30 @@ LIFT_RAISED_ID      = "158092500518645"
 #       So what should we do? I'm thinking we send back response messages on whether or not a task can be completed. 
 #       Or we could share some sort of global status between the server and the plc client
 
-class Button:
+class Sensor:
     def __init__(self, id, browser):
         self.button = browser.find_element_by_id(id)
 
     # toggleButton: This clicks a button twice with a time delay in between
+    def getModeValue(self):
+        return (self.button.get_attribute("mode"))
+
+class Button:
+    def __init__(self, id, browser, waitSensors):
+        self.button = browser.find_element_by_id(id)
+        self.waitSensors = waitSensors
+
+    # toggleButton: This clicks a button twice with a time delay in between
     def toggleButton(self):
         self.button.click()
-        time.sleep(TIMEDELAY)
+        
+        sensorsTriggered = False
+        while(not sensorsTriggered):
+            sensorsTriggered = True
+            for sensor in self.waitSensors:
+                if (sensor.getModeValue() == "false"):
+                    sensorsTriggered = False
+                    
         self.button.click()
 
 class PlcClient:
@@ -68,25 +84,26 @@ class PlcClient:
 
     # initButtons: finds all the buttons in the HTML from the browser using the Button class
     def initButtons(self):
-        self.openDoorsButton = Button(OPEN_DOORS_ID, self.browser)
-        self.closeDoorsButton = Button(CLOSE_DOORS_ID, self.browser)
-        self.emergencyStopButton = Button(EMERGENCY_STOP_ID, self.browser)
-        self.extendPadButton = Button(EXTEND_PAD_ID, self.browser)
-        self.retractPadButton = Button(RETRACT_PAD_ID, self.browser)
-        self.closeRoofButton = Button(CLOSE_ROOF_ID, self.browser)
-        self.raisePadButton = Button(RAISE_PAD_ID, self.browser)
-        self.lowerPadButton = Button(LOWER_PAD_ID, self.browser)
-        self.openRoofButton = Button(OPEN_ROOF_ID, self.browser)
-        self.doorOneClosedText = Button(DOOR_ONE_CLOSED_ID, self.browser)
-        self.doorTwoClosedText = Button(DOOR_TWO_CLOSED_ID, self.browser)
-        self.railRetractedText = Button(RAIL_RETRACTED_ID, self.browser)
-        self.roofClosedText = Button(ROOF_CLOSED_ID, self.browser)
-        self.liftLoweredText = Button(LIFT_LOWERED_ID, self.browser)
-        self.railExtendedText = Button(RAIL_EXTENDED_ID, self.browser)
-        self.roofOpenText = Button(ROOF_OPEN_ID, self.browser)
-        self.doorTwoOpenText = Button(DOOR_TWO_OPEN_ID, self.browser)
-        self.doorOneOpenText = Button(DOOR_ONE_OPEN_ID, self.browser)
-        self.liftRaisedText = Button(LIFT_RAISED_ID, self.browser)
+        self.doorOneClosedText = Sensor(DOOR_ONE_CLOSED_ID, self.browser)
+        self.doorTwoClosedText = Sensor(DOOR_TWO_CLOSED_ID, self.browser)
+        self.railRetractedText = Sensor(RAIL_RETRACTED_ID, self.browser)
+        self.roofClosedText = Sensor(ROOF_CLOSED_ID, self.browser)
+        self.liftLoweredText = Sensor(LIFT_LOWERED_ID, self.browser)
+        self.railExtendedText = Sensor(RAIL_EXTENDED_ID, self.browser)
+        self.roofOpenText = Sensor(ROOF_OPEN_ID, self.browser)
+        self.doorTwoOpenText = Sensor(DOOR_TWO_OPEN_ID, self.browser)
+        self.doorOneOpenText = Sensor(DOOR_ONE_OPEN_ID, self.browser)
+        self.liftRaisedText = Sensor(LIFT_RAISED_ID, self.browser)
+
+        self.openDoorsButton = Button(OPEN_DOORS_ID, self.browser, [self.doorTwoOpenText, self.doorOneOpenText])
+        self.closeDoorsButton = Button(CLOSE_DOORS_ID, self.browser, [self.doorOneClosedText, self.doorTwoClosedText])
+        self.emergencyStopButton = Button(EMERGENCY_STOP_ID, self.browser, [])
+        self.extendPadButton = Button(EXTEND_PAD_ID, self.browser, [self.railExtendedText])
+        self.retractPadButton = Button(RETRACT_PAD_ID, self.browser, [self.railRetractedText])
+        self.closeRoofButton = Button(CLOSE_ROOF_ID, self.browser, [self.roofClosedText])
+        self.raisePadButton = Button(RAISE_PAD_ID, self.browser, [self.liftRaisedText])
+        self.lowerPadButton = Button(LOWER_PAD_ID, self.browser, [self.liftLoweredText])
+        self.openRoofButton = Button(OPEN_ROOF_ID, self.browser, [self.roofOpenText])
 
     # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
     def handleClick(self, button):
