@@ -78,16 +78,6 @@ class PlcClient:
 
         # TODO: remove
         self.browser.get('http://localhost:3000/')
-        # self.status = [
-        #     "doorsShouldOpen": False,
-        #     "doorsShouldClose": False,
-        #     "roofShouldOpen": False,
-        #     "roofShouldClose": False,
-        #     "padShouldExtend": False,
-        #     "padShouldRetract": False,
-        #     "padShouldRaise": False,
-        #     "padShouldLower": False
-        # ]
 
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
@@ -125,51 +115,67 @@ class PlcClient:
         self.openRoofButton = Button(OPEN_ROOF_ID, self.browser, [self.roofOpenText])
 
     # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
-    def handleClick(self, button):
-        thread = threading.Thread(target=button.toggleButton)
+    def startThread(self, threadTarget):
+        thread = threading.Thread(target=threadTarget)
         thread.daemon = True
         thread.start()
 
     def executeCommand(self, command):
+        canExecute = True
+
         if command == "emergencyStop":
-            self.emergencyStop()
+            self.startThread(self.emergencyStop)
 
         elif command == "openDoors":
-            self.openDoors()
+            self.startThread(self.openDoors)
 
         elif command == "closeDoors":
-            self.closeDoors()
+            if(self.railRetractedText.getModeValue()):
+                self.startThread(self.closeDoors)
+            else: 
+                canExecute = False
 
         elif command == "openRoof":
-            self.openRoof()
+            self.startThread(self.openRoof)
 
         elif command == "closeRoof":
-            self.closeRoof()
+            if(self.liftLoweredText.getModeValue()):
+                self.startThread(self.closeRoof)
+            else: 
+                canExecute = False
 
         elif command == "extendPad":
-            self.extendPad()
+            if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
+                self.startThread(self.extendPad)
+            else: 
+                canExecute = False
 
         elif command == "retractPad":
-            self.retractPad()
+            self.startThread(self.retractPad)
 
         elif command == "raisePad":
-            self.raisePad()
+            if(self.roofOpenText.getModeValue()):
+                self.startThread(self.raisePad)
+            else: 
+                canExecute = False
 
         elif command == "lowerPad":
-            self.lowerPad()
+            self.startThread(self.lowerPad)
 
         elif command == "systemStatus":
-            self.systemStatus()
+            self.startThread(self.systemStatus)
 
         elif command == "bottomDroneMission":
-            self.bottomDroneMission()
+            self.startThread(self.bottomDroneMission)
 
         elif command == "topDroneMission":
-            self.topDroneMission()
+            self.startThread(self.topDroneMission)
+
+        return (canExecute)
 
     # Individual operations: These functions handle each of the buttons on the screen
     def emergencyStop(self):
-        # TODO: Check sensors
+        # TODO: see if this already happens in the PLC
         self.openDoorsButton.shouldBeOn = False
         self.closeDoorsButton.shouldBeOn = False
         self.emergencyStopButton.shouldBeOn = False
@@ -179,62 +185,45 @@ class PlcClient:
         self.raisePadButton.shouldBeOn = False
         self.lowerPadButton.shouldBeOn = False
         self.openRoofButton.shouldBeOn = False
-        self.handleClick(self.emergencyStopButton)
+        self.emergencyStopButton.toggleButton()
 
     def openDoors(self):
         # TODO: Check sensors
         self.closeDoorsButton.shouldBeOn = False
-        self.handleClick(self.openDoorsButton)
-        return True
+        self.openDoorsButton.toggleButton()
 
     def closeDoors(self):
-        if(self.railRetractedText.getModeValue()):
-            self.openDoorsButton.shouldBeOn = False
-            self.handleClick(self.closeDoorsButton)
-            return True
-        else: 
-            return False
+        self.openDoorsButton.shouldBeOn = False
+        self.closeDoorsButton.toggleButton()
 
     def openRoof(self):
         # TODO: Check sensors
         self.closeRoofButton.shouldBeOn = False
-        self.handleClick(self.openRoofButton)
+        self.openRoofButton.toggleButton()
         return True
 
     def closeRoof(self):
-        if(self.liftLoweredText.getModeValue()):
-            self.openRoofButton.shouldBeOn = False
-            self.handleClick(self.closeRoofButton)
-            return True
-        else: 
-            return False
+        self.openRoofButton.shouldBeOn = False
+        self.closeRoofButton.toggleButton() 
 
     def extendPad(self):
-        if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
-            self.retractPadButton.shouldBeOn = False
-            self.handleClick(self.extendPadButton)
-            return True
-        else: 
-            return False
+        self.retractPadButton.shouldBeOn = False
+        self.extendPadButton.toggleButton()
 
     def retractPad(self):
         # TODO: Check sensors
         self.extendPadButton.shouldBeOn = False
-        self.handleClick(self.retractPadButton)
+        self.retractPadButton.toggleButton()
         return True
 
     def raisePad(self):
-        if(self.roofOpenText.getModeValue()):
-            self.lowerPadButton.shouldBeOn = False
-            self.handleClick(self.raisePadButton)
-            return True
-        else: 
-            return Falses
+        self.lowerPadButton.shouldBeOn = False
+        self.raisePadButton.toggleButton()
 
     def lowerPad(self):
         # TODO: Check sensors
         self.raisePadButton.shouldBeOn = False
-        self.handleClick(self.lowerPadButton)
+        self.lowerPadButton.toggleButton()
         return True
 
     # Missions
