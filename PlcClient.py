@@ -51,18 +51,24 @@ class Button:
     def __init__(self, id, browser, waitSensors):
         self.button = browser.find_element_by_id(id)
         self.waitSensors = waitSensors
+        self.shouldBeOn = False
 
     # toggleButton: This clicks a button twice with a time delay in between
     def toggleButton(self):
         self.button.click()
+        self.shouldBeOn = True
         
         sensorsTriggered = False
         while(not sensorsTriggered):
+            if (not self.shouldBeOn):
+                break
+            
             sensorsTriggered = True
             for sensor in self.waitSensors:
                 if (not sensor.getModeValue()):
                     sensorsTriggered = False
                     
+        self.shouldBeOn = False
         self.button.click()
 
 class PlcClient:
@@ -72,6 +78,16 @@ class PlcClient:
 
         # TODO: remove
         self.browser.get('http://localhost:3000/')
+        # self.status = [
+        #     "doorsShouldOpen": False,
+        #     "doorsShouldClose": False,
+        #     "roofShouldOpen": False,
+        #     "roofShouldClose": False,
+        #     "padShouldExtend": False,
+        #     "padShouldRetract": False,
+        #     "padShouldRaise": False,
+        #     "padShouldLower": False
+        # ]
 
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
@@ -154,15 +170,26 @@ class PlcClient:
     # Individual operations: These functions handle each of the buttons on the screen
     def emergencyStop(self):
         # TODO: Check sensors
+        self.openDoorsButton.shouldBeOn = False
+        self.closeDoorsButton.shouldBeOn = False
+        self.emergencyStopButton.shouldBeOn = False
+        self.extendPadButton.shouldBeOn = False
+        self.retractPadButton.shouldBeOn = False
+        self.closeRoofButton.shouldBeOn = False
+        self.raisePadButton.shouldBeOn = False
+        self.lowerPadButton.shouldBeOn = False
+        self.openRoofButton.shouldBeOn = False
         self.handleClick(self.emergencyStopButton)
 
     def openDoors(self):
         # TODO: Check sensors
+        self.closeDoorsButton.shouldBeOn = False
         self.handleClick(self.openDoorsButton)
         return True
 
     def closeDoors(self):
         if(self.railRetractedText.getModeValue()):
+            self.openDoorsButton.shouldBeOn = False
             self.handleClick(self.closeDoorsButton)
             return True
         else: 
@@ -170,11 +197,13 @@ class PlcClient:
 
     def openRoof(self):
         # TODO: Check sensors
+        self.closeRoofButton.shouldBeOn = False
         self.handleClick(self.openRoofButton)
         return True
 
     def closeRoof(self):
         if(self.liftLoweredText.getModeValue()):
+            self.openRoofButton.shouldBeOn = False
             self.handleClick(self.closeRoofButton)
             return True
         else: 
@@ -182,6 +211,7 @@ class PlcClient:
 
     def extendPad(self):
         if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
+            self.retractPadButton.shouldBeOn = False
             self.handleClick(self.extendPadButton)
             return True
         else: 
@@ -189,11 +219,13 @@ class PlcClient:
 
     def retractPad(self):
         # TODO: Check sensors
+        self.extendPadButton.shouldBeOn = False
         self.handleClick(self.retractPadButton)
         return True
 
     def raisePad(self):
         if(self.roofOpenText.getModeValue()):
+            self.lowerPadButton.shouldBeOn = False
             self.handleClick(self.raisePadButton)
             return True
         else: 
@@ -201,6 +233,7 @@ class PlcClient:
 
     def lowerPad(self):
         # TODO: Check sensors
+        self.raisePadButton.shouldBeOn = False
         self.handleClick(self.lowerPadButton)
         return True
 
