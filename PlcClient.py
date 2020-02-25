@@ -10,8 +10,6 @@ PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 2
 
 # These come from the ID's of elements in the HTML
-EMERGENCYSTOPBUTTON = "157910667599022"
-
 OPEN_DOORS_ID       = "157910241216714"
 CLOSE_DOORS_ID      = "157910667129821"
 EMERGENCY_STOP_ID   = "157910667599022"
@@ -31,11 +29,6 @@ ROOF_OPEN_ID        = "158092500512742"
 DOOR_TWO_OPEN_ID    = "158092500514543"
 DOOR_ONE_OPEN_ID    = "158092500516544"
 LIFT_RAISED_ID      = "158092500518645"
-
-# DOORSOPENSENSOR
-# DOORSCLOSEDSENSOR
-# ROOFOPENSENSOR
-# ROOFCLOSEDSENSOR
 
 # TODO: Possible problem, the plc client and the server can actually exist in different states if the server is too quick to send data.
 #       When the plc receives a message that it can't handle or process right now because of constraints, it ignores that message. 
@@ -120,7 +113,7 @@ class PlcClient:
 
     def closeRoof(self):
         # TODO: Check sensors
-        self.handleClick(self.closeDoorsButton)
+        self.handleClick(self.closeRoofButton)
 
     def extendPad(self):
         # TODO: Check sensors
