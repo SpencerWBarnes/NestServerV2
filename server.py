@@ -149,7 +149,7 @@ class Server():
     def emergencyStop(self, addr):
         self.messagetext = "System Power: OFF"
         self.isOn = False
-        self.plc.emergencyStop()
+        self.plc.executeCommand("emergencyStop")
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     # openDoors:    Called when the client wants to open the nest doors,
@@ -158,7 +158,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Doors: OPEN"
             self.isDoorOpen = True
-            self.plc.openDoors()
+            self.plc.executeCommand("openDoors")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -170,7 +170,7 @@ class Server():
         if not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
             self.isDoorOpen = False
-            self.plc.closeDoors()
+            self.plc.executeCommand("closeDoors")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -186,7 +186,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Roof: OPEN"
             self.isRoofOpen = True
-            self.plc.openRoof()
+            self.plc.executeCommand("openRoof")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -197,7 +197,7 @@ class Server():
         if not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
             self.isRoofOpen = False
-            self.plc.closeRoof()
+            self.plc.executeCommand("closeRoof")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -213,7 +213,7 @@ class Server():
         if self.isOn and self.isDoorOpen:
             self.messagetext = "Back Pad: EXTENDED"
             self.isPadExtended = True
-            self.plc.extendPad()
+            self.plc.executeCommand("extendPad")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -229,7 +229,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
             self.isPadExtended = False
-            self.plc.retractPad()
+            self.plc.executeCommand("retractPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -240,7 +240,7 @@ class Server():
         if self.isOn and self.isRoofOpen:
             self.messagetext = "Top Pad: RAISED"
             self.isPadRaised = True
-            self.plc.raisePad()
+            self.plc.executeCommand("raisePad")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -255,7 +255,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Top Pad: LOWERED"
             self.isPadRaised = False
-            self.plc.lowerPad()
+            self.plc.executeCommand("lowerPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -265,7 +265,7 @@ class Server():
             self.messagetext = "Bottom drone mission"
             self.isDoorOpen = True
             self.isPadExtended = True
-            # self.plc.bottomDroneMission()
+            # self.plc.executeCommand("bottomDroneMission")
         else:
             self.messagetext = "TODO: error message"
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -276,7 +276,7 @@ class Server():
             self.messagetext = "Top drone mission"
             self.isRoofOpen = True
             self.isPadRaised = True
-            # self.plc.topDroneMission()
+            # self.plc.executeCommand("topDroneMission")
         else:
             self.messagetext = "TODO: error message"
         self.commandSock.sendto(self.messagetext.encode(), addr)

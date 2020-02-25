@@ -30,7 +30,7 @@ DOOR_TWO_OPEN_ID    = "158092500514543"
 DOOR_ONE_OPEN_ID    = "158092500516544"
 LIFT_RAISED_ID      = "158092500518645"
 
-# TODO: Possible problem, the plc client and the server can actually exist in different states if the server is too quick to send data.
+# TODO: Possible problem, the plc client and the server can actually exist in different states if the server is too quick to send command.
 #       When the plc receives a message that it can't handle or process right now because of constraints, it ignores that message. 
 #       This means that the plc will ignore messages like "extendPad" while it is in the process of opening the doors. 
 #       So what should we do? I'm thinking we send back response messages on whether or not a task can be completed. 
@@ -113,6 +113,43 @@ class PlcClient:
         thread = threading.Thread(target=button.toggleButton)
         thread.daemon = True
         thread.start()
+
+    def executeCommand(self, command):
+        if command == "emergencyStop":
+            self.emergencyStop()
+
+        elif command == "openDoors":
+            self.openDoors()
+
+        elif command == "closeDoors":
+            self.closeDoors()
+
+        elif command == "openRoof":
+            self.openRoof()
+
+        elif command == "closeRoof":
+            self.closeRoof()
+
+        elif command == "extendPad":
+            self.extendPad()
+
+        elif command == "retractPad":
+            self.retractPad()
+
+        elif command == "raisePad":
+            self.raisePad()
+
+        elif command == "lowerPad":
+            self.lowerPad()
+
+        elif command == "systemStatus":
+            self.systemStatus()
+
+        elif command == "bottomDroneMission":
+            self.bottomDroneMission()
+
+        elif command == "topDroneMission":
+            self.topDroneMission()
 
     # Individual operations: These functions handle each of the buttons on the screen
     def emergencyStop(self):
