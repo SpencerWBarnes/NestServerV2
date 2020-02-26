@@ -147,12 +147,12 @@ class PlcClient:
 
         elif command == "extendPad":
             if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
-                self.__startThread(self.__extendPad)
+                # self.__startThread(self.__extendPad)
             else: 
                 canExecute = False
 
         elif command == "retractPad":
-            self.__startThread(self.__retractPad)
+            # self.__startThread(self.__retractPad)
 
         elif command == "raisePad":
             if(self.roofOpenText.getModeValue()):
