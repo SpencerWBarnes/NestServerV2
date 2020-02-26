@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.10.18'
+UDP_IP_ADDRESS = '192.168.99.100'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 UDP_CLIENT_PORT_NUM = 8000
@@ -55,7 +55,7 @@ class Server():
         # PlcClient
         self.plc = PlcClient()          # This is for production mode
         # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        # self.plc.login("PLC")           # Login with password PLC
+        self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
 
         # connectThread: setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
