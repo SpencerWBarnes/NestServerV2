@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.0.8'
+UDP_IP_ADDRESS = '192.168.10.18'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 UDP_CLIENT_PORT_NUM = 8000
@@ -263,9 +263,10 @@ class Server():
     def bottomDroneMission(self, addr):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
+            # TODO: Get status of nest
             self.isDoorOpen = True
             self.isPadExtended = True
-            # self.plc.executeCommand("bottomDroneMission")
+            self.plc.executeCommand("bottomDroneMission")
         else:
             self.messagetext = "TODO: error message"
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -274,9 +275,10 @@ class Server():
     def topDroneMission(self, addr):
         if self.isOn:
             self.messagetext = "Top drone mission"
+            # TODO: Get status of nest
             self.isRoofOpen = True
             self.isPadRaised = True
-            # self.plc.executeCommand("topDroneMission")
+            self.plc.executeCommand("topDroneMission")
         else:
             self.messagetext = "TODO: error message"
         self.commandSock.sendto(self.messagetext.encode(), addr)

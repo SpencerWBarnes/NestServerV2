@@ -187,7 +187,6 @@ class PlcClient:
         # TODO: see if this already happens in the PLC
         self.openDoorsButton.shouldBeOn = False
         self.closeDoorsButton.shouldBeOn = False
-        self.emergencyStopButton.shouldBeOn = False
         self.extendPadButton.shouldBeOn = False
         self.retractPadButton.shouldBeOn = False
         self.closeRoofButton.shouldBeOn = False
