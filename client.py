@@ -94,6 +94,8 @@ class PasswordDialog(QDialog):
         self.retractPadButton.setDisabled(True)
         self.raisePadButton.setDisabled(True)
         self.lowerPadButton.setDisabled(True)
+        self.bottomDroneMissionButton.setDisabled(True)
+        self.topDroneMissionButton.setDisabled(True)
 
     def OpenDoors(self):
         self.commandMessage = "openDoorsButton"
@@ -378,6 +380,15 @@ class Form():
                 self.lowerPadButton.setDisabled(False)
             else: 
                 self.lowerPadButton.setDisabled(True)
+
+            # Missions
+            if(self.isOn and not self.isDoorOpen) and (self.isOn and not self.isRoofOpen):
+                self.bottomDroneMissionButton.setDisabled(False)
+                self.topDroneMissionButton.setDisabled(False)
+            else: 
+                self.bottomDroneMissionButton.setDisabled(True)
+                self.topDroneMissionButton.setDisabled(True)
+
         except:
             print("impropper data: " + data)
 
@@ -549,6 +560,23 @@ class Form():
             self.closeRoofButton.setDisabled(False)
         else:
             self.statusLabel.setText("Please Connect First")
+
+    def RunDroneMission(self, missionMessage):
+        if self.isConnected:
+            self.sendData(missionMessage)
+            self.messagetext = self.receiveData()
+            self.missionLabel.setText(self.messagetext)
+            self.openDoors.setDisabled(True)
+            self.closeDoors.setDisabled(False)
+            self.openRoof.setDisabled(False)
+            self.closeRoof.setDisabled(True)
+            self.extendPad.setDisabled(False)
+            self.retractPad.setDisabled(False)
+            self.raisePad.setDisabled(False)
+            self.lowerPad.setDisabled(False)
+        else:
+            self.label.setText("Please Connect First")
+
 
 ######### Running client #########
 if __name__ == '__main__':
