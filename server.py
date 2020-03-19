@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.0.8'
+UDP_IP_ADDRESS = '192.168.99.100'
 # UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 UDP_CLIENT_PORT_NUM = 8000
@@ -53,9 +53,9 @@ class Server():
         self.messagetext = None
 
         # PlcClient
-        # self.plc = PlcClient()          # This is for production mode
-        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        # self.plc.login("PLC")           # Login with password PLC
+        self.plc = PlcClient()          # This is for production mode
+        # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
 
         # connectThread: setting the daemon attribute to True makes it so that when the main thread is exited, so is this thread
@@ -149,7 +149,7 @@ class Server():
     def emergencyStop(self, addr):
         self.messagetext = "System Power: OFF"
         self.isOn = False
-        self.plc.emergencyStop()
+        self.plc.executeCommand("emergencyStop")
         self.commandSock.sendto(self.messagetext.encode(), addr)
 
     # openDoors:    Called when the client wants to open the nest doors,
@@ -158,7 +158,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Doors: OPEN"
             self.isDoorOpen = True
-            self.plc.openDoors()
+            self.plc.executeCommand("openDoors")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -170,7 +170,7 @@ class Server():
         if not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
             self.isDoorOpen = False
-            self.plc.closeDoors()
+            self.plc.executeCommand("closeDoors")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -186,7 +186,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Roof: OPEN"
             self.isRoofOpen = True
-            self.plc.openRoof()
+            self.plc.executeCommand("openRoof")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -197,7 +197,7 @@ class Server():
         if not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
             self.isRoofOpen = False
-            self.plc.closeRoof()
+            self.plc.executeCommand("closeRoof")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -213,7 +213,7 @@ class Server():
         if self.isOn and self.isDoorOpen:
             self.messagetext = "Back Pad: EXTENDED"
             self.isPadExtended = True
-            self.plc.extendPad()
+            self.plc.executeCommand("extendPad")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -229,7 +229,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
             self.isPadExtended = False
-            self.plc.retractPad()
+            self.plc.executeCommand("retractPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
@@ -240,7 +240,7 @@ class Server():
         if self.isOn and self.isRoofOpen:
             self.messagetext = "Top Pad: RAISED"
             self.isPadRaised = True
-            self.plc.raisePad()
+            self.plc.executeCommand("raisePad")
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -255,10 +255,34 @@ class Server():
         if self.isOn:
             self.messagetext = "Top Pad: LOWERED"
             self.isPadRaised = False
-            self.plc.lowerPad()
+            self.plc.executeCommand("lowerPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
         self.commandSock.sendto(self.messagetext.encode(), addr)
+
+    def bottomDroneMission(self, addr):
+        if self.isOn:
+            self.messagetext = "Bottom drone mission"
+            # TODO: Get status of nest
+            self.isDoorOpen = True
+            self.isPadExtended = True
+            self.plc.executeCommand("bottomDroneMission")
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
+
+    def topDroneMission(self, addr):
+        if self.isOn:
+            self.messagetext = "Top drone mission"
+            # TODO: Get status of nest
+            self.isRoofOpen = True
+            self.isPadRaised = True
+            self.plc.executeCommand("topDroneMission")
+        else:
+            self.messagetext = "TODO: error message"
+        self.commandSock.sendto(self.messagetext.encode(), addr)
+        print(self.messagetext + " " + str(self.addr[0]))
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, addr):
@@ -291,6 +315,10 @@ class Server():
             self.lowerPad(addr)
         elif data == "systemStatus":
             self.systemStatus(addr)
+        elif data == "bottomDroneMission":
+            self.bottomDroneMission(addr)
+        elif data == "topDroneMission":
+            self.topDroneMission(addr)
         elif "Connection Test" in data:
             self.sendTestMessage(addr)
         else:

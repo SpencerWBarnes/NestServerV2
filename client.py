@@ -90,6 +90,8 @@ class PasswordDialog(QDialog):
         self.retractPadButton.setDisabled(True)
         self.raisePadButton.setDisabled(True)
         self.lowerPadButton.setDisabled(True)
+        self.bottomDroneMissionButton.setDisabled(True)
+        self.topDroneMissionButton.setDisabled(True)
 
     def OpenDoors(self):
         self.commandMessage = "openDoors"
@@ -179,6 +181,7 @@ class Form():
         self.roofStatus = QLabel("Roof: CLOSED")
         self.roofPadStatus = QLabel("Top Pad: LOWERED")
         self.backPadStatus = QLabel("Back Pad: RETRACTED")
+        self.missionLabel = QLabel("Run mission")
 
         # Buttons
         self.systemPower = QPushButton("System Power")
@@ -192,6 +195,8 @@ class Form():
         self.retractPad = QPushButton("Retract Pad")
         self.raisePad = QPushButton("Raise Pad")
         self.lowerPad = QPushButton("Lower Pad")
+        self.bottomDroneMissionButton = QPushButton("Bottom Drone Mission")
+        self.topDroneMissionButton = QPushButton("Top Drone Mission")
 
         self.emergencyStop.setDisabled(True)
         self.passwordoverride.setDisabled(True)
@@ -203,6 +208,8 @@ class Form():
         self.retractPad.setDisabled(True)
         self.raisePad.setDisabled(True)
         self.lowerPad.setDisabled(True)
+        self.bottomDroneMissionButton.setDisabled(True)
+        self.topDroneMissionButton.setDisabled(True)
 
         # Button on Click listeners
         self.submitConnect.clicked.connect(self.connection)
@@ -217,6 +224,8 @@ class Form():
         self.retractPad.clicked.connect(self.RetractPad)
         self.raisePad.clicked.connect(self.RaisePad)
         self.lowerPad.clicked.connect(self.LowerPad)
+        self.bottomDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("bottomDroneMission"))
+        self.topDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("topDroneMission"))
 
         # Layouts
         clientlayout = QVBoxLayout()
@@ -242,6 +251,9 @@ class Form():
         buttonlayout.addWidget(self.roofPadStatus, 4, 0)
         buttonlayout.addWidget(self.raisePad, 4, 1)
         buttonlayout.addWidget(self.lowerPad, 4, 2)
+        buttonlayout.addWidget(self.missionLabel, 5, 0)
+        buttonlayout.addWidget(self.bottomDroneMissionButton, 5, 1)
+        buttonlayout.addWidget(self.topDroneMissionButton, 5, 2)
 
         # Layouts - Setting layouts
         layout = QGridLayout()
@@ -376,6 +388,15 @@ class Form():
                 self.lowerPad.setDisabled(False)
             else: 
                 self.lowerPad.setDisabled(True)
+
+            # Missions
+            if(self.isOn and not self.isDoorOpen) and (self.isOn and not self.isRoofOpen):
+                self.bottomDroneMissionButton.setDisabled(False)
+                self.topDroneMissionButton.setDisabled(False)
+            else: 
+                self.bottomDroneMissionButton.setDisabled(True)
+                self.topDroneMissionButton.setDisabled(True)
+
         except:
             print("impropper data: " + data)
 
@@ -581,6 +602,23 @@ class Form():
             self.closeRoof.setDisabled(False)
         else:
             self.label.setText("Please Connect First")
+
+    def RunDroneMission(self, missionMessage):
+        if self.isConnected:
+            self.sendData(missionMessage)
+            self.messagetext = self.receiveData()
+            self.missionLabel.setText(self.messagetext)
+            self.openDoors.setDisabled(True)
+            self.closeDoors.setDisabled(False)
+            self.openRoof.setDisabled(False)
+            self.closeRoof.setDisabled(True)
+            self.extendPad.setDisabled(False)
+            self.retractPad.setDisabled(False)
+            self.raisePad.setDisabled(False)
+            self.lowerPad.setDisabled(False)
+        else:
+            self.label.setText("Please Connect First")
+
 
 ######### Running client #########
 if __name__ == '__main__':
