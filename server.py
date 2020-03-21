@@ -10,7 +10,7 @@ from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '172.20.10.5'
+IP_ADDRESS = '192.168.0.11'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -56,7 +56,7 @@ class Server():
         # PlcClient
         self.plc = PlcClient()          # This is for production mode
         # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        self.plc.login("PLC")           # Login with password PLC
+        # self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
         # sockets
@@ -282,7 +282,8 @@ class Server():
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
-    def bottomDroneMission(self, addr):
+    
+    def bottomDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
             # TODO: Get status of nest
@@ -291,10 +292,11 @@ class Server():
             self.plc.executeCommand("bottomDroneMission")
         else:
             self.messagetext = "TODO: error message"
-        self.commandSock.sendto(self.messagetext.encode(), addr)
-        print(self.messagetext + " " + str(self.addr[0]))
+        
+        message = self.messagetext + '\n'
+        conn.send(message.encode())
 
-    def topDroneMission(self, addr):
+    def topDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Top drone mission"
             # TODO: Get status of nest
@@ -303,8 +305,9 @@ class Server():
             self.plc.executeCommand("topDroneMission")
         else:
             self.messagetext = "TODO: error message"
-        self.commandSock.sendto(self.messagetext.encode(), addr)
-        print(self.messagetext + " " + str(self.addr[0]))
+        
+        message = self.messagetext + '\n'
+        conn.send(message.encode())
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, conn):
@@ -342,9 +345,9 @@ class Server():
         elif data == "systemStatus":
             self.systemStatus(conn)
         elif data == "bottomDroneMission":
-            self.bottomDroneMission(addr)
+            self.bottomDroneMission(conn)
         elif data == "topDroneMission":
-            self.topDroneMission(addr)
+            self.topDroneMission(conn)
         elif "Connection Test" in data:
             self.sendTestMessage(conn)
         else:

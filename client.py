@@ -187,6 +187,7 @@ class Form():
         self.roofStatusLabel = QLabel("Roof: CLOSED")
         self.roofPadStatusLabel = QLabel("Top Pad: LOWERED")
         self.backPadStatusLabel = QLabel("Back Pad: RETRACTED")
+        self.missionLabel = QLabel("Run mission")
 
         # Buttons
         self.systemPowerButton = QPushButton("System Power")
@@ -200,6 +201,8 @@ class Form():
         self.retractPadButton = QPushButton("Retract Pad")
         self.raisePadButton = QPushButton("Raise Pad")
         self.lowerPadButton = QPushButton("Lower Pad")
+        self.bottomDroneMissionButton = QPushButton("Bottom Drone Mission")
+        self.topDroneMissionButton = QPushButton("Top Drone Mission")
 
         self.emergencyStopButton.setDisabled(True)
         self.passwordOverrideButton.setDisabled(True)
@@ -211,6 +214,8 @@ class Form():
         self.retractPadButton.setDisabled(True)
         self.raisePadButton.setDisabled(True)
         self.lowerPadButton.setDisabled(True)
+        self.bottomDroneMissionButton.setDisabled(True)
+        self.topDroneMissionButton.setDisabled(True)
 
         # Button on Click listeners
         self.submitConnect.clicked.connect(self.connection)
@@ -225,6 +230,8 @@ class Form():
         self.retractPadButton.clicked.connect(self.RetractPad)
         self.raisePadButton.clicked.connect(self.RaisePad)
         self.lowerPadButton.clicked.connect(self.LowerPad)
+        self.bottomDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("bottomDroneMission"))
+        self.topDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("topDroneMission"))
 
         # Layouts
         clientlayout = QGridLayout()
@@ -252,6 +259,9 @@ class Form():
         buttonlayout.addWidget(self.roofPadStatusLabel, 4, 0)
         buttonlayout.addWidget(self.raisePadButton, 4, 1)
         buttonlayout.addWidget(self.lowerPadButton, 4, 2)
+        buttonlayout.addWidget(self.missionLabel, 5, 0)
+        buttonlayout.addWidget(self.bottomDroneMissionButton, 5, 1)
+        buttonlayout.addWidget(self.topDroneMissionButton, 5, 2)
 
         # Layouts - Setting layouts
         layout = QGridLayout()
@@ -563,8 +573,7 @@ class Form():
 
     def RunDroneMission(self, missionMessage):
         if self.isConnected:
-            self.sendData(missionMessage)
-            self.messagetext = self.receiveData()
+            self.messagetext = self.sendData(missionMessage)
             self.missionLabel.setText(self.messagetext)
             self.openDoors.setDisabled(True)
             self.closeDoors.setDisabled(False)
