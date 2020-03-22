@@ -575,14 +575,14 @@ class Form():
         if self.isConnected:
             self.messagetext = self.sendData(missionMessage)
             self.missionLabel.setText(self.messagetext)
-            self.openDoors.setDisabled(True)
-            self.closeDoors.setDisabled(False)
-            self.openRoof.setDisabled(False)
-            self.closeRoof.setDisabled(True)
-            self.extendPad.setDisabled(False)
-            self.retractPad.setDisabled(False)
-            self.raisePad.setDisabled(False)
-            self.lowerPad.setDisabled(False)
+            self.openDoorsButton.setDisabled(True)
+            self.closeDoorsButton.setDisabled(False)
+            self.openRoofButton.setDisabled(False)
+            self.closeRoofButton.setDisabled(True)
+            self.extendPadButton.setDisabled(False)
+            self.retractPadButton.setDisabled(False)
+            self.raisePadButton.setDisabled(False)
+            self.lowerPadButton.setDisabled(False)
         else:
             self.label.setText("Please Connect First")
 
