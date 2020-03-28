@@ -11,7 +11,7 @@ from PlcClient import PlcClient, PlcClientDev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.8'
+IP_ADDRESS = '192.168.0.104'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
