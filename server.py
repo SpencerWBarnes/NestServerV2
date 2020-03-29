@@ -150,7 +150,7 @@ class Server():
     def emergencyStop(self, conn):
         self.messagetext = "System Power: OFF"
         self.isOn = False
-        self.plc.executeCommand("emergencyStop")
+        self.startThread(lambda: self.plc.executeCommand("emergencyStop"))
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
@@ -161,7 +161,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Doors: OPEN"
             self.isDoorOpen = True
-            self.plc.executeCommand("openDoors")
+            self.startThread(lambda: self.plc.executeCommand("openDoors"))
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
 
@@ -175,7 +175,7 @@ class Server():
         if not self.isPadExtended and self.isOn:
             self.messagetext = "Doors: CLOSED"
             self.isDoorOpen = False
-            self.plc.executeCommand("closeDoors")
+            self.startThread(lambda: self.plc.executeCommand("closeDoors"))
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -193,7 +193,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Roof: OPEN"
             self.isRoofOpen = True
-            self.plc.executeCommand("openRoof")
+            self.startThread(lambda: self.plc.executeCommand("openRoof"))
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
 
@@ -207,7 +207,7 @@ class Server():
         if not self.isPadRaised and self.isOn:
             self.messagetext = "Roof: CLOSED"
             self.isRoofOpen = False
-            self.plc.executeCommand("closeRoof")
+            self.startThread(lambda: self.plc.executeCommand("closeRoof"))
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -225,7 +225,7 @@ class Server():
         if self.isOn and self.isDoorOpen:
             self.messagetext = "Back Pad: EXTENDED"
             self.isPadExtended = True
-            self.plc.executeCommand("extendPad")
+            self.startThread(lambda: self.plc.executeCommand("extendPad"))
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -243,7 +243,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Back Pad: RETRACTED"
             self.isPadExtended = False
-            self.plc.executeCommand("retractPad")
+            self.startThread(lambda: self.plc.executeCommand("retractPad"))
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
 
@@ -257,7 +257,7 @@ class Server():
         if self.isOn and self.isRoofOpen:
             self.messagetext = "Top Pad: RAISED"
             self.isPadRaised = True
-            self.plc.executeCommand("raisePad")
+            self.startThread(lambda: self.plc.executeCommand("raisePad"))
         else:
             self.messagetext = ERROR_PREFIX
             if not self.isOn:
@@ -275,7 +275,7 @@ class Server():
         if self.isOn:
             self.messagetext = "Top Pad: LOWERED"
             self.isPadRaised = False
-            self.plc.executeCommand("lowerPad")
+            self.startThread(lambda: self.plc.executeCommand("lowerPad"))
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
 
@@ -311,10 +311,20 @@ class Server():
     def topDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Top drone mission"
-            # TODO: Get status of nest
+            message = self.messagetext + '\n'
+            conn.send(message.encode())
+            
             self.isRoofOpen = True
+            self.plc.executeCommand("openRoof")
+        
             self.isPadRaised = True
-            self.plc.executeCommand("topDroneMission")
+            self.plc.executeCommand("raisePad")
+
+            self.isPadRaised = False
+            self.plc.executeCommand("lowerPad")
+            
+            self.isRoofOpen = False
+            self.plc.executeCommand("closeRoof")
         else:
             self.messagetext = "TODO: error message"
         
@@ -341,27 +351,27 @@ class Server():
         print(data)
         
         if data == "systemPower":
-            self.startThread(lambda: self.systemPower(conn))
+            self.systemPower(conn)
         elif data == "emergencyStop":
-            self.startThread(lambda: self.emergencyStop(conn))
+            self.emergencyStop(conn)
         elif data == "openDoors":
-            self.startThread(lambda: self.openDoors(conn))
+            self.openDoors(conn)
         elif data == "closeDoors":
-            self.startThread(lambda: self.closeDoors(conn))
+            self.closeDoors(conn)
         elif data == "openRoof":
-            self.startThread(lambda: self.openRoof(conn))
+            self.openRoof(conn)
         elif data == "closeRoof":
-            self.startThread(lambda: self.closeRoof(conn))
+            self.closeRoof(conn)
         elif data == "extendPad":
-            self.startThread(lambda: self.extendPad(conn))
+            self.extendPad(conn)
         elif data == "retractPad":
-            self.startThread(lambda: self.retractPad(conn))
+            self.retractPad(conn)
         elif data == "raisePad":
-            self.startThread(lambda: self.raisePad(conn))
+            self.raisePad(conn)
         elif data == "lowerPad":
-            self.startThread(lambda: self.lowerPad(conn))
+            self.lowerPad(conn)
         elif data == "systemStatus":
-            self.startThread(lambda: self.systemStatus(conn))
+            self.systemStatus(conn)
         elif data == "bottomDroneMission":
             self.startThread(lambda: self.bottomDroneMission(conn))
         elif data == "topDroneMission":
