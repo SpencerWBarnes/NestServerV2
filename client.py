@@ -479,6 +479,8 @@ class Form():
             self.retractPadButton.setDisabled(True)
             self.raisePadButton.setDisabled(True)
             self.lowerPadButton.setDisabled(True)
+            self.bottomDroneMissionButton.setDisabled(True)
+            self.topDroneMissionButton.setDisabled(True)
         else:
             self.statusLabel.setText("Please Connect First")
 
@@ -576,13 +578,15 @@ class Form():
             self.messagetext = self.sendData(missionMessage)
             self.missionLabel.setText(self.messagetext)
             self.openDoorsButton.setDisabled(True)
-            self.closeDoorsButton.setDisabled(False)
-            self.openRoofButton.setDisabled(False)
+            self.closeDoorsButton.setDisabled(True)
+            self.openRoofButton.setDisabled(True)
             self.closeRoofButton.setDisabled(True)
-            self.extendPadButton.setDisabled(False)
-            self.retractPadButton.setDisabled(False)
-            self.raisePadButton.setDisabled(False)
-            self.lowerPadButton.setDisabled(False)
+            self.extendPadButton.setDisabled(True)
+            self.retractPadButton.setDisabled(True)
+            self.raisePadButton.setDisabled(True)
+            self.lowerPadButton.setDisabled(True)
+            self.bottomDroneMissionButton.setDisabled(True)
+            self.topDroneMissionButton.setDisabled(True)
         else:
             self.label.setText("Please Connect First")
 

@@ -286,15 +286,27 @@ class Server():
     def bottomDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
+            message = self.messagetext + '\n'
+            conn.send(message.encode())
+            
             # TODO: Get status of nest
             self.isDoorOpen = True
+            self.plc.executeCommand("openDoors")
+        
             self.isPadExtended = True
-            self.plc.executeCommand("bottomDroneMission")
+            self.plc.executeCommand("extendPad")
+
+            self.isPadExtended = False
+            self.plc.executeCommand("retractPad")
+            
+            self.isDoorOpen = False
+            self.plc.executeCommand("closeDoors")
+            
         else:
             self.messagetext = "TODO: error message"
         
-        message = self.messagetext + '\n'
-        conn.send(message.encode())
+            message = self.messagetext + '\n'
+            conn.send(message.encode())
 
     def topDroneMission(self, conn):
         if self.isOn:
@@ -316,6 +328,12 @@ class Server():
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
+    def startThread(self, threadTarget):
+        thread = threading.Thread(target=threadTarget)
+        thread.daemon = True
+        thread.start()
+        return thread
+
     # handledata:   This is used to decipher the messages sent by the client
     def handledata(self, data, conn):
         if (data.endswith('\n')):
@@ -323,31 +341,31 @@ class Server():
         print(data)
         
         if data == "systemPower":
-            self.systemPower(conn)
+            self.startThread(lambda: self.systemPower(conn))
         elif data == "emergencyStop":
-            self.emergencyStop(conn)
+            self.startThread(lambda: self.emergencyStop(conn))
         elif data == "openDoors":
-            self.openDoors(conn)
+            self.startThread(lambda: self.openDoors(conn))
         elif data == "closeDoors":
-            self.closeDoors(conn)
+            self.startThread(lambda: self.closeDoors(conn))
         elif data == "openRoof":
-            self.openRoof(conn)
+            self.startThread(lambda: self.openRoof(conn))
         elif data == "closeRoof":
-            self.closeRoof(conn)
+            self.startThread(lambda: self.closeRoof(conn))
         elif data == "extendPad":
-            self.extendPad(conn)
+            self.startThread(lambda: self.extendPad(conn))
         elif data == "retractPad":
-            self.retractPad(conn)
+            self.startThread(lambda: self.retractPad(conn))
         elif data == "raisePad":
-            self.raisePad(conn)
+            self.startThread(lambda: self.raisePad(conn))
         elif data == "lowerPad":
-            self.lowerPad(conn)
+            self.startThread(lambda: self.lowerPad(conn))
         elif data == "systemStatus":
-            self.systemStatus(conn)
+            self.startThread(lambda: self.systemStatus(conn))
         elif data == "bottomDroneMission":
-            self.bottomDroneMission(conn)
+            self.startThread(lambda: self.bottomDroneMission(conn))
         elif data == "topDroneMission":
-            self.topDroneMission(conn)
+            self.startThread(lambda: self.topDroneMission(conn))
         elif "Connection Test" in data:
             self.sendTestMessage(conn)
         else:

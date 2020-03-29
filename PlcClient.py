@@ -117,65 +117,57 @@ class PlcClient:
         self.lowerPadButton = Button(LOWER_PAD_ID, self.browser, [self.liftLoweredText])
         self.openRoofButton = Button(OPEN_ROOF_ID, self.browser, [self.roofOpenText])
 
-    # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
-    def __startThread(self, threadTarget):
-        thread = threading.Thread(target=threadTarget)
-        thread.daemon = True
-        thread.start()
-
     # executeCommand: takes in a string command, the same one the server sees, and executes it
     def executeCommand(self, command):
         canExecute = True
 
         if command == "emergencyStop":
-            self.__startThread(self.__emergencyStop)
+            self.__emergencyStop()
 
         elif command == "openDoors":
-            self.__startThread(self.__openDoors)
+            self.__openDoors()
 
         elif command == "closeDoors":
             if(self.railRetractedText.getModeValue()):
-                self.__startThread(self.__closeDoors)
+                self.__closeDoors()
             else: 
                 canExecute = False
 
         elif command == "openRoof":
-            self.__startThread(self.__openRoof)
+            self.__openRoof()
 
         elif command == "closeRoof":
             if(self.liftLoweredText.getModeValue()):
-                self.__startThread(self.__closeRoof)
+                self.__closeRoof()
             else: 
                 canExecute = False
 
         elif command == "extendPad":
             if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
-                pass
-                # self.__startThread(self.__extendPad)
+                self.__extendPad()
             else: 
                 canExecute = False
 
         elif command == "retractPad":
-            pass
-            # self.__startThread(self.__retractPad)
+            self.__retractPad()
 
         elif command == "raisePad":
             if(self.roofOpenText.getModeValue()):
-                self.__startThread(self.__raisePad)
+                self.__raisePad()
             else: 
                 canExecute = False
 
         elif command == "lowerPad":
-            self.__startThread(self.__lowerPad)
+            self.__lowerPad()
 
         elif command == "systemStatus":
-            self.__startThread(self.__systemStatus)
+            self.__systemStatus()
 
         elif command == "bottomDroneMission":
-            self.__startThread(self.__bottomDroneMission)
+            self.__bottomDroneMission()
 
         elif command == "topDroneMission":
-            self.__startThread(self.__topDroneMission)
+            self.__topDroneMission()
 
         return (canExecute)
 
@@ -239,6 +231,34 @@ class PlcClient:
         self.lowerPadButton.toggleButton()
         return True
 
+    def areDoorsOpen(self):
+        doorTwoOpen = self.doorTwoOpenText.getModeValue() 
+        doorOneOpen = self.doorOneOpenText.getModeValue() 
+        return (doorTwoOpen and doorOneOpen)
+
+    def areDoorsClosed(self):
+        doorOneClosed = self.doorOneClosedText.getModeValue() 
+        doorTwoClosed = self.doorTwoClosedText.getModeValue() 
+        return (doorOneClosed and doorTwoClosed)
+
+    def isRoofOpen(self):
+        return self.roofOpenText.getModeValue() 
+
+    def isRoofClosed(self):
+        return self.roofClosedText.getModeValue() 
+
+    def isRailExtended(self):
+        return self.railExtendedText.getModeValue() 
+
+    def isRailRetracted(self):
+        return self.railRetractedText.getModeValue() 
+
+    def isLiftRaised(self):
+        return self.liftRaisedText.getModeValue() 
+
+    def isLiftLowered(self):
+        return self.liftLoweredText.getModeValue() 
+
     # Missions
     def __bottomDroneMission(self):
         self.__openDoors()
@@ -275,6 +295,30 @@ class PlcClientDev:
         pass
 
     def executeCommand(self, command):
+        pass
+
+    def areDoorsOpen(self):
+        pass
+
+    def areDoorsClosed(self):
+        pass
+
+    def isRoofOpen(self):
+        pass
+
+    def isRoofClosed(self):
+        pass
+
+    def isRailExtended(self):
+        pass
+
+    def isRailRetracted(self):
+        pass
+
+    def isLiftRaised(self):
+        pass
+
+    def isLiftLowered(self):
         pass
 
     def close(self):

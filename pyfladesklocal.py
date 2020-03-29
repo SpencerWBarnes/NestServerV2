@@ -135,9 +135,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
     window.show()
 
     # Callbacks to update the UI upon server changes
-    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-                                       isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
-    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel,
-             isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
 
     return qtapp.exec_()
