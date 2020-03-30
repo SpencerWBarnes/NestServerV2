@@ -1,6 +1,7 @@
 from selenium import webdriver
 import time
 import threading
+import StringConstants as strings
 
 # Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
 # download this and copy and paste where that file is here vvvv
@@ -121,52 +122,52 @@ class PlcClient:
     def executeCommand(self, command):
         canExecute = True
 
-        if command == "emergencyStop":
+        if command == strings.MESSAGE_EMERGENCY_STOP:
             self.__emergencyStop()
 
-        elif command == "openDoors":
+        elif command == strings.MESSAGE_OPEN_DOORS:
             self.__openDoors()
 
-        elif command == "closeDoors":
+        elif command == strings.MESSAGE_CLOSE_DOORS:
             if(self.railRetractedText.getModeValue()):
                 self.__closeDoors()
             else: 
                 canExecute = False
 
-        elif command == "openRoof":
+        elif command == strings.MESSAGE_OPEN_ROOF:
             self.__openRoof()
 
-        elif command == "closeRoof":
+        elif command == strings.MESSAGE_CLOSE_ROOF:
             if(self.liftLoweredText.getModeValue()):
                 self.__closeRoof()
             else: 
                 canExecute = False
 
-        elif command == "extendPad":
+        elif command == strings.MESSAGE_EXTEND_PAD:
             if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
                 self.__extendPad()
             else: 
                 canExecute = False
 
-        elif command == "retractPad":
+        elif command == strings.MESSAGE_RETRACT_PAD:
             self.__retractPad()
 
-        elif command == "raisePad":
+        elif command == strings.MESSAGE_RAISE_PAD:
             if(self.roofOpenText.getModeValue()):
                 self.__raisePad()
             else: 
                 canExecute = False
 
-        elif command == "lowerPad":
+        elif command == strings.MESSAGE_LOWER_PAD:
             self.__lowerPad()
 
-        elif command == "systemStatus":
+        elif command == strings.MESSAGE_SYSTEM_STATUS:
             self.__systemStatus()
 
-        elif command == "bottomDroneMission":
+        elif command == strings.MESSAGE_BOTTOM_DRONE_MISSION:
             self.__bottomDroneMission()
 
-        elif command == "topDroneMission":
+        elif command == strings.MESSAGE_TOP_DRONE_MISSION:
             self.__topDroneMission()
 
         return (canExecute)
