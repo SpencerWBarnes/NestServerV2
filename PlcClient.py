@@ -164,12 +164,6 @@ class PlcClient:
         elif command == strings.MESSAGE_SYSTEM_STATUS:
             self.__systemStatus()
 
-        elif command == strings.MESSAGE_BOTTOM_DRONE_MISSION:
-            self.__bottomDroneMission()
-
-        elif command == strings.MESSAGE_TOP_DRONE_MISSION:
-            self.__topDroneMission()
-
         return (canExecute)
 
     # close: needs to be called no matter what to close the browser
@@ -259,28 +253,6 @@ class PlcClient:
 
     def isLiftLowered(self):
         return self.liftLoweredText.getModeValue() 
-
-    # Missions
-    def __bottomDroneMission(self):
-        self.__openDoors()
-        self.__extendPad()
-        # TODO: Check sensors to see when pad is fully extended
-        # TODO: Send command for drone to take off and wait for drone to come back
-        self.__retractPad()
-        # TODO: Check sensors to see when pad is fully retracted
-        self.__closeDoors()
-        # TODO: Check sensors to see when doors are closed
-
-    def __topDroneMission(self):
-        self.__openRoof()
-        # TODO: Check sensors to see when roof is open
-        self.__raisePad()
-        # TODO: Check sensors to see when pad is fully raised
-        # TODO: Send command for drone to take off and wait for drone to come back
-        self.__lowerPad()
-        # TODO: Check sensors to see when pad is fully lowerd
-        self.__closeRoof()
-        # TODO: Check sensors to see when roof is closed
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
 # It has all of the same public functions as PlcClient, but they are empty. This helps us not have to open a 
