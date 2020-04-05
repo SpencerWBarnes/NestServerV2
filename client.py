@@ -306,6 +306,7 @@ class Form():
         # Parse Message
         try:
             # Strip json and convert to dictionary
+            print(data)
             dataform = data.strip("'<>() ").replace('\'', '\"')
             jsonData = json.loads(dataform)
 

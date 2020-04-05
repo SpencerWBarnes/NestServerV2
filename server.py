@@ -9,9 +9,10 @@ import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 import StringConstants as strings
 
+
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.11'
+IP_ADDRESS = '192.168.0.6'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -148,6 +149,7 @@ class Server():
             self.messagetext = strings.ERROR_PREFIX + strings.ERROR_IS_OFF
 
         self.messagetext = self.messagetext + '\n'
+
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -215,6 +217,7 @@ class Server():
             if not self.isDoorOpen:
                 self.messagetext = self.messagetext + strings.ERROR_DOORS_ARE_CLOSED + '. '
 
+                
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
@@ -247,6 +250,7 @@ class Server():
             if not self.isRoofOpen:
                 self.messagetext = self.messagetext + strings.ERROR_ROOF_IS_CLOSED + '. '
         
+
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
