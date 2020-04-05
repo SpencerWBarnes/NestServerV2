@@ -8,10 +8,12 @@ import threading
 import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 import StringConstants as strings
+from pad_plot import Pad_Plot
+import random
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.11'
+IP_ADDRESS = '192.168.0.6'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -31,6 +33,10 @@ class Server():
         self.isPadExtended = False
         self.isPadRaised = False
         self.openConnections = []
+
+        # TODO: maybe get drone radius from drone? maybe from server?
+        self.bottomPadPlot = Pad_Plot(16)
+        self.topPadPlot = Pad_Plot(16)
 
         # messagetext: holds the value of the message to be sent to the client
         self.messagetext = None
@@ -278,6 +284,23 @@ class Server():
             self.isPadExtended = True
             self.plc.executeCommand(strings.MESSAGE_EXTEND_PAD)
 
+            # time.sleep(10) # TODO: SEND DRONE OUT
+
+            # Drone landing
+            x = 1000
+            y = 1000
+            h = random.random() * 360
+            
+            while self.bottomPadPlot.is_safe(x, y) is 'r':
+                print ("Drone is not safe")
+                time.sleep(2) # TODO: SEND DRONE OUT
+                x = random.random() * self.bottomPadPlot.pad_radius
+                y = random.random() * self.bottomPadPlot.pad_radius
+                h = random.random() * 360
+            
+            print ("Drone is safe")
+            # self.bottomPadPlot.plot_drone(x, y, h)
+
             self.isPadExtended = False
             self.plc.executeCommand(strings.MESSAGE_RETRACT_PAD)
             
@@ -377,7 +400,7 @@ class Server():
         while True:
             data = conn.recv(BUFFERSIZE)
             if data: 
-                print ("received data:", data.decode(), conn)
+                # print ("received data:", data.decode(), conn)
                 self.handledata(data.decode(), conn)
             data = None
         conn.close()
