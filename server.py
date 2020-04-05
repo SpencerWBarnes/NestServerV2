@@ -1,7 +1,6 @@
 '''Author: Claudia N. 
     TCP server built to run on a seperate thread'''
 
-
 import socket
 import sys
 import time
@@ -11,8 +10,8 @@ from PlcClient import PlcClient, PlcClientDev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-UDP_IP_ADDRESS = '192.168.99.100'
-# UDP_IP_ADDRESS = '192.168.99.2' # THE NEST's IP
+IP_ADDRESS = '192.168.0.11'
+# IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
 BUFFERSIZE = 1024
@@ -57,7 +56,7 @@ class Server():
         # PlcClient
         self.plc = PlcClient()          # This is for production mode
         # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        self.plc.login("PLC")           # Login with password PLC
+        # self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
         # sockets
@@ -94,7 +93,7 @@ class Server():
 
     # unknownMessage: This method is called when the server receives a message it doesn't know what to do with it
     def unknownMessage(self, conn, message):
-        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message
+        self.messagetext = ERROR_PREFIX + errorDictionary['unknownMessage'] + ": " + message +'\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -109,6 +108,7 @@ class Server():
             "previousCommand" : self.messagetext
         }
         message = json.dumps(systemStatusDict)
+        message = message + '\n'
         # print(message)
         conn.send(message.encode())
 
@@ -141,6 +141,7 @@ class Server():
             self.messagetext = "System Power: ON"
             self.isOn = True
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -150,7 +151,9 @@ class Server():
         self.messagetext = "System Power: OFF"
         self.isOn = False
         self.plc.executeCommand("emergencyStop")
-        self.commandSock.sendto(self.messagetext.encode(), addr)
+        self.messagetext = self.messagetext + '\n'
+        conn.send(self.messagetext.encode())
+        print(self.messagetext.encode())
 
     # openDoors:    Called when the client wants to open the nest doors,
     #               used for setting the isDoorOpen variable to true
@@ -161,6 +164,8 @@ class Server():
             self.plc.executeCommand("openDoors")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+        self.messagetext = self.messagetext + '\n'
+
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -178,6 +183,7 @@ class Server():
             if self.isPadExtended:
                 self.messagetext = self.messagetext + errorDictionary['padIsExtended'] + '. '
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -190,6 +196,8 @@ class Server():
             self.plc.executeCommand("openRoof")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -207,6 +215,7 @@ class Server():
             if self.isPadRaised:
                 self.messagetext = self.messagetext + errorDictionary['padIsRaised'] + '. '
 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -224,6 +233,8 @@ class Server():
             if not self.isDoorOpen:
                 self.messagetext = self.messagetext + errorDictionary['doorsAreClosed'] + '. '
 
+                
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -236,6 +247,8 @@ class Server():
             self.plc.executeCommand("retractPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -252,6 +265,8 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['isOff'] + '. '
             if not self.isRoofOpen:
                 self.messagetext = self.messagetext + errorDictionary['roofIsClosed'] + '. '
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -264,10 +279,12 @@ class Server():
             self.plc.executeCommand("lowerPad")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
+
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
-
-    def bottomDroneMission(self, addr):
+    
+    def bottomDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
             # TODO: Get status of nest
@@ -276,10 +293,11 @@ class Server():
             self.plc.executeCommand("bottomDroneMission")
         else:
             self.messagetext = "TODO: error message"
-        self.commandSock.sendto(self.messagetext.encode(), addr)
-        print(self.messagetext + " " + str(self.addr[0]))
+        
+        message = self.messagetext + '\n'
+        conn.send(message.encode())
 
-    def topDroneMission(self, addr):
+    def topDroneMission(self, conn):
         if self.isOn:
             self.messagetext = "Top drone mission"
             # TODO: Get status of nest
@@ -288,12 +306,14 @@ class Server():
             self.plc.executeCommand("topDroneMission")
         else:
             self.messagetext = "TODO: error message"
-        self.commandSock.sendto(self.messagetext.encode(), addr)
-        print(self.messagetext + " " + str(self.addr[0]))
+        
+        message = self.messagetext + '\n'
+        conn.send(message.encode())
 
     # sendTestMessage:  Used to send a client a message to test the connection
     def sendTestMessage(self, conn):
         self.messagetext = "Connection is good. Message recieved" 
+        self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -324,11 +344,11 @@ class Server():
         elif data == "lowerPad":
             self.lowerPad(conn)
         elif data == "systemStatus":
-            self.systemStatus(addr)
+            self.systemStatus(conn)
         elif data == "bottomDroneMission":
-            self.bottomDroneMission(addr)
+            self.bottomDroneMission(conn)
         elif data == "topDroneMission":
-            self.topDroneMission(addr)
+            self.topDroneMission(conn)
         elif "Connection Test" in data:
             self.sendTestMessage(conn)
         else:
@@ -348,7 +368,7 @@ class Server():
         while True:
             data = conn.recv(BUFFERSIZE)
             if data: 
-                print ("received data:", data.decode())
+                print ("received data:", data.decode(), conn)
                 self.handledata(data.decode(), conn)
             data = None
         conn.close()

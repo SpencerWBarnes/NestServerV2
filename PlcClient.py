@@ -38,8 +38,9 @@ LIFT_RAISED_ID      = "158092500518645"
 
 class Sensor:
     def __init__(self, id, browser):
-        div = browser.find_element_by_id(id)
-        self.button = div.find_element_by_tag_name("P")
+        self.button = browser.find_element_by_id(id)
+        # TODO in Nest: see if this is needed
+        # self.button = div.find_element_by_tag_name("P")
         self.getModeValue()
 
     # toggleButton: This clicks a button twice with a time delay in between
@@ -79,7 +80,7 @@ class PlcClient:
         self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
 
         # TODO: remove
-        # self.browser.get('http://localhost:3000/')
+        self.browser.get('http://localhost:3000/')
 
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
