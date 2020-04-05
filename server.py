@@ -57,7 +57,7 @@ class Server():
         # PlcClient
         self.plc = PlcClient()          # This is for production mode
         # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
-        # self.plc.login("PLC")           # Login with password PLC
+        self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
         # sockets
