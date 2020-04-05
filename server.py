@@ -6,7 +6,7 @@ import sys
 import time
 import threading
 import json
-from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
+from PlcClient import PlcClient, PlcClientDev 
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
@@ -164,8 +164,8 @@ class Server():
             self.plc.executeCommand("openDoors")
         else:
             self.messagetext = ERROR_PREFIX + errorDictionary['isOff']
-
         self.messagetext = self.messagetext + '\n'
+
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
 
@@ -233,6 +233,7 @@ class Server():
             if not self.isDoorOpen:
                 self.messagetext = self.messagetext + errorDictionary['doorsAreClosed'] + '. '
 
+                
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
@@ -264,7 +265,7 @@ class Server():
                 self.messagetext = self.messagetext + errorDictionary['isOff'] + '. '
             if not self.isRoofOpen:
                 self.messagetext = self.messagetext + errorDictionary['roofIsClosed'] + '. '
-        
+
         self.messagetext = self.messagetext + '\n'
         conn.send(self.messagetext.encode())
         print(self.messagetext.encode())
