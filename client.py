@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 from flask import Flask
 import socket
 from threading import Thread
+import StringConstants as strings
 
 IP_ADDRESS = '192.168.0.8'
 TCP_PORT = 8888
@@ -230,8 +231,8 @@ class Form():
         self.retractPadButton.clicked.connect(self.RetractPad)
         self.raisePadButton.clicked.connect(self.RaisePad)
         self.lowerPadButton.clicked.connect(self.LowerPad)
-        self.bottomDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("bottomDroneMission"))
-        self.topDroneMissionButton.clicked.connect(lambda: self.RunDroneMission("topDroneMission"))
+        self.bottomDroneMissionButton.clicked.connect(lambda: self.RunDroneMission(strings.MESSAGE_BOTTOM_DRONE_MISSION))
+        self.topDroneMissionButton.clicked.connect(lambda: self.RunDroneMission(strings.MESSAGE_TOP_DRONE_MISSION))
 
         # Layouts
         clientlayout = QGridLayout()
@@ -300,7 +301,7 @@ class Form():
     def systemDiagnostic(self):
 
         # Send Message
-        data = self.sendData("systemStatus")
+        data = self.sendData(strings.MESSAGE_SYSTEM_STATUS)
 
         # Parse Message
         try:
@@ -419,7 +420,7 @@ class Form():
             try:
                 self.isConnected = True
 
-                self.sendData("Connection Test")
+                self.sendData(strings.MESSAGE_CONNECTION_TEST)
 
                 # Start checking for systemDiagnostic
                 self.pollingThread.start()
@@ -450,7 +451,7 @@ class Form():
     ######### Button Listeners #########
     def SystemPower(self):
         if self.isConnected:
-            self.messagetext = self.sendData("systemPower")
+            self.messagetext = self.sendData(strings.MESSAGE_SYSTEM_POWER)
             self.powerStatusLabel.setText(self.messagetext)
             if self.messagetext == "System Power: ON":
                 self.emergencyStopButton.setDisabled(False)
@@ -469,7 +470,7 @@ class Form():
 
     def EmergencyStop(self):
         if self.isConnected:
-            self.messagetext = self.sendData("emergencyStop")
+            self.messagetext = self.sendData(strings.MESSAGE_EMERGENCY_STOP)
             self.powerStatusLabel.setText(self.messagetext)
             self.emergencyStopButton.setDisabled(True)
             self.openDoorsButton.setDisabled(True)
@@ -480,6 +481,8 @@ class Form():
             self.retractPadButton.setDisabled(True)
             self.raisePadButton.setDisabled(True)
             self.lowerPadButton.setDisabled(True)
+            self.bottomDroneMissionButton.setDisabled(True)
+            self.topDroneMissionButton.setDisabled(True)
         else:
             self.statusLabel.setText("Please Connect First")
 
@@ -494,7 +497,7 @@ class Form():
 
     def OpenDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openDoors")
+            self.messagetext = self.sendData(strings.MESSAGE_OPEN_DOORS)
             self.doorStatusLabel.setText(self.messagetext)
             self.openDoorsButton.setDisabled(True)
             self.closeDoorsButton.setDisabled(False)
@@ -504,7 +507,7 @@ class Form():
 
     def CloseDoors(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeDoors")
+            self.messagetext = self.sendData(strings.MESSAGE_CLOSE_DOORS)
             self.doorStatusLabel.setText(self.messagetext)
             self.closeDoorsButton.setDisabled(True)
             self.openDoorsButton.setDisabled(False)
@@ -514,7 +517,7 @@ class Form():
 
     def OpenRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("openRoof")
+            self.messagetext = self.sendData(strings.MESSAGE_OPEN_ROOF)
             self.roofStatusLabel.setText(self.messagetext)
             self.openRoofButton.setDisabled(True)
             self.closeRoofButton.setDisabled(False)
@@ -524,7 +527,7 @@ class Form():
 
     def CloseRoof(self):
         if self.isConnected:
-            self.messagetext = self.sendData("closeRoof")
+            self.messagetext = self.sendData(strings.MESSAGE_CLOSE_ROOF)
             self.roofStatusLabel.setText(self.messagetext)
             self.closeRoofButton.setDisabled(True)
             self.openRoofButton.setDisabled(False)
@@ -534,7 +537,7 @@ class Form():
 
     def ExtendPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("extendPad")
+            self.messagetext = self.sendData(strings.MESSAGE_EXTEND_PAD)
             self.backPadStatusLabel.setText(self.messagetext)
             self.extendPadButton.setDisabled(True)
             self.retractPadButton.setDisabled(False)
@@ -544,7 +547,7 @@ class Form():
 
     def RetractPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("retractPad")
+            self.messagetext = self.sendData(strings.MESSAGE_RETRACT_PAD)
             self.backPadStatusLabel.setText(self.messagetext)
             self.retractPadButton.setDisabled(True)
             self.extendPadButton.setDisabled(False)
@@ -554,7 +557,7 @@ class Form():
 
     def RaisePad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("raisePad")
+            self.messagetext = self.sendData(strings.MESSAGE_RAISE_PAD)
             self.roofPadStatusLabel.setText(self.messagetext)
             self.raisePadButton.setDisabled(True)
             self.lowerPadButton.setDisabled(False)
@@ -564,7 +567,7 @@ class Form():
 
     def LowerPad(self):
         if self.isConnected:
-            self.messagetext = self.sendData("lowerPad")
+            self.messagetext = self.sendData(strings.MESSAGE_LOWER_PAD)
             self.roofPadStatusLabel.setText(self.messagetext)
             self.lowerPadButton.setDisabled(True)
             self.raisePadButton.setDisabled(False)
@@ -577,13 +580,15 @@ class Form():
             self.messagetext = self.sendData(missionMessage)
             self.missionLabel.setText(self.messagetext)
             self.openDoorsButton.setDisabled(True)
-            self.closeDoorsButton.setDisabled(False)
-            self.openRoofButton.setDisabled(False)
+            self.closeDoorsButton.setDisabled(True)
+            self.openRoofButton.setDisabled(True)
             self.closeRoofButton.setDisabled(True)
-            self.extendPadButton.setDisabled(False)
-            self.retractPadButton.setDisabled(False)
-            self.raisePadButton.setDisabled(False)
-            self.lowerPadButton.setDisabled(False)
+            self.extendPadButton.setDisabled(True)
+            self.retractPadButton.setDisabled(True)
+            self.raisePadButton.setDisabled(True)
+            self.lowerPadButton.setDisabled(True)
+            self.bottomDroneMissionButton.setDisabled(True)
+            self.topDroneMissionButton.setDisabled(True)
         else:
             self.label.setText("Please Connect First")
 

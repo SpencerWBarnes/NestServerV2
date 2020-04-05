@@ -1,6 +1,7 @@
 from selenium import webdriver
 import time
 import threading
+import StringConstants as strings
 
 # Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
 # download this and copy and paste where that file is here vvvv
@@ -117,65 +118,51 @@ class PlcClient:
         self.lowerPadButton = Button(LOWER_PAD_ID, self.browser, [self.liftLoweredText])
         self.openRoofButton = Button(OPEN_ROOF_ID, self.browser, [self.roofOpenText])
 
-    # handleClick: puts each button toggle on a seperate thread so that the application doesnt get hung after every button press
-    def __startThread(self, threadTarget):
-        thread = threading.Thread(target=threadTarget)
-        thread.daemon = True
-        thread.start()
-
     # executeCommand: takes in a string command, the same one the server sees, and executes it
     def executeCommand(self, command):
         canExecute = True
 
-        if command == "emergencyStop":
-            self.__startThread(self.__emergencyStop)
+        if command == strings.MESSAGE_EMERGENCY_STOP:
+            self.__emergencyStop()
 
-        elif command == "openDoors":
-            self.__startThread(self.__openDoors)
+        elif command == strings.MESSAGE_OPEN_DOORS:
+            self.__openDoors()
 
-        elif command == "closeDoors":
+        elif command == strings.MESSAGE_CLOSE_DOORS:
             if(self.railRetractedText.getModeValue()):
-                self.__startThread(self.__closeDoors)
+                self.__closeDoors()
             else: 
                 canExecute = False
 
-        elif command == "openRoof":
-            self.__startThread(self.__openRoof)
+        elif command == strings.MESSAGE_OPEN_ROOF:
+            self.__openRoof()
 
-        elif command == "closeRoof":
+        elif command == strings.MESSAGE_CLOSE_ROOF:
             if(self.liftLoweredText.getModeValue()):
-                self.__startThread(self.__closeRoof)
+                self.__closeRoof()
             else: 
                 canExecute = False
 
-        elif command == "extendPad":
+        elif command == strings.MESSAGE_EXTEND_PAD:
             if(self.doorOneOpenText.getModeValue() and self.doorTwoOpenText.getModeValue()):
-                pass
-                # self.__startThread(self.__extendPad)
+                self.__extendPad()
             else: 
                 canExecute = False
 
-        elif command == "retractPad":
-            pass
-            # self.__startThread(self.__retractPad)
+        elif command == strings.MESSAGE_RETRACT_PAD:
+            self.__retractPad()
 
-        elif command == "raisePad":
+        elif command == strings.MESSAGE_RAISE_PAD:
             if(self.roofOpenText.getModeValue()):
-                self.__startThread(self.__raisePad)
+                self.__raisePad()
             else: 
                 canExecute = False
 
-        elif command == "lowerPad":
-            self.__startThread(self.__lowerPad)
+        elif command == strings.MESSAGE_LOWER_PAD:
+            self.__lowerPad()
 
-        elif command == "systemStatus":
-            self.__startThread(self.__systemStatus)
-
-        elif command == "bottomDroneMission":
-            self.__startThread(self.__bottomDroneMission)
-
-        elif command == "topDroneMission":
-            self.__startThread(self.__topDroneMission)
+        elif command == strings.MESSAGE_SYSTEM_STATUS:
+            self.__systemStatus()
 
         return (canExecute)
 
@@ -239,27 +226,33 @@ class PlcClient:
         self.lowerPadButton.toggleButton()
         return True
 
-    # Missions
-    def __bottomDroneMission(self):
-        self.__openDoors()
-        self.__extendPad()
-        # TODO: Check sensors to see when pad is fully extended
-        # TODO: Send command for drone to take off and wait for drone to come back
-        self.__retractPad()
-        # TODO: Check sensors to see when pad is fully retracted
-        self.__closeDoors()
-        # TODO: Check sensors to see when doors are closed
+    def areDoorsOpen(self):
+        doorTwoOpen = self.doorTwoOpenText.getModeValue() 
+        doorOneOpen = self.doorOneOpenText.getModeValue() 
+        return (doorTwoOpen and doorOneOpen)
 
-    def __topDroneMission(self):
-        self.__openRoof()
-        # TODO: Check sensors to see when roof is open
-        self.__raisePad()
-        # TODO: Check sensors to see when pad is fully raised
-        # TODO: Send command for drone to take off and wait for drone to come back
-        self.__lowerPad()
-        # TODO: Check sensors to see when pad is fully lowerd
-        self.__closeRoof()
-        # TODO: Check sensors to see when roof is closed
+    def areDoorsClosed(self):
+        doorOneClosed = self.doorOneClosedText.getModeValue() 
+        doorTwoClosed = self.doorTwoClosedText.getModeValue() 
+        return (doorOneClosed and doorTwoClosed)
+
+    def isRoofOpen(self):
+        return self.roofOpenText.getModeValue() 
+
+    def isRoofClosed(self):
+        return self.roofClosedText.getModeValue() 
+
+    def isRailExtended(self):
+        return self.railExtendedText.getModeValue() 
+
+    def isRailRetracted(self):
+        return self.railRetractedText.getModeValue() 
+
+    def isLiftRaised(self):
+        return self.liftRaisedText.getModeValue() 
+
+    def isLiftLowered(self):
+        return self.liftLoweredText.getModeValue() 
 
 # This is a fake plc client so that we don't have to be connected to the plc to do normal developing
 # It has all of the same public functions as PlcClient, but they are empty. This helps us not have to open a 
@@ -275,6 +268,30 @@ class PlcClientDev:
         pass
 
     def executeCommand(self, command):
+        pass
+
+    def areDoorsOpen(self):
+        pass
+
+    def areDoorsClosed(self):
+        pass
+
+    def isRoofOpen(self):
+        pass
+
+    def isRoofClosed(self):
+        pass
+
+    def isRailExtended(self):
+        pass
+
+    def isRailRetracted(self):
+        pass
+
+    def isLiftRaised(self):
+        pass
+
+    def isLiftLowered(self):
         pass
 
     def close(self):
