@@ -292,13 +292,13 @@ class Server():
             h = random.random() * 360
             
             while self.bottomPadPlot.is_safe(x, y) is 'r':
-                print ("Drone is not safe")
+                print ("Drone is not safe: x = " + str(x) + " y = " + str(y))
                 time.sleep(2) # TODO: SEND DRONE OUT
                 x = random.random() * self.bottomPadPlot.pad_radius
                 y = random.random() * self.bottomPadPlot.pad_radius
                 h = random.random() * 360
             
-            print ("Drone is safe")
+            print ("Drone is safe: x = " + str(x) + " y = " + str(y) + " Proceed to retract pad")
             # self.bottomPadPlot.plot_drone(x, y, h)
 
             self.isPadExtended = False
