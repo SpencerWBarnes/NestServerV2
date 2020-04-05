@@ -35,16 +35,16 @@ class Pad_Plot:
 
     def plot_drone( self, x_cm, y_cm, heading):
         img = plt.imread("landing_pad.png")
-        # fig, ax = plt.subplots()
-        # ax.imshow(img)
+        fig, ax = plt.subplots()
+        ax.imshow(img)
 
-        # x, y = self.axis_transform( x_cm, y_cm)
-        # clr = self.is_safe(x_cm, y_cm)
-        # drone_span = plt.Circle((x, y), self.drone_radius*self.px_cm, color=clr, fill=False)
-        # ax.add_artist(drone_span)
-        # x_slope, y_slope = self.heading_transform(x, y, heading)
-        # plt.arrow(x, y, x_slope, -y_slope, length_includes_head=True,
-        #           head_width=50, head_length=100, color='b')
+        x, y = self.axis_transform( x_cm, y_cm)
+        clr = self.is_safe(x_cm, y_cm)
+        drone_span = plt.Circle((x, y), self.drone_radius*self.px_cm, color=clr, fill=False)
+        ax.add_artist(drone_span)
+        x_slope, y_slope = self.heading_transform(x, y, heading)
+        plt.arrow(x, y, x_slope, -y_slope, length_includes_head=True,
+                  head_width=50, head_length=100, color='b')
         plt.savefig("landing.png")
-        # plt.show()
+        plt.show()
 
