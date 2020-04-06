@@ -42,8 +42,8 @@ class Server():
         self.messagetext = None
 
         # PlcClient
-        self.plc = PlcClient()          # This is for production mode
-        # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        # self.plc = PlcClient()          # This is for production mode
+        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
         # self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
@@ -297,9 +297,9 @@ class Server():
                 x = random.random() * self.bottomPadPlot.pad_radius
                 y = random.random() * self.bottomPadPlot.pad_radius
                 h = random.random() * 360
+                self.bottomPadPlot.plot_drone(x, y, h)
             
             print ("Drone is safe: x = " + str(x) + " y = " + str(y) + " Proceed to retract pad")
-            # self.bottomPadPlot.plot_drone(x, y, h)
 
             self.isPadExtended = False
             self.plc.executeCommand(strings.MESSAGE_RETRACT_PAD)

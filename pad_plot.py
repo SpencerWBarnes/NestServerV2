@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -46,5 +48,5 @@ class Pad_Plot:
         plt.arrow(x, y, x_slope, -y_slope, length_includes_head=True,
                   head_width=50, head_length=100, color='b')
         plt.savefig("landing.png")
-        plt.show()
+        # plt.show()
 
