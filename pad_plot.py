@@ -2,16 +2,18 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
 class Pad_Plot:
 
     def __init__(self, drone_radius, clearance = 5, pad_radius = 76.2,
-                 px_cm = 39, px_size = 6000):
+                 px_cm = 39, px_size = 6000, name = 'landing.png'):
         self.drone_radius = drone_radius
         self.clearance = clearance
         self.pad_radius = pad_radius
         self.px_cm = px_cm
         self.px_size = px_size
+        self.name = name
 
     def axis_transform(self, x_cm, y_cm):
         x_px = x_cm * self.px_cm
@@ -40,6 +42,11 @@ class Pad_Plot:
         fig, ax = plt.subplots()
         ax.imshow(img)
 
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+
+        ax.title.set_text(self.name + " Drone at " + dt_string)
+
         x, y = self.axis_transform( x_cm, y_cm)
         clr = self.is_safe(x_cm, y_cm)
         drone_span = plt.Circle((x, y), self.drone_radius*self.px_cm, color=clr, fill=False)
@@ -47,6 +54,6 @@ class Pad_Plot:
         x_slope, y_slope = self.heading_transform(x, y, heading)
         plt.arrow(x, y, x_slope, -y_slope, length_includes_head=True,
                   head_width=50, head_length=100, color='b')
-        plt.savefig("landing.png")
+        plt.savefig(self.name + "Landing.png")
         # plt.show()
 

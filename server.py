@@ -35,8 +35,8 @@ class Server():
         self.openConnections = []
 
         # TODO: maybe get drone radius from drone? maybe from server?
-        self.bottomPadPlot = Pad_Plot(16)
-        self.topPadPlot = Pad_Plot(16)
+        self.bottomPadPlot = Pad_Plot(16, name='Bottom')
+        self.topPadPlot = Pad_Plot(16, name='Top')
 
         # messagetext: holds the value of the message to be sent to the client
         self.messagetext = None
@@ -324,6 +324,21 @@ class Server():
         
             self.isPadRaised = True
             self.plc.executeCommand(strings.MESSAGE_RAISE_PAD)
+
+            # Drone landing
+            x = 1000
+            y = 1000
+            h = random.random() * 360
+            
+            while self.topPadPlot.is_safe(x, y) is 'r':
+                print ("Drone is not safe: x = " + str(x) + " y = " + str(y))
+                time.sleep(2) # TODO: SEND DRONE OUT
+                x = random.random() * self.topPadPlot.pad_radius
+                y = random.random() * self.topPadPlot.pad_radius
+                h = random.random() * 360
+                self.topPadPlot.plot_drone(x, y, h)
+            
+            print ("Drone is safe: x = " + str(x) + " y = " + str(y) + " Proceed to lower pad")
 
             self.isPadRaised = False
             self.plc.executeCommand(strings.MESSAGE_LOWER_PAD)
