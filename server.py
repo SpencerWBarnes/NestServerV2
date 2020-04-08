@@ -11,7 +11,7 @@ from PlcClient import PlcClient, PlcClientDev
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.11'
+IP_ADDRESS = '192.168.0.8'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -55,8 +55,8 @@ class Server():
         self.messagetext = None
 
         # PlcClient
-        self.plc = PlcClient()          # This is for production mode
-        # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        # self.plc = PlcClient()          # This is for production mode
+        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
         self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         

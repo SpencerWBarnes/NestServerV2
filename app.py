@@ -18,5 +18,5 @@ from routes import * # This has to be here, it can't be moved up to the top
 
 # Running applciation
 if __name__ == '__main__':
-    init_gui(app, port=8000, width=800, height=600, window_title="Nest Server", icon="appicon.jpg", argv=None)
+    init_gui(app, port=8000, width=1200, height=600, window_title="Nest Server", icon="appicon.jpg", argv=None)
     

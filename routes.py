@@ -32,6 +32,18 @@ def gen(camera):
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
+def genpng(camera):
+    """Video streaming generator function."""
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'b'Content-Type: image/png\r\n\r\n' + frame + b'\r\n')
+
+
+@app.route('/bottomLanding')
+def bottomLanding():
+    return Response(genpng(Landing_Camera()), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
 @app.route('/video_feed1')
 def video_feed1():
     """Video streaming route. Put this in the src attribute of an img tag."""

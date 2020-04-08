@@ -119,3 +119,13 @@ class Camera():
                 print('Stopping camera thread due to inactivity')
                 break
         self.thread = None
+
+
+class Landing_Camera(Camera):
+    img = open('bottomLanding.png', 'rb').read()
+
+    @staticmethod
+    def frames():
+        while True:
+            time.sleep(1)
+            yield Landing_Camera.img[int(time.time()) % 3]
