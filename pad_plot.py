@@ -54,6 +54,6 @@ class Pad_Plot:
         x_slope, y_slope = self.heading_transform(x, y, heading)
         plt.arrow(x, y, x_slope, -y_slope, length_includes_head=True,
                   head_width=50, head_length=100, color='b')
-        plt.savefig(self.name + "Landing.png")
+        plt.savefig(self.name + "Landing.jpg")
         # plt.show()
 
