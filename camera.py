@@ -121,11 +121,19 @@ class Camera():
         self.thread = None
 
 
-class Landing_Camera(Camera):
-    img = open('bottomLanding.png', 'rb').read()
-
+class Top_Landing_Camera(Camera):
     @staticmethod
     def frames():
         while True:
+            img = open('topLanding.jpg', 'rb').read()
             time.sleep(1)
-            yield Landing_Camera.img[int(time.time()) % 3]
+            yield img
+
+class Bottom_Landing_Camera(Camera):
+    @staticmethod
+    def frames():
+        while True:
+            img = open('bottomLanding.jpg', 'rb').read()
+            time.sleep(1)
+            yield img
+
