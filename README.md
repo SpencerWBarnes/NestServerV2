@@ -76,7 +76,9 @@ The application will:
 ### Built With
 
 * [Python 3.7.4](https://www.python.org/downloads/release/python-374/)
-* [Flask](https://www.fullstackpython.com/flask.html)
+* [Flask](https://www.fullstackpython.com/flask.html) - This creates the video server
+* [Matplotlib](https://matplotlib.org/users/installing.html) - This creates the drone landing plot in ```pad_plot.py``` 
+* [Pillow](https://pypi.org/project/Pillow/) - This is used to store the drone landing image as a ```.jpg``` image.
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -90,6 +92,7 @@ Here are the instructions for setting up the app locally.
   * PyQt5 with QtWebEngineWidgets
   * Selenium
   * Cv2 (Open CV)
+  * Pillow
 
 ### Installation
 
