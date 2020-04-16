@@ -32,6 +32,16 @@ def gen(camera):
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
+@app.route('/topLanding')
+def topLanding():
+    return Response(gen(Top_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/bottomLanding')
+def bottomLanding():
+    return Response(gen(Bottom_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
 @app.route('/video_feed1')
 def video_feed1():
     """Video streaming route. Put this in the src attribute of an img tag."""

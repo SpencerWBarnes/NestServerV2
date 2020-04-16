@@ -8,11 +8,13 @@ import threading
 import json
 from PlcClient import PlcClient, PlcClientDev #TODO: remove dev
 import StringConstants as strings
+from pad_plot import Pad_Plot
+import random
 
 
 ######### Important constants #########
 # default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.6'
+IP_ADDRESS = '192.168.0.106'
 # IP_ADDRESS = '192.168.99.2' # THE NEST's IP
 
 PORT_NUM = 8888
@@ -33,12 +35,16 @@ class Server():
         self.isPadRaised = False
         self.openConnections = []
 
+        # TODO: maybe get drone radius from drone? maybe from server?
+        self.bottomPadPlot = Pad_Plot(16, name='Bottom')
+        self.topPadPlot = Pad_Plot(16, name='Top')
+
         # messagetext: holds the value of the message to be sent to the client
         self.messagetext = None
 
         # PlcClient
-        self.plc = PlcClient()          # This is for production mode
-        # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        # self.plc = PlcClient()          # This is for production mode
+        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
         # self.plc.login("PLC")           # Login with password PLC
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
         
@@ -282,6 +288,23 @@ class Server():
             self.isPadExtended = True
             self.plc.executeCommand(strings.MESSAGE_EXTEND_PAD)
 
+            # time.sleep(10) # TODO: SEND DRONE OUT
+
+            # Drone landing
+            x = 1000
+            y = 1000
+            h = random.random() * 360
+            
+            while self.bottomPadPlot.is_safe(x, y) is 'r':
+                print ("Drone is not safe: x = " + str(x) + " y = " + str(y))
+                time.sleep(2) # TODO: SEND DRONE OUT
+                x = random.random() * self.bottomPadPlot.pad_radius
+                y = random.random() * self.bottomPadPlot.pad_radius
+                h = random.random() * 360
+                self.bottomPadPlot.plot_drone(x, y, h)
+            
+            print ("Drone is safe: x = " + str(x) + " y = " + str(y) + " Proceed to retract pad")
+
             self.isPadExtended = False
             self.plc.executeCommand(strings.MESSAGE_RETRACT_PAD)
             
@@ -305,6 +328,21 @@ class Server():
         
             self.isPadRaised = True
             self.plc.executeCommand(strings.MESSAGE_RAISE_PAD)
+
+            # Drone landing
+            x = 1000
+            y = 1000
+            h = random.random() * 360
+            
+            while self.topPadPlot.is_safe(x, y) is 'r':
+                print ("Drone is not safe: x = " + str(x) + " y = " + str(y))
+                time.sleep(2) # TODO: SEND DRONE OUT
+                x = random.random() * self.topPadPlot.pad_radius
+                y = random.random() * self.topPadPlot.pad_radius
+                h = random.random() * 360
+                self.topPadPlot.plot_drone(x, y, h)
+            
+            print ("Drone is safe: x = " + str(x) + " y = " + str(y) + " Proceed to lower pad")
 
             self.isPadRaised = False
             self.plc.executeCommand(strings.MESSAGE_LOWER_PAD)
@@ -381,7 +419,7 @@ class Server():
         while True:
             data = conn.recv(BUFFERSIZE)
             if data: 
-                print ("received data:", data.decode(), conn)
+                # print ("received data:", data.decode(), conn)
                 self.handledata(data.decode(), conn)
             data = None
         conn.close()

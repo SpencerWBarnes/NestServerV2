@@ -97,7 +97,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
 
     # WebView Level
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    webView.setMinimumHeight(400)
+    webView.setMinimumHeight(700)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
@@ -132,7 +132,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
     page = WebPage('http://' + cur_host + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-    window.show()
+    window.showMaximized()
 
     # Callbacks to update the UI upon server changes
     s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
