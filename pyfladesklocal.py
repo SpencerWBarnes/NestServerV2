@@ -4,19 +4,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 import socket
-import server
 import threading
-
-######### Initializing the server thread #########
-s = server.Server()
-serverThread = threading.Thread(target=s.connection)
-serverThread.daemon = True
-
-# Start server connection
-serverThread.start()
+import StringConstants
 
 # Get the IP address from the server
-cur_host = server.IP_ADDRESS
+cur_host = StringConstants.SERVER_IP_ADDRESS
 
 
 ######### ApplicationThread: the thread for the webpage application #########
@@ -54,7 +46,7 @@ class WebPage(QtWebEngineWidgets.QWebEnginePage):
 ######### updateUI: this is a callback that updates the user interface when there are changes on the server #########
 def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel):
     commandsLabel.setText("Last Command: " + str(s.messagetext))
-    ipLabel.setText("IP: " + str(server.IP_ADDRESS))
+    ipLabel.setText("IP: " + cur_host)
     isOnLabel.setText("System on: " + str(s.isOn))
     isDoorOpenLabel.setText("Doors open: " + str(s.isDoorOpen))
     isRoofOpenLabel.setText("Roof open: " + str(s.isRoofOpen))
@@ -72,8 +64,8 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
         port = sock.getsockname()[1]
         sock.close()
 
-    print(" * Listening to commands on: " + server.IP_ADDRESS)
-    print(s.getSystemStatusDict())
+    print(" * Listening to commands on: " + cur_host)
+    # print(s.getSystemStatusDict())
 
     # Application Level
     global qtapp
@@ -81,7 +73,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
     webapp = ApplicationThread(application, port)
     webapp.start()
     qtapp.aboutToQuit.connect(webapp.terminate)
-    qtapp.aboutToQuit.connect(s.closeEvent)
+    # qtapp.aboutToQuit.connect(s.closeEvent)
 
     # Main Window Level
     window = QWidget()
@@ -135,7 +127,7 @@ def init_gui(application, port=0, width=800, height=600, window_title="Nest", ic
     window.showMaximized()
 
     # Callbacks to update the UI upon server changes
-    s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
-    updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    # s.serverCallback = lambda: updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
+    # updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel, isPadExtendedLabel, isPadRaisedLabel)
 
     return qtapp.exec_()

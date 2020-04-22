@@ -95,53 +95,51 @@ class PasswordDialog(QDialog):
         self.retractPadButton.setDisabled(True)
         self.raisePadButton.setDisabled(True)
         self.lowerPadButton.setDisabled(True)
-        self.bottomDroneMissionButton.setDisabled(True)
-        self.topDroneMissionButton.setDisabled(True)
 
     def OpenDoors(self):
-        self.commandMessage = "openDoorsButton"
-        self.messageToSendLabel.setText("Message to be sent: openDoorsButton")
+        self.commandMessage = "openDoors"
+        self.messageToSendLabel.setText("Message to be sent: openDoors")
         self.disableButtons()
 
     def CloseDoors(self):
-        self.commandMessage = "closeDoorsButton"
-        self.messageToSendLabel.setText("Message to be sent: closeDoorsButton")
+        self.commandMessage = "closeDoors"
+        self.messageToSendLabel.setText("Message to be sent: closeDoors")
         self.disableButtons()
 
     def OpenRoof(self):
-        self.commandMessage = "openRoofButton"
-        self.messageToSendLabel.setText("Message to be sent: openRoofButton")
+        self.commandMessage = "openRoof"
+        self.messageToSendLabel.setText("Message to be sent: openRoof")
         self.disableButtons()
 
     def CloseRoof(self):
-        self.commandMessage = "closeRoofButton"
-        self.messageToSendLabel.setText("Message to be sent: closeRoofButton")
+        self.commandMessage = "closeRoof"
+        self.messageToSendLabel.setText("Message to be sent: closeRoof")
         self.disableButtons()
 
     def ExtendPad(self):
-        self.commandMessage = "extendPadButton"
-        self.messageToSendLabel.setText("Message to be sent: extendPadButton")
+        self.commandMessage = "extendPad"
+        self.messageToSendLabel.setText("Message to be sent: extendPad")
         self.disableButtons()
 
     def RetractPad(self):
-        self.commandMessage = "retractPadButton"
-        self.messageToSendLabel.setText("Message to be sent: retractPadButton")
+        self.commandMessage = "retractPad"
+        self.messageToSendLabel.setText("Message to be sent: retractPad")
         self.disableButtons()
 
     def RaisePad(self):
-        self.commandMessage = "raisePadButton"
-        self.messageToSendLabel.setText("Message to be sent: raisePadButton")
+        self.commandMessage = "raisePad"
+        self.messageToSendLabel.setText("Message to be sent: raisePad")
         self.disableButtons()
 
     def LowerPad(self):
-        self.commandMessage = "lowerPadButton"
-        self.messageToSendLabel.setText("Message to be sent: lowerPadButton")
+        self.commandMessage = "lowerPad"
+        self.messageToSendLabel.setText("Message to be sent: lowerPad")
         self.disableButtons()
 
     # Notifies the main application that there should be a password override through shouldSendPasswordOverride
     def Submit(self):
-        self.passwordmessage = self.passwordLineEdit.text()
-        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandMessage)
+        self.password = str(self.passwordLineEdit.text())
+        self.message = str(self.commandMessage)
         self.shouldSendPasswordOverride = True
         self.done(1)
 
@@ -427,8 +425,8 @@ class Form():
                 self.submitConnect.setDisabled(False)
     
     # sendData: sends data to server
-    def sendData(self, data):
-        r = requests.get(self.baseUrl + "/" + data)
+    def sendData(self, data, password = ""):
+        r = requests.get(self.baseUrl + "/" + data, headers={"auth": password})
         data  = r.text
 
         if "Error" in data:
@@ -479,8 +477,9 @@ class Form():
             self.dialog = PasswordDialog()
             self.dialog.exec()
             if (self.dialog.shouldSendPasswordOverride == True):
-                self.passwordmessage = self.dialog.servermessage
-                response = self.sendData(self.passwordmessage)
+                password = self.dialog.password
+                message = self.dialog.message
+                response = self.sendData(message, password=password)
                 self.systemDiagnostic()
 
     def OpenDoors(self):
