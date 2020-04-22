@@ -138,7 +138,7 @@ def lowerPad():
 @app.route('/systemStatus')
 def systemStatus():
     message = machine.systemStatus()
-    return Response(message, mimetype='text')
+    return Response(message, mimetype='application/json')
 
 @app.route('/bottomDroneMission')
 def bottomDroneMission():
