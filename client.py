@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from flask import Flask
-import socket
+import requests
 from threading import Thread
 import StringConstants as strings
 
@@ -161,6 +161,8 @@ class Form():
         self.isConnected = False
         self.messagetext = ""
 
+        self.baseUrl = ""
+
         # Application Level
         global qtapp
         qtapp = QApplication(argv)
@@ -281,9 +283,6 @@ class Form():
         # Some variables needed for everything else
         self.pollingThread = Thread(target=self.poll)
         self.pollingThread.daemon = True
-
-        # Setting up the socket to send commands
-        self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         window.show()
         return qtapp.exec_()
@@ -407,18 +406,9 @@ class Form():
     
     def connection(self):
         if (self.isConnected == False):
-            try: 
-                print ((self.ipLineEdit.text(), int(self.portLineEdit.text())))
-                self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.commandSock.connect((self.ipLineEdit.text(), int(self.portLineEdit.text())))
-                self.submitConnect.setDisabled(True)
-            except Exception as e:
-                self.statusLabel.setText(str(e))
-                print(e)
-                return
-
             try:
                 self.isConnected = True
+                self.baseUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
 
                 self.sendData(strings.MESSAGE_CONNECTION_TEST)
 
@@ -426,11 +416,10 @@ class Form():
                 self.pollingThread.start()
 
                 # WebPage Level
-                text = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
-                print("GETTING WEBPAGE FROM: " + text)
-                page = WebPage(text)
+                print("GETTING WEBPAGE FROM: " + self.baseUrl)
+                page = WebPage(self.baseUrl)
                 page.home()
-                self.webView.setUrl(QUrl(text))
+                self.webView.setUrl(QUrl(self.baseUrl))
                 
             except OSError as e:
                 print(e)
@@ -439,9 +428,8 @@ class Form():
     
     # sendData: sends data to server
     def sendData(self, data):
-        self.commandSock.sendall(data.encode())
-        data = self.commandSock.recv(BUFFER_SIZE)
-        data = data.decode()
+        r = requests.get(self.baseUrl + "/" + data)
+        data  = r.text
 
         if "Error" in data:
             print("uh oh error!")
