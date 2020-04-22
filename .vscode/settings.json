@@ -5,5 +5,5 @@
         [
             "-rn --extension-pkg-whitelist=PyQt5 --disable=blacklisted-name,invalid-name,missing-docstring"
         ],
-        "python.pythonPath": "C:\\Program Files\\Python37\\python.exe"
+        "python.pythonPath": "/usr/local/opt/python/bin/python3.7"
 }
