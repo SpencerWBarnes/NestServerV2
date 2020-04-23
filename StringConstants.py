@@ -42,16 +42,3 @@ ERROR_IS_STARTED = "Must stop system"
 # CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
 CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
 PLCURL = 'http://192.168.99.3/'
-
-
-
-
-
-
-
-
-
-
-
-
-
