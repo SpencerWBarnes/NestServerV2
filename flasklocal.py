@@ -59,7 +59,6 @@ def init_gui(application, ip='127.0.0.1', port=5000, width=800, height=600, wind
         sock.close()
 
     print(" * Listening to commands on: " + ip)
-    # print(s.getSystemStatusDict())
 
     # Application Level
     global qtapp
@@ -67,7 +66,6 @@ def init_gui(application, ip='127.0.0.1', port=5000, width=800, height=600, wind
     webapp = ApplicationThread(application, ip, port)
     webapp.start()
     qtapp.aboutToQuit.connect(webapp.terminate)
-    # qtapp.aboutToQuit.connect(s.closeEvent)
 
     # Main Window Level
     window = QWidget()
