@@ -36,7 +36,7 @@ def gen(camera):
 def handleAuth():
     # TODO: Handle passwords
     auth = request.headers.get('auth')
-    # print("auth: " + str(auth))
+    print("auth: " + str(auth))
 
 
 @app.route('/topLanding')

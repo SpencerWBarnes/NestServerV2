@@ -212,10 +212,7 @@ class MachineStatus():
     def bottomDroneMission(self):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
-            # message = self.messagetext + '\n'
-            # conn.send(message.encode())
-            
-            # TODO: Get status of nest
+        
             self.isDoorOpen = True
             self.plc.executeCommand(strings.MESSAGE_OPEN_DOORS)
         
@@ -253,8 +250,6 @@ class MachineStatus():
     def topDroneMission(self):
         if self.isOn:
             self.messagetext = "Top drone mission"
-            # message = self.messagetext + '\n'
-            # conn.send(message.encode())
             
             self.isRoofOpen = True
             self.plc.executeCommand(strings.MESSAGE_OPEN_ROOF)
