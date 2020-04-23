@@ -9,18 +9,8 @@ import StringConstants as strings
 from pad_plot import Pad_Plot
 import random
 
-
-######### Important constants #########
-# default values for IP and Port (IPV4 on Windows, en0 on OSX)
-IP_ADDRESS = '192.168.0.6'
-# IP_ADDRESS = '192.168.99.2' # THE NEST's IP
-
-PORT_NUM = 8888
-BUFFERSIZE = 1024
-
-
-######### Server Class #########
-# This is a guiless server. It runs in the background in pyfladesklocal.py
+######### MachineStatus Class #########
+# This class is used to set the status of the machine, and hold it's state. It calls PlcClient and performs actions on the Plc
 class MachineStatus():
     def __init__(self, parent=None):
         
@@ -56,18 +46,6 @@ class MachineStatus():
         }
         message = json.dumps(systemStatusDict)
         return message
-    
-    # getSystemStatusDict: like systemStatus, but returns a dictionary of the state of the NEST - doesn't send messages to the client
-    def getSystemStatusDict(self):
-        systemStatusDict = {
-            "isOn" : self.isOn,
-            "isDoorOpen" : self.isDoorOpen,
-            "isRoofOpen" : self.isRoofOpen,
-            "isPadExtended" : self.isPadExtended,
-            "isPadRaised" : self.isPadRaised,
-            "previousCommand" : self.messagetext
-        }
-        return systemStatusDict
 
     # systemPower:  Called when the client wants to start sending messages that affect the state of the NEST,
     #               used for setting the isOn variable to true
@@ -209,6 +187,7 @@ class MachineStatus():
 
         return self.messagetext
     
+    # bottomDroneMission:     Called when the client wants to run the bottom drone mission
     def bottomDroneMission(self):
         if self.isOn:
             self.messagetext = "Bottom drone mission"
@@ -247,6 +226,7 @@ class MachineStatus():
         
             return self.messagetext
 
+    # topDroneMission:     Called when the client wants to run the top drone mission
     def topDroneMission(self):
         if self.isOn:
             self.messagetext = "Top drone mission"
@@ -282,6 +262,7 @@ class MachineStatus():
         
         return self.messagetext
 
+    # startThread:     This spins up a quick thread given a thread target
     def startThread(self, threadTarget):
         thread = threading.Thread(target=threadTarget)
         thread.daemon = True
