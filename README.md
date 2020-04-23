@@ -33,7 +33,7 @@ An app from the IMPRESS Lab at Mississippi State University
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is an application for the IMPRESS Labs done Nest.
+This is an application for the IMPRESS Labs.
 
 We are developing a drone Nest for fully autonomous operations (no human intervention). Two drones can autonomously take off and land simultaneously, and their batteries are replaced by a robotic arm. The Nest is solar powered so it is self sustainable. Users can load pre-planned missions and the Nest allows collection of consistent repeatable data. With battery replacement by the robotic arm, drones are almost constantly available. The Nest also serves as data storage and connectivity during remote operations. It also includes several sensors and weather station for constant monitoring itself and environment around it.
 
@@ -49,6 +49,8 @@ The application will:
 
 * [Python 3.7.4](https://www.python.org/downloads/release/python-374/)
 * [Flask](https://www.fullstackpython.com/flask.html) - This creates the video server
+* [PyQt5](https://pypi.org/project/PyQt5/) - This is used to create the user interface
+* [Selenium](https://selenium-python.readthedocs.io/) - This is used to communicate with the PLC
 * [Matplotlib](https://matplotlib.org/users/installing.html) - This creates the drone landing plot in ```pad_plot.py``` 
 * [Pillow](https://pypi.org/project/Pillow/) - This is used to store the drone landing image as a ```.jpg``` image.
 
@@ -68,7 +70,7 @@ Here are the instructions for setting up the app locally.
 
 To install these dependencies, run the following commands:
 
-```sh
+```bash
 # Install in one line
 
 pip3 install Flask PyQt5 PyQtWebEngine selenium opencv-python Pillow
@@ -87,7 +89,7 @@ pip install Pillow
 
 1. Clone the repo
 
-    ```sh
+    ```bash
     git clone https://github.com/impress-msu/NestApp.git
     ```
 
@@ -108,13 +110,13 @@ pip install Pillow
 
 4. Build and run the app
   
-    ```sh
+    ```bash
     python app.py
     ```
 
 5. Build and run the client
 
-    ```sh
+    ```bash
     python app.py
     ```
 
