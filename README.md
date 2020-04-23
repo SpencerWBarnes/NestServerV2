@@ -93,30 +93,30 @@ pip install Pillow
 
 2. Modify the following strings in ```StringConstants.py```
 
-  ```py
-  # Server configuration variables, these should match your machine
-  SERVER_IP_ADDRESS = "192.168.0.6"
-  SERVER_PORT = 8000
-  
-  ...
-  # Direct path of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
-  CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
-  PLCURL = 'http://192.168.99.3/'
-```
+    ```python
+    # Server configuration variables, these should match your machine
+    SERVER_IP_ADDRESS = "192.168.0.6"
+    SERVER_PORT = 8000
+
+    ...
+    # Direct path of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
+    CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
+    PLCURL = 'http://192.168.99.3/'
+    ```
 
 3. Open repo in prefered Python editor
 
 4. Build and run the app
   
-  ```sh
-  python app.py
-  ```
+    ```sh
+    python app.py
+    ```
 
 5. Build and run the client
 
-  ```sh
-  python app.py
-  ```
+    ```sh
+    python app.py
+    ```
 
 ## Docs
 
