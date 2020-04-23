@@ -93,7 +93,7 @@ pip install Pillow
     git clone https://github.com/impress-msu/NestApp.git
     ```
 
-2. Modify the following strings in ```StringConstants.py```
+2. Modify the following strings in [StringConstants.py](StringConstants.py)
 
     ```python
     # Server configuration variables, these should match your machine
