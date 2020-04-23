@@ -3,7 +3,7 @@ import os
 import threading
 import StringConstants
 from flask import Flask
-from pyfladesklocal import init_gui
+from flasklocal import init_gui
 from dotenv import load_dotenv
 load_dotenv('.flaskenv')
 
@@ -19,5 +19,5 @@ from routes import * # This has to be here, it can't be moved up to the top
 
 # Running applciation
 if __name__ == '__main__':
-    init_gui(app, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="appicon.jpg", argv=None)
+    init_gui(app, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
     
