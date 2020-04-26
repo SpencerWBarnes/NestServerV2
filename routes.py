@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from importlib import import_module
 import os
-from flask import Flask, render_template, Response
+from flask import Flask, render_template, Response, request
+from MachineStatus import MachineStatus
 
 
 # import camera driver
@@ -18,6 +19,7 @@ from camera import *
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+machine = MachineStatus()
 
 @app.route('/')
 def index():
@@ -30,6 +32,11 @@ def gen(camera):
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+def handleAuth():
+    # TODO: Handle passwords
+    auth = request.headers.get('auth')
+    print("auth: " + str(auth))
 
 
 @app.route('/topLanding')
@@ -82,3 +89,87 @@ def video_feed6():
     """Video streaming route. Put this in the src attribute of an img tag."""
     return Response(gen(Camera(5)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/systemPower')
+def systemPower():
+    message = machine.systemPower()
+    return Response(message, mimetype='text')
+
+@app.route('/emergencyStop')
+def emergencyStop():
+    message = machine.emergencyStop()
+    return Response(message, mimetype='text')
+
+@app.route('/openDoors')
+def openDoors():
+    handleAuth()
+    message = machine.openDoors()
+    return Response(message, mimetype='text')
+
+@app.route('/closeDoors')
+def closeDoors():
+    handleAuth()
+    message = machine.closeDoors()
+    return Response(message, mimetype='text')
+
+@app.route('/openRoof')
+def openRoof():
+    handleAuth()
+    message = machine.openRoof()
+    return Response(message, mimetype='text')
+
+@app.route('/closeRoof')
+def closeRoof():
+    handleAuth()
+    message = machine.closeRoof()
+    return Response(message, mimetype='text')
+
+@app.route('/extendPad')
+def extendPad():
+    handleAuth()
+    message = machine.extendPad()
+    return Response(message, mimetype='text')
+
+@app.route('/retractPad')
+def retractPad():
+    handleAuth()
+    message = machine.retractPad()
+    return Response(message, mimetype='text')
+
+@app.route('/raisePad')
+def raisePad():
+    handleAuth()
+    message = machine.raisePad()
+    return Response(message, mimetype='text')
+
+@app.route('/lowerPad')
+def lowerPad():
+    handleAuth()
+    message = machine.lowerPad()
+    return Response(message, mimetype='text')
+
+@app.route('/systemStatus')
+def systemStatus():
+    handleAuth()
+    message = machine.systemStatus()
+    return Response(message, mimetype='application/json')
+
+@app.route('/bottomDroneMission')
+def bottomDroneMission():
+    handleAuth()
+    machine.startThread(lambda: machine.bottomDroneMission())
+    message = 'bottomDroneMission'
+    return Response(message, mimetype='text')
+
+@app.route('/topDroneMission')
+def topDroneMission():
+    handleAuth()
+    machine.startThread(lambda: machine.topDroneMission())
+    message = 'topDroneMission'
+    return Response(message, mimetype='text')
+
+@app.route('/sendTestMessage')
+def sendTestMessage():
+    handleAuth()
+    message = "Connection is good. Message recieved" 
+    return Response(message, mimetype='text')

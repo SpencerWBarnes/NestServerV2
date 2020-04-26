@@ -3,11 +3,6 @@ import time
 import threading
 import StringConstants as strings
 
-# Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
-# download this and copy and paste where that file is here vvvv
-# CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
-CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
-PLCURL = 'http://192.168.99.3/'
 TIMEDELAY = 3
 
 # These come from the ID's of elements in the HTML
@@ -78,14 +73,14 @@ class Button:
 class PlcClient:
     # init sets up the browser
     def __init__(self):
-        self.browser = webdriver.Chrome(CHROMEDRIVERLOCATION)
+        self.browser = webdriver.Chrome(strings.CHROMEDRIVERLOCATION)
 
         # TODO: remove
         self.browser.get('http://localhost:3000/')
 
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
-        self.browser.get(PLCURL)
+        self.browser.get(strings.PLCURL)
         time.sleep(TIMEDELAY)
         passwordField = self.browser.find_element_by_id("input_password")
         passwordField.send_keys(password)

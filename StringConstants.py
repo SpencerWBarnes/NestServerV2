@@ -1,3 +1,8 @@
+# Server configuration variables
+SERVER_IP_ADDRESS = "192.168.0.101"
+SERVER_PORT = 8000
+
+# Messages: These messages are the ones that are used to command the actions of the Nest
 MESSAGE_SYSTEM_POWER = "systemPower"
 MESSAGE_EMERGENCY_STOP = "emergencyStop"
 MESSAGE_OPEN_DOORS = "openDoors"
@@ -31,15 +36,9 @@ ERROR_PAD_IS_RAISED = "Must lower pad"
 ERROR_PAD_IS_LOWERED = "Must raise pad"
 ERROR_IS_STARTED = "Must stop system"
 
-
-
-
-
-
-
-
-
-
-
-
-
+# PLC Client 
+# Location of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
+# download this and copy and paste where that file is here vvvv
+# CHROMEDRIVERLOCATION = "C:\\Users\ECE436_18\Desktop\Scripts\chromedriver"
+CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
+PLCURL = 'http://192.168.99.3/'

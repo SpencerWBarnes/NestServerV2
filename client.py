@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from flask import Flask
-import socket
+import requests
 from threading import Thread
 import StringConstants as strings
 
@@ -95,53 +95,51 @@ class PasswordDialog(QDialog):
         self.retractPadButton.setDisabled(True)
         self.raisePadButton.setDisabled(True)
         self.lowerPadButton.setDisabled(True)
-        self.bottomDroneMissionButton.setDisabled(True)
-        self.topDroneMissionButton.setDisabled(True)
 
     def OpenDoors(self):
-        self.commandMessage = "openDoorsButton"
-        self.messageToSendLabel.setText("Message to be sent: openDoorsButton")
+        self.commandMessage = "openDoors"
+        self.messageToSendLabel.setText("Message to be sent: openDoors")
         self.disableButtons()
 
     def CloseDoors(self):
-        self.commandMessage = "closeDoorsButton"
-        self.messageToSendLabel.setText("Message to be sent: closeDoorsButton")
+        self.commandMessage = "closeDoors"
+        self.messageToSendLabel.setText("Message to be sent: closeDoors")
         self.disableButtons()
 
     def OpenRoof(self):
-        self.commandMessage = "openRoofButton"
-        self.messageToSendLabel.setText("Message to be sent: openRoofButton")
+        self.commandMessage = "openRoof"
+        self.messageToSendLabel.setText("Message to be sent: openRoof")
         self.disableButtons()
 
     def CloseRoof(self):
-        self.commandMessage = "closeRoofButton"
-        self.messageToSendLabel.setText("Message to be sent: closeRoofButton")
+        self.commandMessage = "closeRoof"
+        self.messageToSendLabel.setText("Message to be sent: closeRoof")
         self.disableButtons()
 
     def ExtendPad(self):
-        self.commandMessage = "extendPadButton"
-        self.messageToSendLabel.setText("Message to be sent: extendPadButton")
+        self.commandMessage = "extendPad"
+        self.messageToSendLabel.setText("Message to be sent: extendPad")
         self.disableButtons()
 
     def RetractPad(self):
-        self.commandMessage = "retractPadButton"
-        self.messageToSendLabel.setText("Message to be sent: retractPadButton")
+        self.commandMessage = "retractPad"
+        self.messageToSendLabel.setText("Message to be sent: retractPad")
         self.disableButtons()
 
     def RaisePad(self):
-        self.commandMessage = "raisePadButton"
-        self.messageToSendLabel.setText("Message to be sent: raisePadButton")
+        self.commandMessage = "raisePad"
+        self.messageToSendLabel.setText("Message to be sent: raisePad")
         self.disableButtons()
 
     def LowerPad(self):
-        self.commandMessage = "lowerPadButton"
-        self.messageToSendLabel.setText("Message to be sent: lowerPadButton")
+        self.commandMessage = "lowerPad"
+        self.messageToSendLabel.setText("Message to be sent: lowerPad")
         self.disableButtons()
 
     # Notifies the main application that there should be a password override through shouldSendPasswordOverride
     def Submit(self):
-        self.passwordmessage = self.passwordLineEdit.text()
-        self.servermessage = str(self.passwordmessage) + ": " + str(self.commandMessage)
+        self.password = str(self.passwordLineEdit.text())
+        self.message = str(self.commandMessage)
         self.shouldSendPasswordOverride = True
         self.done(1)
 
@@ -160,6 +158,8 @@ class Form():
         self.videoSock = None
         self.isConnected = False
         self.messagetext = ""
+
+        self.baseUrl = ""
 
         # Application Level
         global qtapp
@@ -281,9 +281,6 @@ class Form():
         # Some variables needed for everything else
         self.pollingThread = Thread(target=self.poll)
         self.pollingThread.daemon = True
-
-        # Setting up the socket to send commands
-        self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         window.show()
         return qtapp.exec_()
@@ -407,18 +404,9 @@ class Form():
     
     def connection(self):
         if (self.isConnected == False):
-            try: 
-                print ((self.ipLineEdit.text(), int(self.portLineEdit.text())))
-                self.commandSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.commandSock.connect((self.ipLineEdit.text(), int(self.portLineEdit.text())))
-                self.submitConnect.setDisabled(True)
-            except Exception as e:
-                self.statusLabel.setText(str(e))
-                print(e)
-                return
-
             try:
                 self.isConnected = True
+                self.baseUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
 
                 self.sendData(strings.MESSAGE_CONNECTION_TEST)
 
@@ -426,11 +414,10 @@ class Form():
                 self.pollingThread.start()
 
                 # WebPage Level
-                text = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
-                print("GETTING WEBPAGE FROM: " + text)
-                page = WebPage(text)
+                print("GETTING WEBPAGE FROM: " + self.baseUrl)
+                page = WebPage(self.baseUrl)
                 page.home()
-                self.webView.setUrl(QUrl(text))
+                self.webView.setUrl(QUrl(self.baseUrl))
                 
             except OSError as e:
                 print(e)
@@ -438,10 +425,9 @@ class Form():
                 self.submitConnect.setDisabled(False)
     
     # sendData: sends data to server
-    def sendData(self, data):
-        self.commandSock.sendall(data.encode())
-        data = self.commandSock.recv(BUFFER_SIZE)
-        data = data.decode()
+    def sendData(self, data, password = ""):
+        r = requests.get(self.baseUrl + "/" + data, headers={"auth": password})
+        data  = r.text
 
         if "Error" in data:
             print("uh oh error!")
@@ -491,8 +477,9 @@ class Form():
             self.dialog = PasswordDialog()
             self.dialog.exec()
             if (self.dialog.shouldSendPasswordOverride == True):
-                self.passwordmessage = self.dialog.servermessage
-                response = self.sendData(self.passwordmessage)
+                password = self.dialog.password
+                message = self.dialog.message
+                response = self.sendData(message, password=password)
                 self.systemDiagnostic()
 
     def OpenDoors(self):

@@ -125,7 +125,7 @@ class Top_Landing_Camera(Camera):
     @staticmethod
     def frames():
         while True:
-            img = open('topLanding.jpg', 'rb').read()
+            img = open('images/TopLanding.jpg', 'rb').read()
             time.sleep(1)
             yield img
 
@@ -133,7 +133,7 @@ class Bottom_Landing_Camera(Camera):
     @staticmethod
     def frames():
         while True:
-            img = open('bottomLanding.jpg', 'rb').read()
+            img = open('images/BottomLanding.jpg', 'rb').read()
             time.sleep(1)
             yield img
 
