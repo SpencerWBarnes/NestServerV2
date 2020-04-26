@@ -21,75 +21,71 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 machine = MachineStatus()
 
+# home page
 @app.route('/')
 def index():
-    """Video streaming home page."""
     return render_template('index.html')
-
-
-def gen(camera):
-    """Video streaming generator function."""
-    while True:
-        frame = camera.get_frame()
-        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 def handleAuth():
     # TODO: Handle passwords
     auth = request.headers.get('auth')
     print("auth: " + str(auth))
 
-
-@app.route('/topLanding')
-def topLanding():
-    return Response(gen(Top_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
-@app.route('/bottomLanding')
-def bottomLanding():
-    return Response(gen(Bottom_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
+# video stream generator function
+def gen(camera):
+    while True:
+        frame = camera.get_frame()
+        yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
+# video streaming routes
+
+# route name is used for android app to access stream
 @app.route('/video_feed1')
-def video_feed1():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+# function name is used as src for img tag in templates/index.html
+def videoFeed1():
+    # Camera param determines which camera
     return Response(gen(Camera(0)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 @app.route('/video_feed2')
-def video_feed2():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def videoFeed2():
     return Response(gen(Camera(1)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 @app.route('/video_feed3')
-def video_feed3():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def videoFeed3():
     return Response(gen(Camera(2)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 @app.route('/video_feed4')
-def video_feed4():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def videoFeed4():
     return Response(gen(Camera(3)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 @app.route('/video_feed5')
-def video_feed5():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def videoFeed5():
     return Response(gen(Camera(4)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
 @app.route('/video_feed6')
-def video_feed6():
-    """Video streaming route. Put this in the src attribute of an img tag."""
+def videoFeed6():
     return Response(gen(Camera(5)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
+# drone landing image routes
+
+# route named similarly for app video switching
+@app.route('/video_feed7')
+def topLandingImage():
+    return Response(gen(Top_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/video_feed8')
+def bottomLandingImage():
+    return Response(gen(Bottom_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+# command routes
 @app.route('/systemPower')
 def systemPower():
     message = machine.systemPower()
