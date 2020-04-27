@@ -95,8 +95,8 @@ class Camera():
         camera = cv2.VideoCapture(self.video_source)
         if camera is None or not camera.isOpened():
             print('Could not start camera ' + str(self.video_source + 1))
-            img = open('images/NoCamera.jpg', 'rb').read()
-            yield img 
+            no_cam_img = open('images/NoCamera.jpg', 'rb').read()
+            yield no_cam_img 
 
         while True:
             # read current frame
