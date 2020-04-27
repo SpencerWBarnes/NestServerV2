@@ -93,8 +93,10 @@ class Camera():
 
     def frames(self):
         camera = cv2.VideoCapture(self.video_source)
-        if not camera.isOpened():
-            raise RuntimeError('Could not start camera')
+        if camera is None or not camera.isOpened():
+            print('Could not start camera ' + str(self.video_source + 1))
+            img = open('images/NoCamera.jpg', 'rb').read()
+            yield img 
 
         while True:
             # read current frame
@@ -105,7 +107,7 @@ class Camera():
 
     def _thread( self):
         """camera background thread"""
-        print('Starting camera thread')
+        print('Starting camera ' + str(self.video_source + 1))
         frames_iterator = self.frames()
         for frame in frames_iterator:
             self.frame = frame
