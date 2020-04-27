@@ -1,4 +1,22 @@
-.img {
-    height:50% !important;
-    width:50% !important;  
+body {
+    margin: 40px;
+}
+
+img {
+    width: 100%
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: 25% 24% 24% 24%;
+    grid-gap: 5px;
+    background-color: #fff;
+    color: #444;
+}
+
+.box {
+    background-color: #444;
+    color: #fff;
+    border-radius: 2px;
+    padding: 5px;
 }

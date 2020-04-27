@@ -81,7 +81,7 @@ def init_gui(application, ip='127.0.0.1', port=5000, width=800, height=600, wind
 
     # WebView Level
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    webView.setMinimumHeight(700)
+    webView.setMinimumHeight(730)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 

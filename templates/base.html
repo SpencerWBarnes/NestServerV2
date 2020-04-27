@@ -19,7 +19,7 @@
         ></script>
         <script
             type="text/javascript"
-            src="{{ url_for('static', filename = '../static/js/index.js', version='2') }}"
+            src="{{ url_for('static', filename = '../static/js/index.js', version='1') }}"
         ></script>
         <style>
             body {
@@ -31,9 +31,9 @@
     </head>
 
     <body>
-        <div class="container vid">
+        
             {% block video %} {% endblock %}
-        </div>
+        
     </body>
 
     <link
