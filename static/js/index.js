@@ -1,3 +1,5 @@
+// this all needs to be re-written since CSS change
+
 function zoomin(id) {
     var vids = ["vid1", "vid2", "vid3", "vid4", "vid5", "vid6"];
     var myImg = document.getElementById(id);

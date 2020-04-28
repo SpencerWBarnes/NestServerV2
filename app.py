@@ -17,6 +17,6 @@ else:
 app = Flask(__name__)
 from routes import * # This has to be here, it can't be moved up to the top
 
-# Running applciation
+# Running application
 if __name__ == '__main__':
     init_gui(app, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
