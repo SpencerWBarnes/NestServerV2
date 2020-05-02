@@ -12,11 +12,13 @@ if os.environ.get('CAMERA'):
     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
 else:
     from camera import Camera
-
+    
 # Creating flask application
-app = Flask(__name__)
-from routes import * # This has to be here, it can't be moved up to the top
+videoApp = Flask(__name__)
+from videoAppRoutes import * # This has to be here, it can't be moved up to the top
+imageApp = Flask(__name__)
+from imageAppRoutes import *
 
 # Running application
 if __name__ == '__main__':
-    init_gui(app, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
+    init_gui(videoApp, imageApp, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
