@@ -94,17 +94,16 @@ class Camera():
     def frames(self):
         camera = cv2.VideoCapture(self.video_source)
         if camera is None or not camera.isOpened():
-            print('Camera  ' + str(self.video_source + 1) + ' not connected.')
-            imgs = [(open('images/NoCamera.jpg', 'rb').read()), (open('images/BottomLanding.jpg', 'rb').read())]
-            yield imgs[int(time.time()) % 2]
+            print('Could not start camera ' + str(self.video_source + 1))
+            no_cam_img = open('images/NoCamera.jpg', 'rb').read()
+            yield no_cam_img 
 
         while True:
             # read current frame
             _, img = camera.read()
 
             # encode as a jpeg image and return it
-            imgs = [(open('images/NoCamera.jpg', 'rb').read()), (open('images/BottomLanding.jpg', 'rb').read())]
-            yield imgs[int(time.time()) % 2]
+            yield cv2.imencode('.jpg', img)[1].tobytes()
 
     def _thread( self):
         """camera background thread"""
@@ -117,10 +116,10 @@ class Camera():
 
             # if there hasn't been any clients asking for frames in
             # the last 10 seconds then stop the thread
-            # if time.time() - self.last_access > 10:
-            #     frames_iterator.close()
-            #     print('Stopping camera thread due to inactivity')
-            #     break
+            if time.time() - self.last_access > 10:
+                frames_iterator.close()
+                print('Stopping camera thread due to inactivity')
+                break
         self.thread = None
 
 
@@ -128,13 +127,15 @@ class Top_Landing_Camera(Camera):
     @staticmethod
     def frames():
         while True:
-            imgs = [(open('images/NoCamera.jpg', 'rb').read()), (open('images/BottomLanding.jpg', 'rb').read())]
-            yield imgs[int(time.time()) % 2]
+            img = open('images/TopLanding.jpg', 'rb').read()
+            time.sleep(1)
+            yield img
 
 class Bottom_Landing_Camera(Camera):
     @staticmethod
     def frames():
         while True:
-            imgs = [(open('images/NoCamera.jpg', 'rb').read()), (open('images/BottomLanding.jpg', 'rb').read())]
-            yield imgs[int(time.time()) % 2]
+            img = open('images/BottomLanding.jpg', 'rb').read()
+            time.sleep(1)
+            yield img
 
