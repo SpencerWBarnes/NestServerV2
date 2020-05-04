@@ -6,9 +6,17 @@ img {
     width: 100%
 }
 
+.video-wrapper {
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    grid-gap: 5px;
+    background-color: #fff;
+    color: #444;
+}
+
 .wrapper {
     display: grid;
-    grid-template-columns: 25% 24% 24% 24%;
+    grid-template-columns: 24;
     grid-gap: 5px;
     background-color: #fff;
     color: #444;

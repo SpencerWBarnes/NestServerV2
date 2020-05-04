@@ -80,18 +80,19 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     gridLayout = QGridLayout()
     statusLayout = QGridLayout()
     vidLayout = QHBoxLayout()
-    vid2Layout = QHBoxLayout()
+    
 
     # WebView Level
     webView = QtWebEngineWidgets.QWebEngineView(window)
-    webView.setMinimumHeight(350)
+    webView.setMinimumHeight(730)
     webView.setMinimumWidth(600)
     vidLayout.addWidget(webView)
 
     webView2 = QtWebEngineWidgets.QWebEngineView(window)
-    webView2.setMinimumHeight(350)
-    webView2.setMinimumWidth(600)
-    vid2Layout.addWidget(webView2)
+    webView2.setMinimumHeight(730)
+    webView2.setMaximumHeight(730)
+    webView2.setMaximumWidth(440)
+    vidLayout.addWidget(webView2)
 
     # Widgets Level
     commandsLabel = QLabel()
@@ -116,7 +117,6 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     gridLayout.addWidget(commandsLabel, 0, 1)
 
     layout.addLayout(vidLayout)
-    layout.addLayout(vid2Layout)
     layout.addLayout(gridLayout)
 
     window.setLayout(layout)
