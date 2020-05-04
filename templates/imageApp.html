@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block video %}
+<div class="wrapper">
+    <div class="box">
+        <img id="topLanding" src="{{ url_for('topLandingImage') }}" />
+    </div>
+    
+    <div class="box">
+        <img id="bottomLanding" src="{{ url_for('bottomLandingImage') }}" />
+    </div>
+
+</div>
+
+{% endblock %}

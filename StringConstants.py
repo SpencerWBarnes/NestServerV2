@@ -1,5 +1,5 @@
 # Server configuration variables
-SERVER_IP_ADDRESS = "192.168.0.104"
+SERVER_IP_ADDRESS = "192.168.0.103"
 SERVER_PORT = 8000
 
 # Messages: These messages are the ones that are used to command the actions of the Nest

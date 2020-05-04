@@ -1,8 +1,5 @@
 {% extends "base.html" %} {% block video %}
-<div class="wrapper">
-    <div class="box">
-        <img id="topLanding" src="{{ url_for('topLandingImage') }}" />
-    </div>
+<div class="video-wrapper">
     <div class="box">
         <img id="vid1" src="{{ url_for('videoFeed1') }}" />
     </div>
@@ -11,9 +8,6 @@
     </div>
     <div class="box">
         <img id="vid3" src="{{ url_for('videoFeed3') }}" />
-    </div>
-    <div class="box">
-        <img id="bottomLanding" src="{{ url_for('bottomLandingImage') }}" />
     </div>
     <div class="box">
         <img id="vid4" src="{{ url_for('videoFeed4') }}" />

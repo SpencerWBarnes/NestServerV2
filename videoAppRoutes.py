@@ -16,15 +16,15 @@ else:
 from camera import *
 
 
-app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+videoApp = Flask(__name__)
+videoApp.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 machine = MachineStatus()
 
 # home page
-@app.route('/')
+@videoApp.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('videoApp.html')
 
 def handleAuth():
     # TODO: Handle passwords
@@ -41,130 +41,118 @@ def gen(camera):
 # video streaming routes
 
 # route name is used for android app to access stream
-@app.route('/video_feed1')
+@videoApp.route('/video_feed1')
 # function name is used as src for img tag in templates/index.html
 def videoFeed1():
     # Camera param determines which camera
     return Response(gen(Camera(0)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed2')
+@videoApp.route('/video_feed2')
 def videoFeed2():
     return Response(gen(Camera(1)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed3')
+@videoApp.route('/video_feed3')
 def videoFeed3():
     return Response(gen(Camera(2)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed4')
+@videoApp.route('/video_feed4')
 def videoFeed4():
     return Response(gen(Camera(3)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed5')
+@videoApp.route('/video_feed5')
 def videoFeed5():
     return Response(gen(Camera(4)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-@app.route('/video_feed6')
+@videoApp.route('/video_feed6')
 def videoFeed6():
     return Response(gen(Camera(5)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-# drone landing image routes
-
-# route named similarly for app video switching
-@app.route('/video_feed7')
-def topLandingImage():
-    return Response(gen(Top_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/video_feed8')
-def bottomLandingImage():
-    return Response(gen(Bottom_Landing_Camera(0)), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
 # command routes
-@app.route('/systemPower')
+@videoApp.route('/systemPower')
 def systemPower():
     message = machine.systemPower()
     return Response(message, mimetype='text')
 
-@app.route('/emergencyStop')
+@videoApp.route('/emergencyStop')
 def emergencyStop():
     message = machine.emergencyStop()
     return Response(message, mimetype='text')
 
-@app.route('/openDoors')
+@videoApp.route('/openDoors')
 def openDoors():
     handleAuth()
     message = machine.openDoors()
     return Response(message, mimetype='text')
 
-@app.route('/closeDoors')
+@videoApp.route('/closeDoors')
 def closeDoors():
     handleAuth()
     message = machine.closeDoors()
     return Response(message, mimetype='text')
 
-@app.route('/openRoof')
+@videoApp.route('/openRoof')
 def openRoof():
     handleAuth()
     message = machine.openRoof()
     return Response(message, mimetype='text')
 
-@app.route('/closeRoof')
+@videoApp.route('/closeRoof')
 def closeRoof():
     handleAuth()
     message = machine.closeRoof()
     return Response(message, mimetype='text')
 
-@app.route('/extendPad')
+@videoApp.route('/extendPad')
 def extendPad():
     handleAuth()
     message = machine.extendPad()
     return Response(message, mimetype='text')
 
-@app.route('/retractPad')
+@videoApp.route('/retractPad')
 def retractPad():
     handleAuth()
     message = machine.retractPad()
     return Response(message, mimetype='text')
 
-@app.route('/raisePad')
+@videoApp.route('/raisePad')
 def raisePad():
     handleAuth()
     message = machine.raisePad()
     return Response(message, mimetype='text')
 
-@app.route('/lowerPad')
+@videoApp.route('/lowerPad')
 def lowerPad():
     handleAuth()
     message = machine.lowerPad()
     return Response(message, mimetype='text')
 
-@app.route('/systemStatus')
+@videoApp.route('/systemStatus')
 def systemStatus():
     handleAuth()
     message = machine.systemStatus()
     return Response(message, mimetype='application/json')
 
-@app.route('/bottomDroneMission')
+@videoApp.route('/bottomDroneMission')
 def bottomDroneMission():
     handleAuth()
     machine.startThread(lambda: machine.bottomDroneMission())
     message = 'bottomDroneMission'
     return Response(message, mimetype='text')
 
-@app.route('/topDroneMission')
+@videoApp.route('/topDroneMission')
 def topDroneMission():
     handleAuth()
     machine.startThread(lambda: machine.topDroneMission())
     message = 'topDroneMission'
     return Response(message, mimetype='text')
 
-@app.route('/sendTestMessage')
+@videoApp.route('/sendTestMessage')
 def sendTestMessage():
     handleAuth()
     message = "Connection is good. Message recieved" 
