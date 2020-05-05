@@ -64,7 +64,7 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     global qtapp
     qtapp = QtWidgets.QApplication(argv)
     webapp = ApplicationThread(application, ip, port)
-    webapp2 = ApplicationThread(application2, ip, 2345)
+    webapp2 = ApplicationThread(application2, ip, 8001)
     webapp.start()
     webapp2.start()
     qtapp.aboutToQuit.connect(webapp.terminate)
@@ -125,7 +125,7 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     page = WebPage('http://' + ip + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-    page2 = WebPage('http://' + ip + ':2345')
+    page2 = WebPage('http://' + ip + ':8001')
     page2.home()
     webView2.setPage(page2)
     window.showMaximized()
