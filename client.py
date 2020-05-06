@@ -269,14 +269,10 @@ class Form():
 
         # WebPage Layout
         vidLayout = QHBoxLayout()
-        page = WebPage('http://' + IP_ADDRESS + ':{}'.format(VIDEO_COMMAND_PORT)) 
-        self.webView.setPage(page)
         self.webView.setMinimumHeight(730)
         self.webView.setMinimumWidth(600)
         vidLayout.addWidget(self.webView)
 
-        page2 = WebPage('http://' + IP_ADDRESS + ':{}'.format(IMAGE_PORT)) 
-        self.webView2.setPage(page2)
         self.webView2.setMaximumHeight(730)
         self.webView2.setMaximumWidth(440)
         vidLayout.addWidget(self.webView2)
@@ -421,6 +417,7 @@ class Form():
             try:
                 self.isConnected = True
                 self.baseUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(VIDEO_COMMAND_PORT)
+                self.imageUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(IMAGE_PORT)
 
                 self.sendData(strings.MESSAGE_CONNECTION_TEST)
 
@@ -432,6 +429,10 @@ class Form():
                 page = WebPage(self.baseUrl)
                 page.home()
                 self.webView.setUrl(QUrl(self.baseUrl))
+
+                page2 = WebPage(self.imageUrl)
+                page2.home()
+                self.webView2.setUrl(QUrl(self.imageUrl)) 
                 
             except OSError as e:
                 print(e)
