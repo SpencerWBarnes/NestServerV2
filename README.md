@@ -98,7 +98,8 @@ pip install Pillow
     ```python
     # Server configuration variables, these should match your machine
     SERVER_IP_ADDRESS = "192.168.0.6"
-    SERVER_PORT = 8000
+    VIDEO_COMMAND_PORT = 8000
+    IMAGE_PORT = 8001
 
     ...
     # Direct path of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 

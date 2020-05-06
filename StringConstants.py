@@ -1,6 +1,7 @@
 # Server configuration variables
 SERVER_IP_ADDRESS = "192.168.0.102"
-SERVER_PORT = 8000
+VIDEO_COMMAND_PORT = 8000
+IMAGE_PORT = 8001
 
 # Messages: These messages are the ones that are used to command the actions of the Nest
 MESSAGE_SYSTEM_POWER = "systemPower"

@@ -48,7 +48,7 @@ def updateUI(commandsLabel, ipLabel, isOnLabel, isDoorOpenLabel, isRoofOpenLabel
     isPadRaisedLabel.setText("Pad raised: " + str(s.isPadRaised))
 
 ######### init_gui: initializes the user interface for this application and sets up constants #########
-def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, height=600, window_title="Nest", icon="appicon.png", argv=None):
+def init_gui(application, application2, ip='127.0.0.1', port=8000, port2=8001, width=800, height=600, window_title="Nest", icon="appicon.png", argv=None):
     if argv is None:
         argv = sys.argv
 
@@ -64,7 +64,7 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     global qtapp
     qtapp = QtWidgets.QApplication(argv)
     webapp = ApplicationThread(application, ip, port)
-    webapp2 = ApplicationThread(application2, ip, 8001)
+    webapp2 = ApplicationThread(application2, ip, port2)
     webapp.start()
     webapp2.start()
     qtapp.aboutToQuit.connect(webapp.terminate)
@@ -125,7 +125,7 @@ def init_gui(application, application2, ip='127.0.0.1', port=5000, width=800, he
     page = WebPage('http://' + ip + ':{}'.format(port))
     page.home()
     webView.setPage(page)
-    page2 = WebPage('http://' + ip + ':8001')
+    page2 = WebPage('http://' + ip + ':{}'.format(port2))
     page2.home()
     webView2.setPage(page2)
     window.showMaximized()

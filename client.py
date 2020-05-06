@@ -11,7 +11,8 @@ from threading import Thread
 import StringConstants as strings
 
 IP_ADDRESS = '192.168.0.102'
-TCP_PORT = 8000
+VIDEO_COMMAND_PORT = 8000
+IMAGE_PORT = 8001
 BUFFER_SIZE = 1024
 
 ######### WebPage: the web engine that displays webpage content #########
@@ -180,7 +181,7 @@ class Form():
         self.ipLabel = QLabel('Server IP:')
         self.ipLineEdit = QLineEdit(IP_ADDRESS)
         self.portLabel = QLabel('Port:')
-        self.portLineEdit = QLineEdit(str(TCP_PORT))
+        self.portLineEdit = QLineEdit(str(VIDEO_COMMAND_PORT))
         self.submitConnect = QPushButton('Connect')
 
         # Labels
@@ -268,13 +269,13 @@ class Form():
 
         # WebPage Layout
         vidLayout = QHBoxLayout()
-        page = WebPage('http://' + IP_ADDRESS + ':{}'.format(TCP_PORT)) 
+        page = WebPage('http://' + IP_ADDRESS + ':{}'.format(VIDEO_COMMAND_PORT)) 
         self.webView.setPage(page)
         self.webView.setMinimumHeight(730)
         self.webView.setMinimumWidth(600)
         vidLayout.addWidget(self.webView)
 
-        page2 = WebPage('http://' + IP_ADDRESS + ':8001')
+        page2 = WebPage('http://' + IP_ADDRESS + ':{}'.format(IMAGE_PORT)) 
         self.webView2.setPage(page2)
         self.webView2.setMaximumHeight(730)
         self.webView2.setMaximumWidth(440)
@@ -419,7 +420,7 @@ class Form():
         if (self.isConnected == False):
             try:
                 self.isConnected = True
-                self.baseUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(8000)
+                self.baseUrl = 'http://' + self.ipLineEdit.text() + ':{}'.format(VIDEO_COMMAND_PORT)
 
                 self.sendData(strings.MESSAGE_CONNECTION_TEST)
 

@@ -21,4 +21,4 @@ from imageAppRoutes import *
 
 # Running application
 if __name__ == '__main__':
-    init_gui(videoApp, imageApp, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.SERVER_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
+    init_gui(videoApp, imageApp, ip=StringConstants.SERVER_IP_ADDRESS, port=StringConstants.VIDEO_COMMAND_PORT, port2=StringConstants.IMAGE_PORT, width=700, height=500, window_title="Nest Server", icon="images/appicon.jpg", argv=None)
