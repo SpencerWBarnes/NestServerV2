@@ -10,8 +10,8 @@ import requests
 from threading import Thread
 import StringConstants as strings
 
-IP_ADDRESS = '192.168.0.8'
-TCP_PORT = 8888
+IP_ADDRESS = '192.168.0.102'
+TCP_PORT = 8000
 BUFFER_SIZE = 1024
 
 ######### WebPage: the web engine that displays webpage content #########
@@ -173,6 +173,8 @@ class Form():
         # WebView Level
         self.webView = QtWebEngineWidgets.QWebEngineView(window)
         self.webView.setMinimumHeight(520)
+        self.webView2 = QtWebEngineWidgets.QWebEngineView(window)
+        self.webView2.setMinimumHeight(520)
 
         # Widgets Level
         self.ipLabel = QLabel('Server IP:')
@@ -264,25 +266,36 @@ class Form():
         buttonlayout.addWidget(self.bottomDroneMissionButton, 5, 1)
         buttonlayout.addWidget(self.topDroneMissionButton, 5, 2)
 
+        # WebPage Layout
+        vidLayout = QHBoxLayout()
+        page = WebPage('http://' + IP_ADDRESS + ':{}'.format(TCP_PORT)) 
+        self.webView.setPage(page)
+        self.webView.setMinimumHeight(730)
+        self.webView.setMinimumWidth(600)
+        vidLayout.addWidget(self.webView)
+
+        page2 = WebPage('http://' + IP_ADDRESS + ':8001')
+        self.webView2.setPage(page2)
+        self.webView2.setMaximumHeight(730)
+        self.webView2.setMaximumWidth(440)
+        vidLayout.addWidget(self.webView2)
+
         # Layouts - Setting layouts
         layout = QGridLayout()
+        layout.addLayout(vidLayout, 3, 0)
         layout.addLayout(clientlayout, 0, 0)
         layout.addLayout(buttonlayout, 1, 0)
         layout.addWidget(self.statusLabel, 2, 0)
-        layout.addWidget(self.webView, 3, 0)
 
         window.setLayout(layout)
 
-        # WebPage Level
-        page = WebPage('')
-        page.home()
-        self.webView.setPage(page)
+        
 
         # Some variables needed for everything else
         self.pollingThread = Thread(target=self.poll)
         self.pollingThread.daemon = True
 
-        window.show()
+        window.showMaximized()
         return qtapp.exec_()
 
 
