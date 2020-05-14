@@ -75,9 +75,6 @@ class PlcClient:
     def __init__(self):
         self.browser = webdriver.Chrome(strings.CHROMEDRIVERLOCATION)
 
-        # TODO: remove
-        self.browser.get('http://localhost:3000/')
-
     # login: navigates to the login url and enters in password. This opens our custom webpage for the PLC
     def login(self, password):
         self.browser.get(strings.PLCURL)

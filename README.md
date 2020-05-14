@@ -25,7 +25,6 @@ An app from the IMPRESS Lab at Mississippi State University
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-* [Docs](#usage)
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [Contact](#contact)
@@ -121,9 +120,43 @@ pip install Pillow
     python app.py
     ```
 
-## Docs
+## Development
 
-_For more info, please refer to the [Documentation](https://example.com)_
+The first step to developing on this application is to ensure that the string constants are correct. These are located in [StringConstants.py](StringConstants.py). Set the ```SERVER_IP_ADDRESS``` to the IPv4 address of the machine to run the server. Also be sure to download a Chromedriver from [Chromium.org](https://sites.google.com/a/chromium.org/chromedriver/) and update the ```CHROMEDRIVERLOCATION``` variable to the correct location. The Chromedriver is required to use Selenium and access the PLC. 
+
+```python
+# Server configuration variables, these should match your machine
+SERVER_IP_ADDRESS = "192.168.0.6"
+VIDEO_COMMAND_PORT = 8000
+IMAGE_PORT = 8001
+
+...
+# Direct path of chromedriver which can be downloaded from https://sites.google.com/a/chromium.org/chromedriver/ 
+CHROMEDRIVERLOCATION = '/Users/laure/chromedriver'
+PLCURL = 'http://192.168.99.3/'
+```
+
+When developing off site, it is required to ensure that the PlcClient is set to development node. This will prevent the server from trying to access the PLC. To put the application into development mode, navigate to [MachineStatus.py](MachineStatus.py) and change the following lines:
+
+Change lines 31-36:
+
+``` python
+        # PlcClient
+        # self.plc = PlcClient()          # This is for production mode
+        self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        self.plc.login("PLC")           # Login with password PLC
+        self.plc.initButtons()          # Gets button information from the PlcClient browser window
+```
+
+To:
+
+``` python
+        # PlcClient
+        self.plc = PlcClient()          # This is for production mode
+        # self.plc = PlcClientDev()       # This is for development mode. It makes a client with empty functions
+        self.plc.login("PLC")           # Login with password PLC
+        self.plc.initButtons()          # Gets button information from the PlcClient browser window
+```
 
 ## Roadmap
 
