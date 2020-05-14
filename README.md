@@ -158,6 +158,19 @@ To:
         self.plc.initButtons()          # Gets button information from the PlcClient browser window
 ```
 
+### Important files
+
+* [MachineStatus.py](MachineStatus.py) - a class that holds the status of the machine, determines which actions are possible, and performs them using an instance of the ```PlcClient``` class. It is called by [videoAppRoutes.py](videoAppRoutes.py)
+* [PlcClient.py](PlcClient.py) - PlcClient is responsible for using Selenium to interact with the PLC webserver and pass commands to the PLC. It has two modes: PlcClientDev for developing off site and PlcClient for developing on site. 
+* [StringConstants.py](StringConstants.py) - houses all the important string constants for the application. This should be modified. 
+* [app.py](app.py) - runs flasklocal.py
+* [camera.py](camera.py) - sets up the camera and video feed
+* [client.py](client.py) - creates the desktop client for the application. This is to be run independently from app.py
+* [flasklocal.py](flasklocal.py) - sets up the Server UI and mounts the Flask server
+* [imageAppRoutes.py](imageAppRoutes.py) - defines the routes for the Drone landing images
+* [pad_plot.py](pad_plot.py) - creates the drone landing images
+* [videoAppRoutes.py](videoAppRoutes.py) - defines the command and video routes
+
 ## Roadmap
 
 See the [open issues](https://github.com/lpjune/NestServerV2/issues) for a list of proposed features (and known issues).
